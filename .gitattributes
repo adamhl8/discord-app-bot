@@ -1,0 +1,5 @@
+* text=auto
+* text eol=lf
+*.zip binary
+.yarn/* linguist-vendored
+.pnp.js linguist-vendored
