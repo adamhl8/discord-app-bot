@@ -43,11 +43,13 @@ export function parseApplicantName(tag: string): string {
 
 export async function handleApp(msg: Message, guild: Discord.Guild): Promise<Applicant> {
   const fields = msg.embeds[0].fields
+  console.log(fields)
   let tag
 
   for (let e of fields) {
-    if ((e.name = "Discord Tag")) {
+    if (e.name == "Discord Tag") {
       tag = e.value
+      console.log("wat")
       break
     }
   }
@@ -65,6 +67,7 @@ export async function handleApp(msg: Message, guild: Discord.Guild): Promise<App
     return {
       tag,
       name,
+      appMessageID: msg.id,
       channelID: channel.id,
     }
   } catch (e) {

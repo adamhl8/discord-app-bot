@@ -1,5 +1,5 @@
 import { Guild, Message } from "discord.js"
-import { roleCache, channelCache } from "../app-bot"
+import { roleCache, channelCache, emojiCache } from "../app-bot"
 import { getApplicant, removeApplicant } from "./Applicant"
 import { isTextChannel } from "./util"
 
@@ -45,6 +45,18 @@ export const d: Command = {
         `<@${applicant.memberID}>\n\n${match[3]}\n\nPlease type \`!confirm\` to acknowledge that you have read this message. Upon confirmation your application will be closed and you will be removed from the server.`
       )
       .catch(console.error)
+
+    const appsChannel = guild.channels.resolve(channelCache.getOrThrow("apps").id)
+    if (!appsChannel) {
+      throw Error(`channel does not exist`)
+    }
+    if (!isTextChannel(appsChannel)) {
+      throw Error(`apps channel is not a Text Channel | ${appsChannel?.id}`)
+    }
+
+    const appMessage = appsChannel.messages.resolve(applicant.appMessageID)
+
+    appMessage?.react(emojiCache.getOrThrow("declined").id)
   },
 }
 
@@ -115,6 +127,18 @@ export const a: Command = {
     }
 
     await channel.delete().catch(console.error)
+
+    const appsChannel = guild.channels.resolve(channelCache.getOrThrow("apps").id)
+    if (!appsChannel) {
+      throw Error(`channel does not exist`)
+    }
+    if (!isTextChannel(appsChannel)) {
+      throw Error(`apps channel is not a Text Channel | ${appsChannel?.id}`)
+    }
+
+    const appMessage = appsChannel.messages.resolve(applicant.appMessageID)
+
+    appMessage?.react(emojiCache.getOrThrow("approved").id)
 
     await removeApplicant(applicant)
   },
