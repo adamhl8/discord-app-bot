@@ -1,27 +1,35 @@
 require("dotenv").config({ path: process.argv[2] })
 
-import Discord, { Message, Role, GuildMember, PartialGuildMember, GuildChannel, TextChannel } from "discord.js"
+import Discord, {
+  Message,
+  Role,
+  GuildMember,
+  PartialGuildMember,
+  GuildChannel,
+  TextChannel,
+} from "discord.js"
 import * as Util from "./modules/util"
 import * as Commands from "./modules/commands"
 import { Command } from "./modules/commands"
+import { saveApplicant } from "./modules/Applicant"
 import ObjectCache from "./modules/ObjectCache"
 import Storage from "node-persist"
 
 const bot = new Discord.Client()
 bot.login(process.env.TOKEN)
 
-await Storage.init({dir: "../"})
+let guild: Discord.Guild
 
-let guild: Discord.Guild;
-
-bot.on("ready", () => {
-  console.log("I am ready!")
+bot.on("ready", async () => {
+  await Storage.init()
 
   const g = bot.guilds.cache.first()
   if (!g) {
     throw Error("failed to init guild")
   }
   guild = g
+
+  console.log("I am ready!")
 
   run()
 })
@@ -30,12 +38,20 @@ export let roleCache: ObjectCache<Role> = new ObjectCache()
 export let channelCache: ObjectCache<GuildChannel> = new ObjectCache()
 
 function run() {
-
   roleCache = Util.collectionToCacheByName(guild.roles.cache)
   channelCache = Util.collectionToCacheByName(guild.channels.cache)
+
   bot.on("roleUpdate", () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
   bot.on("roleCreate", () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
   bot.on("roleDelete", () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
+
+  bot.on("channelUpdate", () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
+  bot.on("channelCreate", () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
+  bot.on("channelDelete", () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
+}
+
+function isPartial(member: GuildMember | PartialGuildMember): member is PartialGuildMember {
+  return member.partial
 }
 
 bot.on("guildMemberAdd", async (member: GuildMember | PartialGuildMember) => {
@@ -53,24 +69,10 @@ bot.on("guildMemberAdd", async (member: GuildMember | PartialGuildMember) => {
   }
 })
 
-function isPartial(member: GuildMember | PartialGuildMember): member is PartialGuildMember {
-  return member.partial
-}
-
-export interface Applicant {
-  tag: string
-  name: string
-  member?: GuildMember
-  channel: TextChannel
-}
-
-export const applicants: Record<string, Applicant> = {};
-
 bot.on("message", async (msg: Message) => {
-
   if (msg.channel.id == channelCache.getOrThrow("apps").id) {
     const applicant = await Util.handleApp(msg, guild)
-    applicants[applicant.name] = applicant
+    await saveApplicant(applicant)
   }
 
   if (msg.author.bot) return
@@ -97,7 +99,7 @@ bot.on("message", async (msg: Message) => {
         .send("You do not have the required moderator role to run this command.")
         .catch(console.log)
     } else {
-      commands[command].run(msg)
+      commands[command].run(guild, msg)
     }
   }
 })

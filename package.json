@@ -1,21 +1,19 @@
 {
   "name": "app-bot",
   "version": "0.1.0",
-  "description": "Discord bot for the Warrior discord server, Skyhold.",
-  "main": "eyir.js",
-  "repository": "https://github.com/xMarok/eyir",
+  "repository": "https://github.com/xMarok/app-bot",
   "author": "Marok",
   "license": "UNLICENSED",
-  "type": "module",
   "dependencies": {
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "node-persist": "^3.1.0"
   },
   "scripts": {
-    "start": "pm2 start ecosystem.config.cjs --only app-bot",
-    "test-start": "pm2 start ecosystem.config.cjs --only test-app-bot",
-    "restart": "yarn compile && pm2 restart all",
+    "start": "pm2 start ecosystem.config.js --only app-bot",
+    "test-start": "pm2 start ecosystem.config.js --only test-app-bot",
+    "restart": "yarn compile && pm2 restart app-bot",
+    "test-restart": "yarn compile && pm2 restart test-app-bot",
     "compile": "tsc",
     "format": "prettier --write src"
   },
