@@ -117,6 +117,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node-persist@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@types/node-persist@npm:3.1.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 3f601c35505c74a6d2e178cc9cc5d218fe91570f376ff586e0d6d46803182eb7d3c5273b4ced18f4e70161106253874bed9f90e9fe2960a0c1033b09b1bfbf3d
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:^14.10.3":
   version: 14.10.3
   resolution: "@types/node@npm:14.10.3"
@@ -310,6 +319,7 @@ __metadata:
   resolution: "app-bot@workspace:."
   dependencies:
     "@types/node": ^14.10.3
+    "@types/node-persist": ^3.1.0
     "@types/ws": ^7.2.6
     "@yarnpkg/pnpify": ^2.2.1
     discord.js: ^12.3.1

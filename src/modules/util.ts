@@ -1,30 +1,15 @@
-import { Collection, Role, Snowflake, GuildMember, DMChannel } from "discord.js"
+import Discord, { Collection, Role, Snowflake, GuildMember, Message } from "discord.js"
 import ObjectCache from "./ObjectCache"
+import { Applicant, channelCache, applicants, roleCache } from "../app-bot"
 
 // set up global error handlers
 process.on("unhandledRejection", (error) => {
   console.log("unhandledRejection: ", error)
 })
 
-export function welcomeNewMember(member: GuildMember) {
-  const welcomeMessage =
-    member.displayName +
-    ", welcome to **Skyhold**! Please go over the server rules in #welcome. Before asking a question, go over all of the available guides and resources in #guides-resources-faq; many frequently asked questions are answered there. Remember to check the Pinned Messages in each text channel for additional information. You can do so by clicking the Pin icon at the top right of your Discord window: <http://i.imgur.com/TuYQkjJ.png>. If you're unable to find an answer to your question or if you need clarification on something, please ask! That's what we're here for. :smile: We hope you enjoy your time in Skyhold!"
-
-  member
-    .createDM()
-    .then((channel: DMChannel) => {
-      channel
-        .send(welcomeMessage)
-        .then(() => console.log("Sent welcome message to " + member.user.tag))
-        .catch(console.error)
-    })
-    .catch(console.error)
-}
-
 export function isMod(member: GuildMember, roleCache: ObjectCache<Role>) {
   const roles = member.roles.cache
-  return roles.has(roleCache.getOrThrow("Val'kyr (Mod)").id)
+  return roles.has(roleCache.getOrThrow("Officer").id)
 }
 
 export function collectionToCacheByName<T extends { name: string }>(
@@ -34,4 +19,55 @@ export function collectionToCacheByName<T extends { name: string }>(
   const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => [item.name, item])
 
   return new ObjectCache(byName)
+}
+
+export async function handleApp(msg: Message, guild: Discord.Guild): Promise<Applicant> {
+
+  const tag = msg.embeds[0].fields[0].value
+
+  let match = /(\w+)#(\d+)/g.exec(tag);
+
+  if (!match) {
+    throw Error(`unable to match Discord Tag in message: ${msg}`)
+  }
+
+  let name = match[1] + match[2];
+  name = name.toLowerCase()
+
+  try {
+    const channel = await guild.channels.create(name, {
+      parent: channelCache.getOrThrow("applicants").id
+    })
+    return {
+      tag,
+      name,
+      channel,
+    }
+  } catch (e) {
+    throw Error(`failed to create channel for ${tag} | ${e}`)
+  }
+}
+
+export function handlePermissions(member: GuildMember) {
+  let match = /(\w+)#(\d+)/g.exec(member.user.tag);
+
+  if (!match) {
+    console.log(`unable to match Discord Tag: ${member.user.tag}`)
+    return
+  }
+
+  let name = match[1] + match[2];
+  name = name.toLowerCase()
+
+  if (applicants[name]) {
+
+    applicants[name].member = member
+
+    member.roles.add(roleCache.getOrThrow("Applicant").id)
+
+    //@ts-ignore
+    applicants[name].channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
+    //@ts-ignore
+    applicants[name].channel.send("<@" + applicants[name].member.id + ">\n\n" + "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.")
+  }
 }
