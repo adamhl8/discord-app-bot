@@ -38,6 +38,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["@types/node", "npm:14.10.3"],
+            ["@types/node-persist", "npm:3.1.0"],
             ["@types/ws", "npm:7.2.6"],
             ["@yarnpkg/pnpify", "virtual:bfa80bad3b9b9d11a3334b83a8854df5529332d554eec2709867677b7ade8115f13bbba29187f248bc5857ccf1c6e3695ff30e584c33bc1b18077626417eb9d1#npm:2.2.1"],
             ["discord.js", "npm:12.3.1"],
@@ -191,6 +192,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         ["npm:14.10.3", {
           "packageLocation": "./.yarn/cache/@types-node-npm-14.10.3-198c6aaecc-0411c026e8.zip/node_modules/@types/node/",
           "packageDependencies": [
+            ["@types/node", "npm:14.10.3"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/node-persist", [
+        ["npm:3.1.0", {
+          "packageLocation": "./.yarn/cache/@types-node-persist-npm-3.1.0-d1d748773d-3f601c3550.zip/node_modules/@types/node-persist/",
+          "packageDependencies": [
+            ["@types/node-persist", "npm:3.1.0"],
             ["@types/node", "npm:14.10.3"]
           ],
           "linkType": "HARD",
@@ -388,6 +399,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["app-bot", "workspace:."],
             ["@types/node", "npm:14.10.3"],
+            ["@types/node-persist", "npm:3.1.0"],
             ["@types/ws", "npm:7.2.6"],
             ["@yarnpkg/pnpify", "virtual:bfa80bad3b9b9d11a3334b83a8854df5529332d554eec2709867677b7ade8115f13bbba29187f248bc5857ccf1c6e3695ff30e584c33bc1b18077626417eb9d1#npm:2.2.1"],
             ["discord.js", "npm:12.3.1"],

@@ -1,30 +1,24 @@
-import { Collection, Role, Snowflake, GuildMember, DMChannel } from "discord.js"
+import Discord, {
+  Collection,
+  Role,
+  Snowflake,
+  GuildMember,
+  Message,
+  TextChannel,
+  Channel,
+} from "discord.js"
 import ObjectCache from "./ObjectCache"
+import { channelCache, roleCache } from "../app-bot"
+import { Applicant, getApplicant, saveApplicant } from "./Applicant"
 
 // set up global error handlers
 process.on("unhandledRejection", (error) => {
   console.log("unhandledRejection: ", error)
 })
 
-export function welcomeNewMember(member: GuildMember) {
-  const welcomeMessage =
-    member.displayName +
-    ", welcome to **Skyhold**! Please go over the server rules in #welcome. Before asking a question, go over all of the available guides and resources in #guides-resources-faq; many frequently asked questions are answered there. Remember to check the Pinned Messages in each text channel for additional information. You can do so by clicking the Pin icon at the top right of your Discord window: <http://i.imgur.com/TuYQkjJ.png>. If you're unable to find an answer to your question or if you need clarification on something, please ask! That's what we're here for. :smile: We hope you enjoy your time in Skyhold!"
-
-  member
-    .createDM()
-    .then((channel: DMChannel) => {
-      channel
-        .send(welcomeMessage)
-        .then(() => console.log("Sent welcome message to " + member.user.tag))
-        .catch(console.error)
-    })
-    .catch(console.error)
-}
-
 export function isMod(member: GuildMember, roleCache: ObjectCache<Role>) {
   const roles = member.roles.cache
-  return roles.has(roleCache.getOrThrow("Val'kyr (Mod)").id)
+  return roles.has(roleCache.getOrThrow("Officer").id)
 }
 
 export function collectionToCacheByName<T extends { name: string }>(
@@ -34,4 +28,82 @@ export function collectionToCacheByName<T extends { name: string }>(
   const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => [item.name, item])
 
   return new ObjectCache(byName)
+}
+
+export function parseApplicantName(tag: string): string {
+  let match = /(\w+)#(\d+)/g.exec(tag)
+
+  if (!match) {
+    throw Error(`unable to match Discord Tag: ${tag}`)
+  }
+
+  let name = match[1] + match[2]
+  return name.toLowerCase()
+}
+
+export async function handleApp(msg: Message, guild: Discord.Guild): Promise<Applicant> {
+  const fields = msg.embeds[0].fields
+  let tag
+
+  for (let e of fields) {
+    if ((e.name = "Discord Tag")) {
+      tag = e.value
+      break
+    }
+  }
+
+  if (!tag) {
+    throw Error("tag is undefined")
+  }
+
+  const name = parseApplicantName(tag)
+
+  try {
+    const channel = await guild.channels.create(name, {
+      parent: channelCache.getOrThrow("applicants").id,
+    })
+    return {
+      tag,
+      name,
+      channelID: channel.id,
+    }
+  } catch (e) {
+    throw Error(`failed to create channel for ${tag} | ${e}`)
+  }
+}
+
+export async function handlePermissions(member: GuildMember) {
+  const name = parseApplicantName(member.user.tag)
+
+  const applicant = await getApplicant(name)
+  if (!applicant) {
+    throw Error(`applicant does not exist: ${name}`)
+  }
+
+  applicant.memberID = member.id
+  await saveApplicant(applicant)
+
+  member.roles.add(roleCache.getOrThrow("Applicant").id)
+
+  const channel = member.guild.channels.resolve(applicant.channelID)
+  if (!channel) {
+    throw Error(`channel does not exist for applicant: ${applicant.tag}`)
+  }
+
+  await channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
+
+  if (!isTextChannel(channel)) {
+    throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
+  }
+
+  await channel.send(
+    "<@" +
+      applicant.memberID +
+      ">\n\n" +
+      "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response."
+  )
+}
+
+export function isTextChannel(channel: Channel): channel is TextChannel {
+  return channel.type === "text"
 }
