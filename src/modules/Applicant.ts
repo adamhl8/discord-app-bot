@@ -3,6 +3,7 @@ import Storage from "node-persist"
 export interface Applicant {
   tag: string
   name: string
+  appMessageID: string
   channelID: string
   memberID?: string
 }
