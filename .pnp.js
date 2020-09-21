@@ -44,7 +44,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["discord.js", "npm:12.3.1"],
             ["dotenv", "npm:8.2.0"],
             ["node-persist", "npm:3.1.0"],
-            ["prettier", "npm:2.1.2"],
             ["typescript", "patch:typescript@npm%3A4.0.2#builtin<compat/typescript>::version=4.0.2&hash=5b02a2"]
           ],
           "linkType": "SOFT",
@@ -405,7 +404,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["discord.js", "npm:12.3.1"],
             ["dotenv", "npm:8.2.0"],
             ["node-persist", "npm:3.1.0"],
-            ["prettier", "npm:2.1.2"],
             ["typescript", "patch:typescript@npm%3A4.0.2#builtin<compat/typescript>::version=4.0.2&hash=5b02a2"]
           ],
           "linkType": "SOFT",
@@ -1383,15 +1381,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/pluralize-npm-7.0.0-5e0212129c-d35d8aeda1.zip/node_modules/pluralize/",
           "packageDependencies": [
             ["pluralize", "npm:7.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["prettier", [
-        ["npm:2.1.2", {
-          "packageLocation": "./.yarn/cache/prettier-npm-2.1.2-9d456ef3cd-bedc24c568.zip/node_modules/prettier/",
-          "packageDependencies": [
-            ["prettier", "npm:2.1.2"]
           ],
           "linkType": "HARD",
         }]
