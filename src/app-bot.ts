@@ -1,10 +1,10 @@
 require("dotenv").config({ path: process.argv[2] })
 
-import Discord, { Message, Role, GuildMember, PartialGuildMember, GuildChannel, GuildEmoji } from "discord.js"
+import Discord, { Message, Role, GuildMember, PartialGuildMember, GuildChannel, GuildEmoji, MessageReaction } from "discord.js"
 import * as Util from "./modules/util"
 import * as Commands from "./modules/commands"
 import { Command } from "./modules/commands"
-import { saveApplicant } from "./modules/Applicant"
+import { getApplicant, saveApplicant } from "./modules/Applicant"
 import ObjectCache from "./modules/ObjectCache"
 import Storage from "node-persist"
 
@@ -93,7 +93,7 @@ bot.on("message", async (msg: Message) => {
   const commands: Record<string, Command> = Commands
 
   if (commands.hasOwnProperty(command)) {
-    if (commands[command].reqMod && !Util.isMod(msg.member, roleCache)) {
+    if (commands[command].reqMod && !Util.isMod(msg.member)) {
       msg.channel
         .send("You do not have the required moderator role to run this command.")
         .catch(console.log)
@@ -101,4 +101,15 @@ bot.on("message", async (msg: Message) => {
       commands[command].run(guild, msg)
     }
   }
+})
+
+bot.on("messageReactionAdd", async (reaction: MessageReaction) => {
+
+  const reactionChannel = reaction.message.channel
+  if (!Util.isTextChannel(reactionChannel)) return
+
+  const applicant = await getApplicant(reactionChannel.name)
+  if (!applicant) return
+  
+  if (reaction.message.id == applicant.declineMessageID) Util.handleReaction(reaction, applicant, reactionChannel)
 })
