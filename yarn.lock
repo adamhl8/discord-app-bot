@@ -325,7 +325,6 @@ __metadata:
     discord.js: ^12.3.1
     dotenv: ^8.2.0
     node-persist: ^3.1.0
-    prettier: ^2.1.2
     typescript: ^4.0.2
   languageName: unknown
   linkType: soft
@@ -1170,15 +1169,6 @@ __metadata:
   version: 7.0.0
   resolution: "pluralize@npm:7.0.0"
   checksum: d35d8aeda1eb2f81123131e76ed0f2f48d681abfa4c46e4c6fdd6dca622650c8bd531aa0c5a3c7f779bd9660d08ceb51660e1f55def4bd14328ecfa76fe69962
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "prettier@npm:2.1.2"
-  bin:
-    prettier: bin-prettier.js
-  checksum: bedc24c568efbcfe45f255558900777e2fabb36bf28ed4c22d2456eb22dfb012d12e566a46472ea5b857a4e9f263e888f7e316527d00bb58188f1820b0b0031a
   languageName: node
   linkType: hard
 

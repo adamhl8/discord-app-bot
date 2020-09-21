@@ -1,13 +1,6 @@
 require("dotenv").config({ path: process.argv[2] })
 
-import Discord, {
-  Message,
-  Role,
-  GuildMember,
-  PartialGuildMember,
-  GuildChannel,
-  GuildEmoji,
-} from "discord.js"
+import Discord, { Message, Role, GuildMember, PartialGuildMember, GuildChannel, GuildEmoji } from "discord.js"
 import * as Util from "./modules/util"
 import * as Commands from "./modules/commands"
 import { Command } from "./modules/commands"

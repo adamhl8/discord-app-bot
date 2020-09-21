@@ -6,6 +6,7 @@ export interface Applicant {
   appMessageID: string
   channelID: string
   memberID?: string
+  declineMessageID?: string
 }
 
 export async function getApplicant(name: string): Promise<Applicant | undefined> {
