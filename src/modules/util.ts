@@ -1,14 +1,14 @@
-import Discord, { Collection, Role, Snowflake, GuildMember, Message, TextChannel, Channel } from "discord.js"
+import Discord, { Collection, Role, Snowflake, GuildMember, Message, TextChannel, Channel, MessageReaction } from "discord.js"
 import ObjectCache from "./ObjectCache"
 import { channelCache, roleCache } from "../app-bot"
-import { Applicant, getApplicant, saveApplicant } from "./Applicant"
+import { Applicant, getApplicant, saveApplicant, removeApplicant } from "./Applicant"
 
 // set up global error handlers
 process.on("unhandledRejection", (error) => {
   console.log("unhandledRejection: ", error)
 })
 
-export function isMod(member: GuildMember, roleCache: ObjectCache<Role>) {
+export function isMod(member: GuildMember) {
   const roles = member.roles.cache
   return roles.has(roleCache.getOrThrow("Officer").id)
 }
@@ -17,7 +17,7 @@ export function collectionToCacheByName<T extends { name: string }>(
   collection: Collection<Snowflake, T>
 ): ObjectCache<T> {
   const entries = collection.entries()
-  const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => [item.name.toLowerCase(), item])
+  const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => [item.name, item])
 
   return new ObjectCache(byName)
 }
@@ -90,4 +90,26 @@ export async function handlePermissions(member: GuildMember) {
 
 export function isTextChannel(channel: Channel): channel is TextChannel {
   return channel.type === "text"
+}
+
+export async function handleReaction(reaction: MessageReaction, applicant: Applicant, channel: TextChannel) {
+
+  reaction.users.cache.each(async user => {
+
+    const guildMember = reaction.message.guild?.members.resolve(user.id)
+    if (!guildMember) throw Error(`guild member does not exist for user: ${user.tag} | ${user.id}`)
+
+    if (user.id == applicant.memberID || isMod(guildMember)) {
+
+      await channel.delete().catch(console.error)
+
+      if (!applicant.memberID) return
+      const applicantMember = reaction.message.guild?.members.resolve(applicant.memberID)
+      if (!applicantMember) throw Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
+
+      await applicantMember.kick().catch(console.error)
+
+      await removeApplicant(applicant)
+    }
+  })
 }
