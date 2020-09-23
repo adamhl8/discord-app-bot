@@ -14,7 +14,8 @@ bot.login(process.env.TOKEN)
 let guild: Discord.Guild
 
 bot.on("ready", async () => {
-  await Storage.init()
+  
+  Util.initStorage()
 
   const g = bot.guilds.cache.first()
   if (!g) {
@@ -69,7 +70,7 @@ bot.on("guildMemberAdd", async (member: GuildMember | PartialGuildMember) => {
 })
 
 bot.on("message", async (msg: Message) => {
-  if (msg.channel.id == channelCache.getOrThrow("apps").id) {
+  if (msg.channel.id == channelCache.getOrThrow(await Storage.getItem("appsChannel")).id) {
     const applicant = await Util.handleApp(msg, guild)
     await saveApplicant(applicant)
   }
@@ -110,6 +111,6 @@ bot.on("messageReactionAdd", async (reaction: MessageReaction) => {
 
   const applicant = await getApplicant(reactionChannel.name)
   if (!applicant) return
-  
+
   if (reaction.message.id == applicant.declineMessageID) Util.handleReaction(reaction, applicant, reactionChannel)
 })

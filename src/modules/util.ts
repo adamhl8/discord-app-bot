@@ -2,28 +2,43 @@ import Discord, { Collection, Role, Snowflake, GuildMember, Message, TextChannel
 import ObjectCache from "./ObjectCache"
 import { channelCache, roleCache } from "../app-bot"
 import { Applicant, getApplicant, saveApplicant, removeApplicant } from "./Applicant"
+import { appResponse } from "./text"
+import Storage from "node-persist"
 
 // set up global error handlers
 process.on("unhandledRejection", (error) => {
   console.log("unhandledRejection: ", error)
 })
 
-export function isMod(member: GuildMember) {
+export async function initStorage() {
+
+  await Storage.init()
+
+  if (!await Storage.getItem("officerRole")) await Storage.setItem("officerRole", "officer")
+  if (!await Storage.getItem("applicantRole")) await Storage.setItem("applicantRole", "applicant")
+  if (!await Storage.getItem("appsChannel")) await Storage.setItem("appsChannel", "apps")
+  if (!await Storage.getItem("applicantsCategory")) await Storage.setItem("applicantsCategory", "applicants")
+}
+
+export async function isMod(member: GuildMember) {
   const roles = member.roles.cache
-  return roles.has(roleCache.getOrThrow("Officer").id)
+  return roles.has(roleCache.getOrThrow(await Storage.getItem("officerRole")).id)
 }
 
 export function collectionToCacheByName<T extends { name: string }>(
   collection: Collection<Snowflake, T>
 ): ObjectCache<T> {
   const entries = collection.entries()
-  const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => [item.name, item])
+  const byName: Array<[string, T]> = Array.from(entries).map(([, item]) => {
+    const key = item.name.toLowerCase()
+    return [key, item]
+  })
 
   return new ObjectCache(byName)
 }
 
 export function parseApplicantName(tag: string): string {
-  let match = /(\w+)#(\d+)/g.exec(tag)
+  const match = /(\w+)#(\d+)/g.exec(tag)
 
   if (!match) throw Error(`unable to match Discord Tag: ${tag}`)
 
@@ -48,7 +63,7 @@ export async function handleApp(msg: Message, guild: Discord.Guild): Promise<App
 
   try {
     const channel = await guild.channels.create(name, {
-      parent: channelCache.getOrThrow("applicants").id,
+      parent: channelCache.getOrThrow(await Storage.getItem("applicantsCategory")).id,
     })
     return {
       tag,
@@ -70,7 +85,7 @@ export async function handlePermissions(member: GuildMember) {
   applicant.memberID = member.id
   await saveApplicant(applicant)
 
-  member.roles.add(roleCache.getOrThrow("Applicant").id)
+  member.roles.add(roleCache.getOrThrow(await Storage.getItem("applicantRole")).id)
 
   const channel = member.guild.channels.resolve(applicant.channelID)
   if (!channel) throw Error(`channel does not exist for applicant: ${applicant.tag}`)
@@ -80,12 +95,7 @@ export async function handlePermissions(member: GuildMember) {
   if (!isTextChannel(channel))
     throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
 
-  await channel.send(
-    "<@" +
-    applicant.memberID +
-    ">\n\n" +
-    "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response."
-  )
+  await channel.send(appResponse(applicant)).catch(console.error)
 }
 
 export function isTextChannel(channel: Channel): channel is TextChannel {
