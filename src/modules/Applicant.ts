@@ -10,7 +10,7 @@ export interface Applicant {
 }
 
 export async function getApplicant(name: string): Promise<Applicant | undefined> {
-  return (await Storage.getItem(name)) as Applicant | undefined
+  return (await Storage.getItem(name))
 }
 
 export async function saveApplicant(applicant: Applicant): Promise<void> {
