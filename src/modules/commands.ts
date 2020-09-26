@@ -98,7 +98,7 @@ export const d: Command = {
       .catch(console.error)
     if (!declineMessage) throw Error(`unable to send decline message for: ${name}`)
 
-    declineMessage.react("👍").catch(console.error)
+    await declineMessage.react("👍").catch(console.error)
 
     applicant.declineMessageID = declineMessage.id
     await saveApplicant(applicant)
@@ -109,7 +109,7 @@ export const d: Command = {
 
     const appMessage = appsChannel.messages.resolve(applicant.appMessageID)
 
-    appMessage?.react(emojiCache.getOrThrow("declined").id).catch(console.error)
+    await appMessage?.react(emojiCache.getOrThrow("declined").id).catch(console.error)
   },
 }
 

@@ -92,8 +92,7 @@ export async function handlePermissions(member: GuildMember) {
 
   await channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
 
-  if (!isTextChannel(channel))
-    throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
+  if (!isTextChannel(channel)) throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
 
   await channel.send(appResponse(applicant)).catch(console.error)
 }
@@ -109,7 +108,7 @@ export async function handleReaction(reaction: MessageReaction, applicant: Appli
     const guildMember = reaction.message.guild?.members.resolve(user.id)
     if (!guildMember) throw Error(`guild member does not exist for user: ${user.tag} | ${user.id}`)
 
-    if (user.id == applicant.memberID || isMod(guildMember)) {
+    if (user.id == applicant.memberID || await isMod(guildMember)) {
 
       await channel.delete().catch(console.error)
 
