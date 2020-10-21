@@ -10,13 +10,13 @@ export interface Applicant {
 }
 
 export async function getApplicant(name: string): Promise<Applicant | undefined> {
-  return (await Storage.getItem(name))
+  return await Storage.getItem(name)
 }
 
 export async function saveApplicant(applicant: Applicant): Promise<void> {
   await Storage.setItem(applicant.name, applicant)
 }
 
-export async function removeApplicant(applicant: Applicant) {
+export async function removeApplicant(applicant: Applicant): Promise<void> {
   await Storage.removeItem(applicant.name)
 }

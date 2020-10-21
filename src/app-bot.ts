@@ -1,6 +1,13 @@
-require("dotenv").config({ path: process.argv[2] })
-
-import Discord, { Message, Role, GuildMember, PartialGuildMember, GuildChannel, GuildEmoji, MessageReaction } from "discord.js"
+import dotenv from "dotenv"
+import Discord, {
+  Message,
+  Role,
+  GuildMember,
+  PartialGuildMember,
+  GuildChannel,
+  GuildEmoji,
+  MessageReaction,
+} from "discord.js"
 import * as Util from "./modules/util"
 import * as Commands from "./modules/commands"
 import { Command } from "./modules/commands"
@@ -8,13 +15,14 @@ import { getApplicant, saveApplicant } from "./modules/Applicant"
 import ObjectCache from "./modules/ObjectCache"
 import Storage from "node-persist"
 
+dotenv.config({ path: process.argv[2] })
+
 const bot = new Discord.Client()
 bot.login(process.env.TOKEN)
 
 let guild: Discord.Guild
 
 bot.on("ready", async () => {
-  
   Util.initStorage()
 
   const g = bot.guilds.cache.first()
@@ -81,7 +89,7 @@ bot.on("message", async (msg: Message) => {
 
   if (!msg.content.startsWith(prefix)) return
 
-  let match = /!(\S+)/g.exec(msg.content)
+  const match = /!(\S+)/g.exec(msg.content)
   let command = "none"
   if (match) {
     command = match[1]
@@ -93,7 +101,7 @@ bot.on("message", async (msg: Message) => {
 
   const commands: Record<string, Command> = Commands
 
-  if (commands.hasOwnProperty(command)) {
+  if (Object.prototype.hasOwnProperty.call(commands, command)) {
     if (commands[command].reqMod && !Util.isMod(msg.member)) {
       msg.channel
         .send("You do not have the required moderator role to run this command.")
@@ -105,12 +113,12 @@ bot.on("message", async (msg: Message) => {
 })
 
 bot.on("messageReactionAdd", async (reaction: MessageReaction) => {
-
   const reactionChannel = reaction.message.channel
   if (!Util.isTextChannel(reactionChannel)) return
 
   const applicant = await getApplicant(reactionChannel.name)
   if (!applicant) return
 
-  if (reaction.message.id == applicant.declineMessageID) Util.handleReaction(reaction, applicant, reactionChannel)
+  if (reaction.message.id == applicant.declineMessageID)
+    Util.handleReaction(reaction, applicant, reactionChannel)
 })

@@ -1,4 +1,12 @@
-import Discord, { Collection, Role, Snowflake, GuildMember, Message, TextChannel, Channel, MessageReaction } from "discord.js"
+import Discord, {
+  Collection,
+  Snowflake,
+  GuildMember,
+  Message,
+  TextChannel,
+  Channel,
+  MessageReaction,
+} from "discord.js"
 import ObjectCache from "./ObjectCache"
 import { channelCache, roleCache } from "../app-bot"
 import { Applicant, getApplicant, saveApplicant, removeApplicant } from "./Applicant"
@@ -10,17 +18,17 @@ process.on("unhandledRejection", (error) => {
   console.log("unhandledRejection: ", error)
 })
 
-export async function initStorage() {
-
+export async function initStorage(): Promise<void> {
   await Storage.init()
 
-  if (!await Storage.getItem("officerRole")) await Storage.setItem("officerRole", "officer")
-  if (!await Storage.getItem("applicantRole")) await Storage.setItem("applicantRole", "applicant")
-  if (!await Storage.getItem("appsChannel")) await Storage.setItem("appsChannel", "apps")
-  if (!await Storage.getItem("applicantsCategory")) await Storage.setItem("applicantsCategory", "applicants")
+  if (!(await Storage.getItem("officerRole"))) await Storage.setItem("officerRole", "officer")
+  if (!(await Storage.getItem("applicantRole"))) await Storage.setItem("applicantRole", "applicant")
+  if (!(await Storage.getItem("appsChannel"))) await Storage.setItem("appsChannel", "apps")
+  if (!(await Storage.getItem("applicantsCategory")))
+    await Storage.setItem("applicantsCategory", "applicants")
 }
 
-export async function isMod(member: GuildMember) {
+export async function isMod(member: GuildMember): Promise<boolean> {
   const roles = member.roles.cache
   return roles.has(roleCache.getOrThrow(await Storage.getItem("officerRole")).id)
 }
@@ -42,7 +50,7 @@ export function parseApplicantName(tag: string): string {
 
   if (!match) throw Error(`unable to match Discord Tag: ${tag}`)
 
-  let name = match[1] + match[2]
+  const name = match[1] + match[2]
   return name.toLowerCase()
 }
 
@@ -50,7 +58,7 @@ export async function handleApp(msg: Message, guild: Discord.Guild): Promise<App
   const fields = msg.embeds[0].fields
   let tag
 
-  for (let e of fields) {
+  for (const e of fields) {
     if (e.name == "Discord Tag") {
       tag = e.value
       break
@@ -76,7 +84,7 @@ export async function handleApp(msg: Message, guild: Discord.Guild): Promise<App
   }
 }
 
-export async function handlePermissions(member: GuildMember) {
+export async function handlePermissions(member: GuildMember): Promise<void> {
   const name = parseApplicantName(member.user.tag)
 
   const applicant = await getApplicant(name)
@@ -92,7 +100,8 @@ export async function handlePermissions(member: GuildMember) {
 
   await channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
 
-  if (!isTextChannel(channel)) throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
+  if (!isTextChannel(channel))
+    throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
 
   await channel.send(appResponse(applicant)).catch(console.error)
 }
@@ -101,20 +110,22 @@ export function isTextChannel(channel: Channel): channel is TextChannel {
   return channel.type === "text"
 }
 
-export async function handleReaction(reaction: MessageReaction, applicant: Applicant, channel: TextChannel) {
-
-  reaction.users.cache.each(async user => {
-
+export async function handleReaction(
+  reaction: MessageReaction,
+  applicant: Applicant,
+  channel: TextChannel
+): Promise<void> {
+  reaction.users.cache.each(async (user) => {
     const guildMember = reaction.message.guild?.members.resolve(user.id)
     if (!guildMember) throw Error(`guild member does not exist for user: ${user.tag} | ${user.id}`)
 
-    if (user.id == applicant.memberID || await isMod(guildMember)) {
-
+    if (user.id == applicant.memberID || (await isMod(guildMember))) {
       await channel.delete().catch(console.error)
 
       if (!applicant.memberID) return
       const applicantMember = reaction.message.guild?.members.resolve(applicant.memberID)
-      if (!applicantMember) throw Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
+      if (!applicantMember)
+        throw Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
 
       await applicantMember.kick().catch(console.error)
 
