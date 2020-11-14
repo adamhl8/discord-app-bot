@@ -11,7 +11,7 @@ module.exports = {
     },
     {
       name: "test-app-bot",
-      script: "dist/app-bot.js",
+      script: "dist/index.js",
       args: ".env-test",
       log_date_format: "[[]YYYY-MM-DD [at] HH:mm:ss]",
       combine_logs: true,
