@@ -4,6 +4,7 @@ import { getApplicant, saveApplicant, removeApplicant } from "./Applicant"
 import { isTextChannel } from "./util"
 import { initText } from "./text"
 import Storage from "node-persist"
+import { appResponse } from "./text"
 
 export interface Command {
   reqMod: boolean
@@ -88,10 +89,10 @@ export const d: Command = {
   reqMod: true,
 
   run: async (guild, msg) => {
-    const match = /(!d)\s(\w+)\s(.+)/g.exec(msg.content)
+    const match = /(!d)\s(.+)\s(.+)/g.exec(msg.content)
     if (!match)
       return await msg.channel
-        .send("Invalid !d command. (e.g. !d user#1234 reason)")
+        .send("Invalid !d command. (e.g. !d user1234 reason)")
         .catch(console.error)
 
     const name = match[2].toLowerCase()
@@ -99,6 +100,9 @@ export const d: Command = {
     const applicant = await getApplicant(name)
     if (!applicant)
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
+
+    if (!applicant.memberID)
+      return await msg.channel.send(`Applicant is not in the server or hasn't been linked: ${name}`).catch(console.error)
 
     const channel = guild.channels.resolve(applicant.channelID)
     if (!channel)
@@ -139,16 +143,19 @@ export const a: Command = {
   reqMod: true,
 
   run: async (guild, msg) => {
-    const match = /(!a)\s(\w+)/g.exec(msg.content)
+    const match = /(!a)\s(.+)/g.exec(msg.content)
 
     if (!match)
-      return await msg.channel.send("Invalid !a command. (e.g !a user#1234)").catch(console.error)
+      return await msg.channel.send("Invalid !a command. (e.g !a user1234)").catch(console.error)
 
     const name = match[2].toLowerCase()
 
     const applicant = await getApplicant(name)
-    if (!applicant || !applicant.memberID)
+    if (!applicant)
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
+
+    if (!applicant.memberID)
+      return await msg.channel.send(`Applicant is not in the server or hasn't been linked: ${name}`).catch(console.error)
 
     const member = guild.members.resolve(applicant.memberID)
     if (!member) throw Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
@@ -176,4 +183,42 @@ export const a: Command = {
 
     await removeApplicant(applicant)
   },
+}
+
+export const l: Command = {
+  reqMod: true,
+
+  run: async (guild, msg) => {
+    const match = /(!l)\s(.+)\s<@!(\d+)/g.exec(msg.content)
+
+    if (!match)
+      return await msg.channel.send("Invalid !l command. (e.g !m channelName#1234 @userTag#1234)").catch(console.error)
+
+    const name = match[2].toLowerCase()
+    const userID = match[3]
+
+    const applicant = await getApplicant(name)
+    if (!applicant)
+      return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
+
+    const member = guild.members.resolve(userID)
+    if (!member)
+      return await msg.channel.send(`Member does not exist.`).catch(console.error)
+
+    applicant.memberID = member.id
+    applicant.tag = member.user.tag
+    await saveApplicant(applicant)
+
+    member.roles.add(roleCache.getOrThrow(await Storage.getItem("applicantRole")).id)
+
+    const channel = member.guild.channels.resolve(applicant.channelID)
+    if (!channel) throw Error(`channel does not exist for applicant: ${applicant.tag}`)
+
+    await channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
+
+    if (!isTextChannel(channel))
+    throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
+
+    await channel.send(appResponse(applicant)).catch(console.error)
+  }
 }

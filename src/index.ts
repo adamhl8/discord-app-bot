@@ -102,7 +102,7 @@ bot.on("message", async (msg: Message) => {
   const commands: Record<string, Command> = Commands
 
   if (Object.prototype.hasOwnProperty.call(commands, command)) {
-    if (commands[command].reqMod && !Util.isMod(msg.member)) {
+    if (commands[command].reqMod && !await Util.isMod(msg.member)) {
       msg.channel
         .send("You do not have the required moderator role to run this command.")
         .catch(console.log)
