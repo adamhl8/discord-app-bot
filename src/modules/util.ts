@@ -8,7 +8,7 @@ import Discord, {
   MessageReaction,
 } from "discord.js"
 import ObjectCache from "./ObjectCache"
-import { channelCache, roleCache } from "../app-bot"
+import { channelCache, roleCache } from ".."
 import { Applicant, getApplicant, saveApplicant, removeApplicant } from "./Applicant"
 import { appResponse } from "./text"
 import Storage from "node-persist"

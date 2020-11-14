@@ -1,5 +1,5 @@
 import { Guild, Message } from "discord.js"
-import { roleCache, channelCache, emojiCache } from "../app-bot"
+import { roleCache, channelCache, emojiCache } from ".."
 import { getApplicant, saveApplicant, removeApplicant } from "./Applicant"
 import { isTextChannel } from "./util"
 import { initText } from "./text"
