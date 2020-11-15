@@ -97,8 +97,6 @@ export const d: Command = {
 
     const name = match[2].toLowerCase()
 
-    console.log(name)
-
     const applicant = await getApplicant(name)
     if (!applicant)
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
