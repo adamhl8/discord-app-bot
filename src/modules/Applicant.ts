@@ -18,5 +18,5 @@ export async function saveApplicant(applicant: Applicant): Promise<void> {
 }
 
 export async function removeApplicant(applicant: Applicant): Promise<void> {
-  await Storage.removeItem(applicant.name)
+  await Storage.removeItem(applicant.name.toLowerCase())
 }
