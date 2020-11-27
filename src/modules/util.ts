@@ -54,7 +54,7 @@ export function parseApplicantName(tag: string): string {
   if (!match) return fallbackMatch[0]
 
   const name = match[1] + match[2]
-  return name.toLowerCase()
+  return name
 }
 
 export async function handleApp(msg: Message, guild: Discord.Guild): Promise<Applicant> {

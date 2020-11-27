@@ -95,7 +95,7 @@ export const d: Command = {
         .send("Invalid !d command. (e.g. !d user1234 reason)")
         .catch(console.error)
 
-    const name = match[2].toLowerCase()
+    const name = match[2]
 
     const applicant = await getApplicant(name)
     if (!applicant)
@@ -148,7 +148,7 @@ export const a: Command = {
     if (!match)
       return await msg.channel.send("Invalid !a command. (e.g !a user1234)").catch(console.error)
 
-    const name = match[2].toLowerCase()
+    const name = match[2]
 
     const applicant = await getApplicant(name)
     if (!applicant)
@@ -189,12 +189,12 @@ export const l: Command = {
   reqMod: true,
 
   run: async (guild, msg) => {
-    const match = /(!l)\s(.+?)\s<@!(\d+)/g.exec(msg.content)
-
+    const match = /(!l)\s(.+?)\s.*?(\d+)/g.exec(msg.content)
+    
     if (!match)
-      return await msg.channel.send("Invalid !l command. (e.g !m channelName#1234 @userTag#1234)").catch(console.error)
+      return await msg.channel.send("Invalid !l command. (e.g !l channelName#1234 @userTag#1234)").catch(console.error)
 
-    const name = match[2].toLowerCase()
+    const name = match[2]
     const userID = match[3]
 
     const applicant = await getApplicant(name)

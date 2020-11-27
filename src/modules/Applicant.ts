@@ -10,11 +10,11 @@ export interface Applicant {
 }
 
 export async function getApplicant(name: string): Promise<Applicant | undefined> {
-  return await Storage.getItem(name)
+  return await Storage.getItem(name.toLowerCase())
 }
 
 export async function saveApplicant(applicant: Applicant): Promise<void> {
-  await Storage.setItem(applicant.name, applicant)
+  await Storage.setItem(applicant.name.toLowerCase(), applicant)
 }
 
 export async function removeApplicant(applicant: Applicant): Promise<void> {
