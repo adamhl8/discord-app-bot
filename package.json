@@ -4,32 +4,33 @@
   "repository": "https://github.com/adamhl8/app-bot",
   "author": "Marok",
   "license": "MIT",
-  "dependencies": {
-    "discord.js": "^12.3.1",
-    "dotenv": "^8.2.0",
-    "node-persist": "^3.1.0"
-  },
   "scripts": {
-    "start": "pm2 start ecosystem.config.js --only app-bot",
-    "test": "pm2 start ecosystem.config.js --only test-app-bot",
+    "start": "yarn build && pm2 start ecosystem.config.js --only app-bot",
+    "test": "yarn build && pm2 start ecosystem.config.js --only test-app-bot",
     "restart": "yarn build && pm2 restart app-bot",
     "retest": "yarn build && pm2 restart test-app-bot",
     "build": "tsc",
     "format": "prettier --write .",
     "lint": "eslint ."
   },
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "node-persist": "^3.1.0"
+  },
   "devDependencies": {
-    "@types/eslint": "^7",
-    "@types/eslint-config-prettier": "^6",
-    "@types/node": "^14.10.3",
+    "@types/eslint": "^7.2.5",
+    "@types/eslint-config-prettier": "^6.11.0",
+    "@types/node": "^14.14.10",
     "@types/node-persist": "^3.1.0",
-    "@types/prettier": "^2",
-    "@types/ws": "^7.2.6",
-    "@typescript-eslint/eslint-plugin": "^4.5.0",
-    "@typescript-eslint/parser": "^4.5.0",
-    "eslint": "^7.11.0",
-    "eslint-config-prettier": "^6.13.0",
-    "prettier": "^2.1.2",
-    "typescript": "^4.0.2"
+    "@types/prettier": "^2.1.5",
+    "@types/ws": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.2",
+    "yarn-upgrade-all": "^0.5.4"
   }
 }
