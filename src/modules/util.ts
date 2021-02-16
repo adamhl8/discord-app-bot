@@ -76,6 +76,7 @@ export async function handleApp(msg: Message, guild: Discord.Guild): Promise<App
     const channel = await guild.channels.create(name, {
       parent: channelCache.getOrThrow(await Storage.getItem("applicantsCategory")).id,
     })
+    await channel.send(msg.embeds[0]).catch(console.error)
     return {
       tag,
       name,

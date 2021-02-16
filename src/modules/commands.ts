@@ -102,7 +102,9 @@ export const d: Command = {
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
 
     if (!applicant.memberID)
-      return await msg.channel.send(`Applicant is not in the server or hasn't been linked: ${name}`).catch(console.error)
+      return await msg.channel
+        .send(`Applicant is not in the server or hasn't been linked: ${name}`)
+        .catch(console.error)
 
     const channel = guild.channels.resolve(applicant.channelID)
     if (!channel)
@@ -155,7 +157,9 @@ export const a: Command = {
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
 
     if (!applicant.memberID)
-      return await msg.channel.send(`Applicant is not in the server or hasn't been linked: ${name}`).catch(console.error)
+      return await msg.channel
+        .send(`Applicant is not in the server or hasn't been linked: ${name}`)
+        .catch(console.error)
 
     const member = guild.members.resolve(applicant.memberID)
     if (!member) throw Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
@@ -190,9 +194,11 @@ export const l: Command = {
 
   run: async (guild, msg) => {
     const match = /(!l)\s(.+?)\s.*?(\d+)/g.exec(msg.content)
-    
+
     if (!match)
-      return await msg.channel.send("Invalid !l command. (e.g !l channelName#1234 @userTag#1234)").catch(console.error)
+      return await msg.channel
+        .send("Invalid !l command. (e.g !l channelName#1234 @userTag#1234)")
+        .catch(console.error)
 
     const name = match[2]
     const userID = match[3]
@@ -202,8 +208,7 @@ export const l: Command = {
       return await msg.channel.send(`Applicant does not exist: ${name}`).catch(console.error)
 
     const member = guild.members.resolve(userID)
-    if (!member)
-      return await msg.channel.send(`Member does not exist.`).catch(console.error)
+    if (!member) return await msg.channel.send(`Member does not exist.`).catch(console.error)
 
     applicant.memberID = member.id
     applicant.tag = member.user.tag
@@ -217,8 +222,8 @@ export const l: Command = {
     await channel.createOverwrite(member.user, { VIEW_CHANNEL: true })
 
     if (!isTextChannel(channel))
-    throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
+      throw Error(`applicant channel is not text channel for applicant: ${applicant.tag}`)
 
     await channel.send(appResponse(applicant)).catch(console.error)
-  }
+  },
 }
