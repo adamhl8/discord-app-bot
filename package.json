@@ -1,18 +1,20 @@
 {
   "name": "app-bot",
   "version": "0.1.0",
-  "repository": "https://github.com/adamhl8/app-bot",
-  "author": "Marok",
+  "repository": "https://github.com/Genshii8/app-bot",
+  "author": "Genshii8",
   "license": "MIT",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "start": "yarn build && pm2 start ecosystem.config.js --only app-bot",
     "test": "yarn build && pm2 start ecosystem.config.js --only test-app-bot",
     "restart": "yarn build && pm2 restart app-bot",
     "retest": "yarn build && pm2 restart test-app-bot",
     "build": "tsc",
-    "format": "prettier --write src/**/*",
-    "lint": "eslint src/**/*",
-    "updateSDK": "yarn dlx @yarnpkg/pnpify --sdk vscode"
+    "lint": "xo",
+    "fix": "xo --fix"
   },
   "dependencies": {
     "discord.js": "^12.5.3",
@@ -20,21 +22,14 @@
     "node-persist": "^3.1.0"
   },
   "devDependencies": {
-    "@types/eslint": "^7.2.10",
-    "@types/eslint-config-prettier": "^6.11.0",
     "@types/node": "^15.0.3",
     "@types/node-persist": "^3.1.1",
-    "@types/prettier": "^2.2.3",
     "@types/ws": "^7.4.4",
-    "@typescript-eslint/eslint-plugin": "^4.23.0",
-    "@typescript-eslint/parser": "^4.23.0",
-    "eslint": "^7.26.0",
-    "eslint-config-airbnb-base-ts": "^14.1.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-promise": "^5.1.0",
-    "prettier": "^2.3.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "xo": "^0.40.1"
+  },
+  "xo": {
+    "semicolon": false,
+    "prettier": true
   }
 }
