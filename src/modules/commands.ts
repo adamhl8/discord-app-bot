@@ -1,9 +1,9 @@
 import {Guild, Message} from 'discord.js'
 import Storage from 'node-persist'
-import {roleCache, channelCache, emojiCache} from '..'
-import {getApplicant, saveApplicant, removeApplicant} from './applicant'
-import {isTextChannel} from './util'
-import {initText, appResponse} from './text'
+import {cache} from '../index.js'
+import {getApplicant, saveApplicant, removeApplicant} from './applicant.js'
+import {isTextChannel} from './util.js'
+import {initText, appResponse} from './text.js'
 
 export interface Command {
 	reqMod: boolean
@@ -16,13 +16,13 @@ export const init: Command = {
 	run: async (guild, message) => {
 		if (!message.member?.hasPermission('ADMINISTRATOR')) {
 			await message.channel.send('You must have Administrator permissions to run this command.')
-			return 
+			return
 		}
 
-		const officerRole = await Storage.getItem('officerRole')
-		const applicantRole = await Storage.getItem('applicantRole')
-		const appsChannel = await Storage.getItem('appsChannel')
-		const applicantsCategory = await Storage.getItem('applicantsCategory')
+		const officerRole = (await Storage.getItem('officerRole')) as string
+		const applicantRole = (await Storage.getItem('applicantRole')) as string
+		const appsChannel = (await Storage.getItem('appsChannel')) as string
+		const applicantsCategory = (await Storage.getItem('applicantsCategory')) as string
 
 		await message.channel
 			.send(initText(officerRole, applicantRole, appsChannel, applicantsCategory))
@@ -38,11 +38,13 @@ export const officerRole: Command = {
 			await message.channel.send('You must have Administrator permissions to run this command.')
 			return
 		}
+
 		const match = /(!officerRole)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !officerRole command.').catch(console.error)
 			return
-		} 
+		}
+
 		await Storage.updateItem('officerRole', match[2])
 		await message.channel.send(`officerRole has been set to: \`${match[2]}\``).catch(console.error)
 	}
@@ -55,12 +57,14 @@ export const applicantRole: Command = {
 		if (!message.member?.hasPermission('ADMINISTRATOR')) {
 			await message.channel.send('You must have Administrator permissions to run this command.')
 			return
-		} 
+		}
+
 		const match = /(!applicantRole)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !applicantRole command.').catch(console.error)
 			return
 		}
+
 		await Storage.updateItem('applicantRole', match[2])
 		await message.channel
 			.send(`applicantRole has been set to: \`${match[2]}\``)
@@ -76,12 +80,13 @@ export const appsChannel: Command = {
 			await message.channel.send('You must have Administrator permissions to run this command.')
 			return
 		}
-			
+
 		const match = /(!appsChannel)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !appsChannel command.').catch(console.error)
 			return
-		} 
+		}
+
 		await Storage.updateItem('appsChannel', match[2])
 		await message.channel.send(`appsChannel has been set to: \`${match[2]}\``).catch(console.error)
 	}
@@ -95,12 +100,13 @@ export const applicantsCategory: Command = {
 			await message.channel.send('You must have Administrator permissions to run this command.')
 			return
 		}
-			
+
 		const match = /(!applicantsCategory)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !applicantsCategory command.').catch(console.error)
 			return
 		}
+
 		await Storage.updateItem('applicantsCategory', match[2])
 		await message.channel
 			.send(`applicantsCategory has been set to: \`${match[2]}\``)
@@ -115,11 +121,11 @@ export const d: Command = {
 		const match = /(!d)\s(.+?)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel
-			.send('Invalid !d command. (e.g. !d user1234 reason)')
-			.catch(console.error)
+				.send('Invalid !d command. (e.g. !d user1234 reason)')
+				.catch(console.error)
 			return
 		}
-			
+
 		const name = match[2]
 
 		const applicant = await getApplicant(name)
@@ -134,7 +140,6 @@ export const d: Command = {
 				.catch(console.error)
 			return
 		}
-			
 
 		const channel = guild.channels.resolve(applicant.channelID)
 		if (!channel) {
@@ -143,14 +148,13 @@ export const d: Command = {
 				.catch(console.error)
 			return
 		}
-			
+
 		if (!isTextChannel(channel)) {
 			await message.channel
-			.send(`Channel for applicant is not a text channel.`)
-			.catch(console.error)
+				.send(`Channel for applicant is not a text channel.`)
+				.catch(console.error)
 			return
 		}
-			
 
 		const declineMessage = await channel
 			.send(
@@ -164,16 +168,15 @@ export const d: Command = {
 		applicant.declineMessageID = declineMessage.id
 		await saveApplicant(applicant)
 
-		const appsChannel = guild.channels.resolve(
-			channelCache.getOrThrow(await Storage.getItem('appsChannel')).id
-		)
+		const appsChannelName = (await Storage.getItem('appsChannel')) as string
+		const appsChannel = guild.channels.resolve(cache.channels.getOrThrow(appsChannelName).id)
 		if (!appsChannel) throw new Error(`channel does not exist`)
 		if (!isTextChannel(appsChannel))
 			throw new Error(`apps channel is not a text channel | ${appsChannel?.id}`)
 
 		const appMessage = appsChannel.messages.resolve(applicant.appMessageID)
 
-		await appMessage?.react(emojiCache.getOrThrow('declined').id).catch(console.error)
+		await appMessage?.react(cache.emojis.getOrThrow('declined').id).catch(console.error)
 	}
 }
 
@@ -184,7 +187,7 @@ export const a: Command = {
 		const match = /(!a)\s(.+)/g.exec(message.content)
 
 		if (!match) {
-			await message.channel.send('Invalid !a command. (e.g !a user1234)').catch(console.error)
+			await message.channel.send('Invalid !a command. (e.g. !a user1234)').catch(console.error)
 			return
 		}
 
@@ -198,38 +201,36 @@ export const a: Command = {
 
 		if (!applicant.memberID) {
 			await message.channel
-			.send(`Applicant is not in the server or hasn't been linked: ${name}`)
-			.catch(console.error)
+				.send(`Applicant is not in the server or hasn't been linked: ${name}`)
+				.catch(console.error)
 			return
 		}
-			
 
 		const member = guild.members.resolve(applicant.memberID)
 		if (!member) throw new Error(`member does not exist: ${applicant.tag} | ${applicant.memberID}`)
 
-		await member.roles.remove(roleCache.getOrThrow(await Storage.getItem('applicantRole')).id)
+		const applicantRole = (await Storage.getItem('applicantRole')) as string
+		await member.roles.remove(cache.roles.getOrThrow(applicantRole).id)
 
 		const channel = guild.channels.resolve(applicant.channelID)
 		if (!channel) {
 			await message.channel
 				.send(`Channel does not exist for applicant: ${applicant.name}`)
 				.catch(console.error)
-				return
+			return
 		}
-			
 
 		await channel.delete().catch(console.error)
 
-		const appsChannel = guild.channels.resolve(
-			channelCache.getOrThrow(await Storage.getItem('appsChannel')).id
-		)
+		const appsChannelName = (await Storage.getItem('appsChannel')) as string
+		const appsChannel = guild.channels.resolve(cache.channels.getOrThrow(appsChannelName).id)
 		if (!appsChannel) throw new Error(`apps channel does not exist`)
 		if (!isTextChannel(appsChannel))
 			throw new Error(`apps channel is not a text channel, got type ${message.channel.type}`)
 
 		const appMessage = appsChannel.messages.resolve(applicant.appMessageID)
 
-		appMessage?.react(emojiCache.getOrThrow('approved').id)
+		appMessage?.react(cache.emojis.getOrThrow('approved').id)
 
 		await removeApplicant(applicant)
 	}
@@ -243,11 +244,10 @@ export const l: Command = {
 
 		if (!match) {
 			await message.channel
-			.send('Invalid !l command. (e.g !l channelName#1234 @userTag#1234)')
-			.catch(console.error)
+				.send('Invalid !l command. (e.g !l channelName#1234 @userTag#1234)')
+				.catch(console.error)
 			return
 		}
-			
 
 		const name = match[2]
 		const userID = match[3]
@@ -262,13 +262,14 @@ export const l: Command = {
 		if (!member) {
 			await message.channel.send(`Member does not exist.`).catch(console.error)
 			return
-		} 
+		}
 
 		applicant.memberID = member.id
 		applicant.tag = member.user.tag
 		await saveApplicant(applicant)
 
-		member.roles.add(roleCache.getOrThrow(await Storage.getItem('applicantRole')).id)
+		const applicantRole = (await Storage.getItem('applicantRole')) as string
+		await member.roles.add(cache.roles.getOrThrow(applicantRole).id)
 
 		const channel = member.guild.channels.resolve(applicant.channelID)
 		if (!channel) throw new Error(`channel does not exist for applicant: ${applicant.tag}`)

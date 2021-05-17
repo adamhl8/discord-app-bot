@@ -9,21 +9,20 @@ import Discord, {
 	MessageReaction
 } from 'discord.js'
 import Storage from 'node-persist'
-import * as Util from './modules/util'
-import * as Commands from './modules/commands'
-import {Command} from './modules/commands'
-import {getApplicant, saveApplicant} from './modules/applicant'
-import ObjectCache from './modules/ObjectCache'
+import * as Util from './modules/util.js'
+import * as Commands from './modules/commands.js'
+import {getApplicant, saveApplicant} from './modules/applicant.js'
+import ObjectCache from './modules/object-cache.js'
 
 dotenv.config({path: process.argv[2]})
 
 const bot = new Discord.Client()
-bot.login(process.env.TOKEN)
+await bot.login(process.env.TOKEN)
 
 let guild: Discord.Guild
 
 bot.on('ready', async () => {
-	Util.initStorage()
+	await Util.initStorage()
 
 	const g = bot.guilds.cache.first()
 	if (!g) {
@@ -37,26 +36,46 @@ bot.on('ready', async () => {
 	run()
 })
 
-export let roleCache: ObjectCache<Role> = new ObjectCache()
-export let channelCache: ObjectCache<GuildChannel> = new ObjectCache()
-export let emojiCache: ObjectCache<GuildEmoji> = new ObjectCache()
+export const cache = {
+	roles: new ObjectCache<Role>(),
+	channels: new ObjectCache<GuildChannel>(),
+	emojis: new ObjectCache<GuildEmoji>()
+}
 
 function run() {
-	roleCache = Util.collectionToCacheByName(guild.roles.cache)
-	channelCache = Util.collectionToCacheByName(guild.channels.cache)
-	emojiCache = Util.collectionToCacheByName(guild.emojis.cache)
+	cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+	cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+	cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
 
-	bot.on('roleUpdate', () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
-	bot.on('roleCreate', () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
-	bot.on('roleDelete', () => (roleCache = Util.collectionToCacheByName(guild.roles.cache)))
+	bot.on('roleUpdate', () => {
+		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+	})
+	bot.on('roleCreate', () => {
+		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+	})
+	bot.on('roleDelete', () => {
+		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+	})
 
-	bot.on('channelUpdate', () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
-	bot.on('channelCreate', () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
-	bot.on('channelDelete', () => (channelCache = Util.collectionToCacheByName(guild.channels.cache)))
+	bot.on('channelUpdate', () => {
+		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+	})
+	bot.on('channelCreate', () => {
+		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+	})
+	bot.on('channelDelete', () => {
+		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+	})
 
-	bot.on('emojiUpdate', () => (emojiCache = Util.collectionToCacheByName(guild.emojis.cache)))
-	bot.on('emojiCreate', () => (emojiCache = Util.collectionToCacheByName(guild.emojis.cache)))
-	bot.on('emojiDelete', () => (emojiCache = Util.collectionToCacheByName(guild.emojis.cache)))
+	bot.on('emojiUpdate', () => {
+		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+	})
+	bot.on('emojiCreate', () => {
+		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+	})
+	bot.on('emojiDelete', () => {
+		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+	})
 }
 
 function isPartial(member: GuildMember | PartialGuildMember): member is PartialGuildMember {
@@ -68,18 +87,19 @@ bot.on('guildMemberAdd', async (member: GuildMember | PartialGuildMember) => {
 		// PartialGuildMember
 		try {
 			const m = await member.fetch()
-			Util.handlePermissions(m)
+			await Util.handlePermissions(m)
 		} catch {
 			console.log('failed to fecth partial member on guildMemberAdd')
 		}
 	} else {
 		// GuildMember
-		Util.handlePermissions(member)
+		await Util.handlePermissions(member)
 	}
 })
 
 bot.on('message', async (message: Message) => {
-	if (message.channel.id == channelCache.getOrThrow(await Storage.getItem('appsChannel')).id) {
+	const appsChannel = (await Storage.getItem('appsChannel')) as string
+	if (message.channel.id === cache.channels.getOrThrow(appsChannel).id) {
 		const applicant = await Util.handleApp(message, guild)
 		await saveApplicant(applicant)
 	}
@@ -100,7 +120,7 @@ bot.on('message', async (message: Message) => {
 		throw new Error(`there is no member attached to message ${message.id}`)
 	}
 
-	const commands: Record<string, Command> = Commands
+	const commands: Record<string, Commands.Command> = Commands
 
 	if (Object.prototype.hasOwnProperty.call(commands, command)) {
 		if (commands[command].reqMod && !(await Util.isMod(message.member))) {
@@ -120,6 +140,6 @@ bot.on('messageReactionAdd', async (reaction: MessageReaction) => {
 	const applicant = await getApplicant(reactionChannel.name)
 	if (!applicant) return
 
-	if (reaction.message.id == applicant.declineMessageID)
-		Util.handleReaction(reaction, applicant, reactionChannel)
+	if (reaction.message.id === applicant.declineMessageID)
+		await Util.handleReaction(reaction, applicant, reactionChannel)
 })

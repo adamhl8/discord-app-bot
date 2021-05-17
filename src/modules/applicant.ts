@@ -10,10 +10,8 @@ export interface Applicant {
 }
 
 export async function getApplicant(name: string): Promise<Applicant | undefined> {
-	const applicant = await Storage.getItem(name.toLowerCase())
-	return applicant
+	return (await Storage.getItem(name.toLowerCase())) as Applicant
 }
-	
 
 export async function saveApplicant(applicant: Applicant): Promise<void> {
 	await Storage.setItem(applicant.name.toLowerCase(), applicant)

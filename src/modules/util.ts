@@ -8,10 +8,10 @@ import Discord, {
 	MessageReaction
 } from 'discord.js'
 import Storage from 'node-persist'
-import {channelCache, roleCache} from '..'
-import ObjectCache from './ObjectCache'
-import {Applicant, getApplicant, saveApplicant, removeApplicant} from './applicant'
-import {appResponse} from './text'
+import {cache} from '../index.js'
+import ObjectCache from './object-cache.js'
+import {Applicant, getApplicant, saveApplicant, removeApplicant} from './applicant.js'
+import {appResponse} from './text.js'
 
 // Set up global error handlers
 process.on('unhandledRejection', (error) => {
@@ -30,7 +30,8 @@ export async function initStorage(): Promise<void> {
 
 export async function isMod(member: GuildMember): Promise<boolean> {
 	const roles = member.roles.cache
-	return roles.has(roleCache.getOrThrow(await Storage.getItem('officerRole')).id)
+	const officerRole = (await Storage.getItem('officerRole')) as string
+	return roles.has(cache.roles.getOrThrow(officerRole).id)
 }
 
 export function collectionToCacheByName<T extends {name: string}>(
@@ -61,9 +62,9 @@ export async function handleApp(message: Message, guild: Discord.Guild): Promise
 	const fields = message.embeds[0].fields
 	let tag
 
-	for (const e of fields) {
-		if (e.name == 'Discord Tag') {
-			tag = e.value
+	for (const element of fields) {
+		if (element.name === 'Discord Tag') {
+			tag = element.value
 			break
 		}
 	}
@@ -73,8 +74,9 @@ export async function handleApp(message: Message, guild: Discord.Guild): Promise
 	const name = parseApplicantName(tag)
 
 	try {
+		const applicantsCategory = (await Storage.getItem('applicantsCategory')) as string
 		const channel = await guild.channels.create(name, {
-			parent: channelCache.getOrThrow(await Storage.getItem('applicantsCategory')).id
+			parent: cache.channels.getOrThrow(applicantsCategory).id
 		})
 		await channel.send(message.embeds[0]).catch(console.error)
 		return {
@@ -83,8 +85,8 @@ export async function handleApp(message: Message, guild: Discord.Guild): Promise
 			appMessageID: message.id,
 			channelID: channel.id
 		}
-	} catch (error) {
-		throw new Error(`failed to create channel for ${tag} | ${error}`)
+	} catch {
+		throw new Error(`failed to create channel for ${tag}`)
 	}
 }
 
@@ -97,7 +99,8 @@ export async function handlePermissions(member: GuildMember): Promise<void> {
 	applicant.memberID = member.id
 	await saveApplicant(applicant)
 
-	member.roles.add(roleCache.getOrThrow(await Storage.getItem('applicantRole')).id)
+	const applicantRole = (await Storage.getItem('applicantRole')) as string
+	await member.roles.add(cache.roles.getOrThrow(applicantRole).id)
 
 	const channel = member.guild.channels.resolve(applicant.channelID)
 	if (!channel) throw new Error(`channel does not exist for applicant: ${applicant.tag}`)
@@ -124,7 +127,7 @@ export async function handleReaction(
 		if (!guildMember)
 			throw new Error(`guild member does not exist for user: ${user.tag} | ${user.id}`)
 
-		if (user.id == applicant.memberID || (await isMod(guildMember))) {
+		if (user.id === applicant.memberID || (await isMod(guildMember))) {
 			await channel.delete().catch(console.error)
 
 			if (!applicant.memberID) return

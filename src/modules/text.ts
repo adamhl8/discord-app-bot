@@ -1,4 +1,4 @@
-import {Applicant} from './applicant'
+import {Applicant} from './applicant.js'
 
 export function initText(
 	officerRole: string,
@@ -29,9 +29,12 @@ export function initText(
 }
 
 export function appResponse(applicant: Applicant): string {
+	if (!applicant.memberID) {
+		throw new Error('Member ID does not exist.')
+	}
+
 	return (
-		'<@' +
-		applicant.memberID +
+		`<@${applicant.memberID}` +
 		'>\n\n' +
 		'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
 	)
