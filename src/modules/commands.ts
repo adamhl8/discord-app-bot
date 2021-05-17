@@ -244,7 +244,7 @@ export const l: Command = {
 
 		if (!match) {
 			await message.channel
-				.send('Invalid !l command. (e.g !l channelName#1234 @userTag#1234)')
+				.send('Invalid !l command. (e.g !l channelName1234 @userTag#1234)')
 				.catch(console.error)
 			return
 		}

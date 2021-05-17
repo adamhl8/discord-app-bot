@@ -1,7 +1,7 @@
 {
-  "name": "app-bot",
+  "name": "discord-app-bot",
   "version": "0.1.0",
-  "repository": "https://github.com/Genshii8/app-bot",
+  "repository": "https://github.com/Genshii8/discord-app-bot",
   "author": "Genshii8",
   "license": "MIT",
   "main": "./dist/index.js",
