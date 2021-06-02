@@ -7,18 +7,15 @@ import {initText, appResponse} from './text.js'
 
 export interface Command {
 	reqMod: boolean
+	reqAdmin: boolean
 	run: (guild: Guild, message: Message) => void
 }
 
 export const init: Command = {
 	reqMod: false,
+	reqAdmin: true,
 
 	run: async (guild, message) => {
-		if (!message.member?.hasPermission('ADMINISTRATOR')) {
-			await message.channel.send('You must have Administrator permissions to run this command.')
-			return
-		}
-
 		const officerRole = (await Storage.getItem('officerRole')) as string
 		const applicantRole = (await Storage.getItem('applicantRole')) as string
 		const appsChannel = (await Storage.getItem('appsChannel')) as string
@@ -32,13 +29,9 @@ export const init: Command = {
 
 export const officerRole: Command = {
 	reqMod: false,
+	reqAdmin: true,
 
 	run: async (guild, message) => {
-		if (!message.member?.hasPermission('ADMINISTRATOR')) {
-			await message.channel.send('You must have Administrator permissions to run this command.')
-			return
-		}
-
 		const match = /(!officerRole)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !officerRole command.').catch(console.error)
@@ -52,13 +45,9 @@ export const officerRole: Command = {
 
 export const applicantRole: Command = {
 	reqMod: false,
+	reqAdmin: true,
 
 	run: async (guild, message) => {
-		if (!message.member?.hasPermission('ADMINISTRATOR')) {
-			await message.channel.send('You must have Administrator permissions to run this command.')
-			return
-		}
-
 		const match = /(!applicantRole)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !applicantRole command.').catch(console.error)
@@ -74,13 +63,9 @@ export const applicantRole: Command = {
 
 export const appsChannel: Command = {
 	reqMod: false,
+	reqAdmin: true,
 
 	run: async (guild, message) => {
-		if (!message.member?.hasPermission('ADMINISTRATOR')) {
-			await message.channel.send('You must have Administrator permissions to run this command.')
-			return
-		}
-
 		const match = /(!appsChannel)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !appsChannel command.').catch(console.error)
@@ -94,13 +79,9 @@ export const appsChannel: Command = {
 
 export const applicantsCategory: Command = {
 	reqMod: false,
+	reqAdmin: true,
 
 	run: async (guild, message) => {
-		if (!message.member?.hasPermission('ADMINISTRATOR')) {
-			await message.channel.send('You must have Administrator permissions to run this command.')
-			return
-		}
-
 		const match = /(!applicantsCategory)\s(.+)/g.exec(message.content)
 		if (!match) {
 			await message.channel.send('Invalid !applicantsCategory command.').catch(console.error)
@@ -116,6 +97,7 @@ export const applicantsCategory: Command = {
 
 export const d: Command = {
 	reqMod: true,
+	reqAdmin: false,
 
 	run: async (guild, message) => {
 		const match = /(!d)\s(.+?)\s(.+)/g.exec(message.content)
@@ -182,6 +164,7 @@ export const d: Command = {
 
 export const a: Command = {
 	reqMod: true,
+	reqAdmin: false,
 
 	run: async (guild, message) => {
 		const match = /(!a)\s(.+)/g.exec(message.content)
@@ -238,6 +221,7 @@ export const a: Command = {
 
 export const l: Command = {
 	reqMod: true,
+	reqAdmin: false,
 
 	run: async (guild, message) => {
 		const match = /(!l)\s(.+?)\s.*?(\d+)/g.exec(message.content)

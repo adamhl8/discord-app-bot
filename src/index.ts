@@ -22,7 +22,7 @@ void bot.login(process.env.TOKEN)
 let guild: Discord.Guild
 
 bot.on('ready', () => {
-	Util.initStorage()
+	void Util.initStorage()
 
 	const g = bot.guilds.cache.first()
 	if (!g) {
@@ -123,7 +123,13 @@ bot.on('message', async (message: Message) => {
 	const commands: Record<string, Commands.Command> = Commands
 
 	if (Object.prototype.hasOwnProperty.call(commands, command)) {
-		if (commands[command].reqMod && !(await Util.isMod(message.member))) {
+		const memberPermissions = await Util.memberPermissions(message.member)
+
+		if (commands[command].reqAdmin && !memberPermissions.isAdmin) {
+			message.channel
+				.send('You must have Administrator permissions to run this command.')
+				.catch(console.log)
+		} else if (commands[command].reqMod && !memberPermissions.isMod && !memberPermissions.isAdmin) {
 			message.channel
 				.send('You do not have the required moderator role to run this command.')
 				.catch(console.log)

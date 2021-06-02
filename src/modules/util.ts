@@ -13,11 +13,6 @@ import ObjectCache from './object-cache.js'
 import {Applicant, getApplicant, saveApplicant, removeApplicant} from './applicant.js'
 import {appResponse} from './text.js'
 
-// Set up global error handlers
-process.on('unhandledRejection', (error) => {
-	console.log('unhandledRejection:', error)
-})
-
 export async function initStorage(): Promise<void> {
 	await Storage.init()
 
@@ -28,10 +23,19 @@ export async function initStorage(): Promise<void> {
 		await Storage.setItem('applicantsCategory', 'applicants')
 }
 
-export async function isMod(member: GuildMember): Promise<boolean> {
+export async function memberPermissions(member: GuildMember): Promise<Record<string, boolean>> {
 	const roles = member.roles.cache
 	const officerRole = (await Storage.getItem('officerRole')) as string
-	return roles.has(cache.roles.getOrThrow(officerRole).id)
+
+	const isMod = roles.has(cache.roles.getOrThrow(officerRole).id)
+	const isAdmin = member.hasPermission('ADMINISTRATOR')
+
+	const memberPermissions = {
+		isMod,
+		isAdmin
+	}
+
+	return memberPermissions
 }
 
 export function collectionToCacheByName<T extends {name: string}>(
@@ -127,7 +131,7 @@ export async function handleReaction(
 		if (!guildMember)
 			throw new Error(`guild member does not exist for user: ${user.tag} | ${user.id}`)
 
-		if (user.id === applicant.memberID || (await isMod(guildMember))) {
+		if (user.id === applicant.memberID || (await memberPermissions(guildMember)).isMod) {
 			await channel.delete().catch(console.error)
 
 			if (!applicant.memberID) return
