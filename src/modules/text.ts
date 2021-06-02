@@ -7,7 +7,7 @@ export function initText(
 	applicantsCategory: string
 ): string {
 	return (
-		'Run any of the following commands to override the defaults for app-bot. (Everything is case-insensitive)' +
+		'Run any of the following commands to override the defaults for discord-app-bot. (Everything is case-insensitive)' +
 		'\n\n' +
 		'Current Settings:' +
 		'```\n' +
@@ -19,7 +19,7 @@ export function initText(
 		'\n' +
 		'Command Example: `!officerRole Officer`' +
 		'\n\n' +
-		'`!officerRole roleName` - **DEFAULT:** `officer` | Anyone with this role will be able to use app-bot commands/handle applications.\n' +
+		'`!officerRole roleName` - **DEFAULT:** `officer` | Anyone with this role will be able to use discord-app-bot commands/handle applications.\n' +
 		'`!applicantRole roleName` - **DEFAULT:** `applicant` | This is the role that is automatically applied to applicants when they join the server.\n' +
 		'`!appsChannel channelName` - **DEFAULT:** `apps` | This is the channel where your Google form gets pushed to.\n' +
 		'`!applicantsCategory categoryName` - **DEFAULT:** `applicants` | This is the channel category where the individual applicant channels are created.' +

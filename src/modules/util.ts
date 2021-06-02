@@ -47,14 +47,14 @@ export function collectionToCacheByName<T extends {name: string}>(
 }
 
 export function parseApplicantName(tag: string): string {
-	const match = /(.+)#(\d+)/g.exec(tag)
+	const match = /(.+)#.*?(\d+)/g.exec(tag)
 
 	const fallbackMatch = /.+/g.exec(tag)
 	if (!fallbackMatch) throw new Error(`unable to match Discord Tag: ${tag}`)
 
-	if (!match) return fallbackMatch[0]
+	if (!match) return fallbackMatch[0].trim()
 
-	const name = match[1] + match[2]
+	const name = match[1].trim() + match[2]
 	return name
 }
 

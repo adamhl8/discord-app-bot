@@ -14,15 +14,15 @@ import * as Commands from './modules/commands.js'
 import {getApplicant, saveApplicant} from './modules/applicant.js'
 import ObjectCache from './modules/object-cache.js'
 
-dotenv.config({path: process.argv[2]})
+dotenv.config()
 
 const bot = new Discord.Client()
-await bot.login(process.env.TOKEN)
+void bot.login(process.env.TOKEN)
 
 let guild: Discord.Guild
 
-bot.on('ready', async () => {
-	await Util.initStorage()
+bot.on('ready', () => {
+	Util.initStorage()
 
 	const g = bot.guilds.cache.first()
 	if (!g) {
