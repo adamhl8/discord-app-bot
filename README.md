@@ -88,19 +88,20 @@ You must have Administrator permissions in the server to run these commands.
 
 - `!init` - Prints current settings and command info.
 
-Use the following commands to override the default role/channel names the bot looks for:
+Use the following commands to override the default settings:
 - `!officerRole roleName`
 - `!applicantRole roleName`
 - `!appsChannel channelName`
 - `!applicantsCategory categoryName`
+- `!declineMessage message`
 
 `appsChannel` and `applicantsCategory` must have different names. For example, both can't be named `apps`.
 
 ### Bot Commands
 
-- `!d user1234 reason` - Decline an applicant. You must provide a reason.
+- `!d user1234 [message]` - Decline an applicant. 
 
-The applicant is pinged and sent a message in their channel with the content of the provided reason. A 👍 emoji is added as a reaction to the message and the applicant is asked to confirm that they've read the message by clicking on the reaction. Once the applicant has reacted, they are removed from the server and the channel is deleted.
+The applicant is pinged and sent a message in their channel with the provided message (or the set declineMessage if one isn't provided). A 👍 emoji is added as a reaction to the message and the applicant is asked to confirm that they've read the message by clicking on the reaction. Once the applicant has reacted, they are removed from the server and the channel is deleted.
 
 Those with the officer role can also click the reaction to close the application if the applicant never responds.
 
