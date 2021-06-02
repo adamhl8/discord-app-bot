@@ -21,6 +21,7 @@ export async function initStorage(): Promise<void> {
 	if (!(await Storage.getItem('appsChannel'))) await Storage.setItem('appsChannel', 'apps')
 	if (!(await Storage.getItem('applicantsCategory')))
 		await Storage.setItem('applicantsCategory', 'applicants')
+	if (!(await Storage.getItem('declineMessage'))) await Storage.setItem('declineMessage', '')
 }
 
 export async function memberPermissions(member: GuildMember): Promise<Record<string, boolean>> {

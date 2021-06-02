@@ -20,10 +20,17 @@ export const init: Command = {
 		const applicantRole = (await Storage.getItem('applicantRole')) as string
 		const appsChannel = (await Storage.getItem('appsChannel')) as string
 		const applicantsCategory = (await Storage.getItem('applicantsCategory')) as string
+		const declineMessage = (await Storage.getItem('declineMessage')) as string
 
-		await message.channel
-			.send(initText(officerRole, applicantRole, appsChannel, applicantsCategory))
-			.catch(console.error)
+		const settings = {
+			officerRole,
+			applicantRole,
+			appsChannel,
+			applicantsCategory,
+			declineMessage
+		}
+
+		await message.channel.send(initText(settings)).catch(console.error)
 	}
 }
 
@@ -95,20 +102,53 @@ export const applicantsCategory: Command = {
 	}
 }
 
+export const declineMessage: Command = {
+	reqMod: false,
+	reqAdmin: true,
+
+	run: async (guild, message) => {
+		const match = /(!declineMessage)\s(.+)/g.exec(message.content)
+		if (!match) {
+			await message.channel.send('Invalid !declineMessage command.').catch(console.error)
+			return
+		}
+
+		await Storage.updateItem('declineMessage', match[2])
+		await message.channel
+			.send(`declineMessage has been set to: \`${match[2]}\``)
+			.catch(console.error)
+	}
+}
+
 export const d: Command = {
 	reqMod: true,
 	reqAdmin: false,
 
 	run: async (guild, message) => {
+		const defaultMatch = /(!d)\s(.+)/g.exec(message.content)
 		const match = /(!d)\s(.+?)\s(.+)/g.exec(message.content)
-		if (!match) {
+
+		const declineMessageText: string = match
+			? match[3]
+			: ((await Storage.getItem('declineMessage')) as string)
+
+		if (!defaultMatch) {
 			await message.channel
-				.send('Invalid !d command. (e.g. !d user1234 reason)')
+				.send('Invalid !d command. (e.g. !d user1234 [message])')
 				.catch(console.error)
 			return
 		}
 
-		const name = match[2]
+		if (defaultMatch && !declineMessageText && !match) {
+			await message.channel
+				.send(
+					'Invalid !d command. Provide a message or set the Default Decline message. (e.g. !d user1234 [message])'
+				)
+				.catch(console.error)
+			return
+		}
+
+		const name = match ? match[2] : defaultMatch[2]
 
 		const applicant = await getApplicant(name)
 		if (!applicant) {
@@ -140,7 +180,7 @@ export const d: Command = {
 
 		const declineMessage = await channel
 			.send(
-				`<@${applicant.memberID}>\n\n${match[3]}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed and you will be removed from the server.`
+				`<@${applicant.memberID}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed and you will be removed from the server.`
 			)
 			.catch(console.error)
 		if (!declineMessage) throw new Error(`unable to send decline message for: ${name}`)
