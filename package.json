@@ -1,8 +1,8 @@
 {
   "name": "discord-app-bot",
   "version": "0.1.0",
-  "repository": "https://github.com/Genshii8/discord-app-bot",
-  "author": "Genshii8",
+  "repository": "https://github.com/adamhl8/discord-app-bot",
+  "author": "adamhl8",
   "license": "MIT",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
@@ -20,7 +20,7 @@
     "node-persist": "^3.1.0"
   },
   "devDependencies": {
-    "@types/node": "^15.6.2",
+    "@types/node": "^15.12.2",
     "@types/node-persist": "^3.1.1",
     "@types/ws": "^7.4.4",
     "typescript": "^4.3.2",
