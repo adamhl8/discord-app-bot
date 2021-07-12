@@ -51,7 +51,7 @@ npm install -g yarn pm2
 2. Clone the repo.
 
 ```
-git clone https://github.com/Genshii8/discord-app-bot.git
+git clone https://github.com/adamhl8/discord-app-bot.git
 ```
 
 3. Install dependencies.
@@ -86,27 +86,27 @@ Use the following commands to manage the bot and applicants.
 
 You must have Administrator permissions in the server to run these commands.
 
-- `!init` - Prints current settings and command info.
+`!init` - Prints current settings and command info.
 
 Use the following commands to override the default settings:
-- `!officerRole roleName`
-- `!applicantRole roleName`
-- `!appsChannel channelName`
-- `!applicantsCategory categoryName`
-- `!declineMessage message`
+`!officerRole roleName`
+`!applicantRole roleName`
+`!appsChannel channelName`
+`!applicantsCategory categoryName`
+`!declineMessage message`
 
-`appsChannel` and `applicantsCategory` must have different names. For example, both can't be named `apps`.
+- `appsChannel` and `applicantsCategory` must have different names. For example, both can't be named `apps`.
 
 ### Bot Commands
 
-- `!d user1234 [message]` - Decline an applicant. 
+`!d user1234 [message]` - Decline an applicant. 
 
-The applicant is pinged and sent a message in their channel with the provided message (or the set declineMessage if one isn't provided). A 👍 emoji is added as a reaction to the message and the applicant is asked to confirm that they've read the message by clicking on the reaction. Once the applicant has reacted, they are removed from the server and the channel is deleted.
+- The applicant is pinged and sent a message in their channel with the provided message (or the set declineMessage if one isn't provided). A 👍 emoji is added as a reaction to the message and the applicant is asked to confirm that they've read the message by clicking on the reaction. Once the applicant has reacted, they are removed from the server and the channel is deleted.
 
-Those with the officer role can also click the reaction to close the application if the applicant never responds.
+- Those with the officer role can also click the reaction to close the application if the applicant never responds.
 
-- `!a user1234` - Accept an applicant. The Applicant role is immediately removed from the applicant and their channel is deleted.
+`!a user1234` - Accept an applicant. The Applicant role is immediately removed from the applicant and their channel is deleted.
 
-- `!l channelName1234 @userTag#1234` - Manually links a server member with an application. You can use this if an applicant did not correctly input their Discord Tag into the form or if they joined the server before submitting their application.
+`!l channelName1234 @userTag#1234` - Manually links a server member with an application. You can use this if an applicant did not correctly input their Discord Tag into the form or if they joined the server before submitting their application.
 
-The applicant needs to actually be tagged in the command as if you were mentioning them normally. Once linked, the Applicant role is immediately applied and the application is handled as if the applicant had just joined the server.
+- The applicant needs to actually be tagged in the command as if you were mentioning them normally. Once linked, the Applicant role is immediately applied and the application is handled as if the applicant had just joined the server.
