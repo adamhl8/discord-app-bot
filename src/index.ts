@@ -1,18 +1,18 @@
-import dotenv from 'dotenv'
 import Discord, {
-	Message,
-	Role,
-	GuildMember,
-	PartialGuildMember,
-	GuildChannel,
-	GuildEmoji,
-	MessageReaction
+  GuildChannel,
+  GuildEmoji,
+  GuildMember,
+  Message,
+  MessageReaction,
+  PartialGuildMember,
+  Role,
 } from 'discord.js'
+import dotenv from 'dotenv'
 import Storage from 'node-persist'
-import * as Util from './modules/util.js'
+import { getApplicant, saveApplicant } from './modules/applicant.js'
 import * as Commands from './modules/commands.js'
-import {getApplicant, saveApplicant} from './modules/applicant.js'
 import ObjectCache from './modules/object-cache.js'
+import * as Util from './modules/util.js'
 
 dotenv.config()
 
@@ -22,130 +22,137 @@ void bot.login(process.env.TOKEN)
 let guild: Discord.Guild
 
 bot.on('ready', () => {
-	void Util.initStorage()
+  void Util.initStorage()
 
-	const g = bot.guilds.cache.first()
-	if (!g) {
-		throw new Error('failed to init guild')
-	}
+  const g = bot.guilds.cache.first()
+  if (!g) {
+    throw new Error('failed to init guild')
+  }
 
-	guild = g
+  guild = g
 
-	console.log('I am ready!')
+  console.log('I am ready!')
 
-	run()
+  run()
 })
 
 export const cache = {
-	roles: new ObjectCache<Role>(),
-	channels: new ObjectCache<GuildChannel>(),
-	emojis: new ObjectCache<GuildEmoji>()
+  roles: new ObjectCache<Role>(),
+  channels: new ObjectCache<GuildChannel>(),
+  emojis: new ObjectCache<GuildEmoji>(),
 }
 
 function run() {
-	cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-	cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-	cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+  cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+  cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+  cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
 
-	bot.on('roleUpdate', () => {
-		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-	})
-	bot.on('roleCreate', () => {
-		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-	})
-	bot.on('roleDelete', () => {
-		cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-	})
+  bot.on('roleUpdate', () => {
+    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+  })
+  bot.on('roleCreate', () => {
+    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+  })
+  bot.on('roleDelete', () => {
+    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
+  })
 
-	bot.on('channelUpdate', () => {
-		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-	})
-	bot.on('channelCreate', () => {
-		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-	})
-	bot.on('channelDelete', () => {
-		cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-	})
+  bot.on('channelUpdate', () => {
+    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+  })
+  bot.on('channelCreate', () => {
+    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+  })
+  bot.on('channelDelete', () => {
+    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
+  })
 
-	bot.on('emojiUpdate', () => {
-		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-	})
-	bot.on('emojiCreate', () => {
-		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-	})
-	bot.on('emojiDelete', () => {
-		cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-	})
+  bot.on('emojiUpdate', () => {
+    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+  })
+  bot.on('emojiCreate', () => {
+    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+  })
+  bot.on('emojiDelete', () => {
+    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+  })
 }
 
 function isPartial(member: GuildMember | PartialGuildMember): member is PartialGuildMember {
-	return member.partial
+  return member.partial
 }
 
-bot.on('guildMemberAdd', async (member: GuildMember | PartialGuildMember) => {
-	if (isPartial(member)) {
-		// PartialGuildMember
-		try {
-			const m = await member.fetch()
-			await Util.handlePermissions(m)
-		} catch {
-			console.log('failed to fecth partial member on guildMemberAdd')
-		}
-	} else {
-		// GuildMember
-		await Util.handlePermissions(member)
-	}
+async function handleMemberAdd(member: GuildMember | PartialGuildMember) {
+  if (isPartial(member)) {
+    // PartialGuildMember
+    try {
+      const m = await member.fetch()
+      await Util.handlePermissions(m)
+    } catch {
+      console.log('failed to fetch partial member on guildMemberAdd')
+    }
+  } else {
+    // GuildMember
+    await Util.handlePermissions(member)
+  }
+}
+
+bot.on('guildMemberAdd', (member: GuildMember | PartialGuildMember) => {
+  void handleMemberAdd(member)
 })
 
-bot.on('message', async (message: Message) => {
-	const appsChannel = (await Storage.getItem('appsChannel')) as string
-	if (message.channel.id === cache.channels.getOrThrow(appsChannel).id) {
-		const applicant = await Util.handleApp(message, guild)
-		await saveApplicant(applicant)
-	}
+async function handleMessage(message: Message) {
+  const appsChannel = (await Storage.getItem('appsChannel')) as string
+  if (message.channel.id === cache.channels.getOrThrow(appsChannel).id) {
+    const applicant = await Util.handleApp(message, guild)
+    await saveApplicant(applicant)
+  }
 
-	if (message.author.bot) return
+  if (message.author.bot) return
 
-	const prefix = '!'
+  const prefix = '!'
 
-	if (!message.content.startsWith(prefix)) return
+  if (!message.content.startsWith(prefix)) return
 
-	const match = /!(\S+)/g.exec(message.content)
-	let command = 'none'
-	if (match) {
-		command = match[1]
-	}
+  const match = /!(\S+)/g.exec(message.content)
+  let command = 'none'
+  if (match) {
+    command = match[1]
+  }
 
-	if (!message.member) {
-		throw new Error(`there is no member attached to message ${message.id}`)
-	}
+  if (!message.member) {
+    throw new Error(`there is no member attached to message ${message.id}`)
+  }
 
-	const commands: Record<string, Commands.Command> = Commands
+  const commands: Record<string, Commands.Command> = Commands
 
-	if (Object.prototype.hasOwnProperty.call(commands, command)) {
-		const memberPermissions = await Util.memberPermissions(message.member)
+  if (Object.prototype.hasOwnProperty.call(commands, command)) {
+    const memberPermissions = await Util.memberPermissions(message.member)
 
-		if (commands[command].reqAdmin && !memberPermissions.isAdmin) {
-			message.channel
-				.send('You must have Administrator permissions to run this command.')
-				.catch(console.log)
-		} else if (commands[command].reqMod && !memberPermissions.isMod && !memberPermissions.isAdmin) {
-			message.channel
-				.send('You do not have the required moderator role to run this command.')
-				.catch(console.log)
-		} else {
-			commands[command].run(guild, message)
-		}
-	}
+    if (commands[command].reqAdmin && !memberPermissions.isAdmin) {
+      message.channel.send('You must have Administrator permissions to run this command.').catch(console.log)
+    } else if (commands[command].reqMod && !memberPermissions.isMod && !memberPermissions.isAdmin) {
+      message.channel.send('You do not have the required moderator role to run this command.').catch(console.log)
+    } else {
+      commands[command].run(guild, message)
+    }
+  }
+}
+
+bot.on('message', (message: Message) => {
+  void handleMessage(message)
 })
 
-bot.on('messageReactionAdd', async (reaction: MessageReaction) => {
-	const reactionChannel = reaction.message.channel
-	if (!Util.isTextChannel(reactionChannel)) return
+async function handleMessageReaction(reaction: MessageReaction) {
+  const reactionChannel = reaction.message.channel
+  if (!Util.isTextChannel(reactionChannel)) return
 
-	const applicant = await getApplicant(reactionChannel.name)
-	if (!applicant) return
+  const applicant = await getApplicant(reactionChannel.name)
+  if (!applicant) return
 
-	if (reaction.message.id === applicant.declineMessageID)
-		await Util.handleReaction(reaction, applicant, reactionChannel)
+  if (reaction.message.id === applicant.declineMessageID) Util.handleReaction(reaction, applicant, reactionChannel)
+}
+
+bot.on('messageReactionAdd', (reaction: MessageReaction) => {
+  void handleMessageReaction(reaction)
 })
