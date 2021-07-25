@@ -1,9 +1,9 @@
 import { Guild, Message } from 'discord.js'
 import Storage from 'node-persist'
-import { cache } from '../index.js'
-import { getApplicant, removeApplicant, saveApplicant } from './applicant.js'
-import { appResponse, initText } from './text.js'
-import { isTextChannel } from './util.js'
+import { cache } from '../index'
+import { getApplicant, removeApplicant, saveApplicant } from './applicant'
+import { appResponse, initText } from './text'
+import { isTextChannel } from './util'
 
 export interface Command {
   reqMod: boolean

@@ -9,10 +9,10 @@ import Discord, {
 } from 'discord.js'
 import dotenv from 'dotenv'
 import Storage from 'node-persist'
-import { getApplicant, saveApplicant } from './modules/applicant.js'
-import * as Commands from './modules/commands.js'
-import ObjectCache from './modules/object-cache.js'
-import * as Util from './modules/util.js'
+import { getApplicant, saveApplicant } from './modules/applicant'
+import * as Commands from './modules/commands'
+import ObjectCache from './modules/object-cache'
+import * as Util from './modules/util'
 
 dotenv.config()
 
