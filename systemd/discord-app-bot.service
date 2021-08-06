@@ -5,6 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User=ubuntu
+WorkingDirectory=/home/ubuntu/discord-app-bot/
+ExecStartPre=chmod 755 /home/ubuntu/discord-app-bot/systemd/discord-app-bot.sh
 ExecStart=/home/ubuntu/discord-app-bot/systemd/discord-app-bot.sh
 Restart=on-failure
 
