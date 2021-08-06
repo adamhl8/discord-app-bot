@@ -1,3 +1,4 @@
+import slugify from '@sindresorhus/slugify'
 import Discord, {
   Channel,
   Collection,
@@ -28,11 +29,11 @@ export async function memberPermissions(member: GuildMember): Promise<Record<str
   const roles = member.roles.cache
   const officerRole = (await Storage.getItem('officerRole')) as string
 
-  const isModule = roles.has(cache.roles.getOrThrow(officerRole).id)
+  const isModerator = roles.has(cache.roles.getOrThrow(officerRole).id)
   const isAdmin = member.hasPermission('ADMINISTRATOR')
 
   return {
-    isMod: isModule,
+    isModerator,
     isAdmin,
   }
 }
@@ -55,9 +56,9 @@ export function parseApplicantName(tag: string): string {
   const fallbackMatch = /.+/g.exec(tag)
   if (!fallbackMatch) throw new Error(`unable to match Discord Tag: ${tag}`)
 
-  if (!match) return fallbackMatch[0].trim()
+  if (!match) return slugify(fallbackMatch[0].trim())
 
-  return match[1].trim() + match[2]
+  return slugify(match[1].trim()) + match[2]
 }
 
 export async function handleApp(message: Message, guild: Discord.Guild): Promise<Applicant> {

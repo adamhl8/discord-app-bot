@@ -1,3 +1,4 @@
+import slugify from '@sindresorhus/slugify'
 import { Guild, Message } from 'discord.js'
 import Storage from 'node-persist'
 import { cache } from '../index'
@@ -136,7 +137,7 @@ export const d: Command = {
       return
     }
 
-    const name = match ? match[2] : defaultMatch[2]
+    const name = slugify(match ? match[2] : defaultMatch[2])
 
     const applicant = await getApplicant(name)
     if (!applicant) {
@@ -195,7 +196,7 @@ export const a: Command = {
       return
     }
 
-    const name = match[2]
+    const name = slugify(match[2])
 
     const applicant = await getApplicant(name)
     if (!applicant) {
@@ -248,7 +249,7 @@ export const l: Command = {
       return
     }
 
-    const name = match[2]
+    const name = slugify(match[2])
     const userID = match[3]
 
     const applicant = await getApplicant(name)

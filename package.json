@@ -1,6 +1,7 @@
 {
   "name": "discord-app-bot",
   "version": "0.1.0",
+  "type": "module",
   "description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
   "repository": "github:adamhl8/discord-app-bot",
   "license": "MIT",
@@ -10,16 +11,19 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint -f pretty --fix .",
-    "restart": "tsc && pm2 restart discord-app-bot",
-    "start": "tsc && pm2 start ecosystem.config.yaml"
+    "start": "node --loader ts-node/esm --experimental-specifier-resolution=node ./src/index.ts"
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^2.1.0",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "node-persist": "^3.1.0"
+    "fs-extra": "^10.0.0",
+    "node-persist": "^3.1.0",
+    "tslog": "^3.2.0"
   },
   "devDependencies": {
     "@types/eslint": "^7.28.0",
+    "@types/fs-extra": "^9.0.12",
     "@types/node": "^16.4.2",
     "@types/node-persist": "^3.1.2",
     "@types/prettier": "^2.3.2",
@@ -36,6 +40,7 @@
     "prettier-plugin-organize-imports": "^2.3.3",
     "prettier-plugin-pkg": "^0.10.0",
     "prettier-plugin-sh": "^0.7.1",
+    "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
   }
 }

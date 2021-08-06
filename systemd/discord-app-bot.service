@@ -1,0 +1,12 @@
+[Unit]
+Description=discord-app-bot
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/home/ubuntu/discord-app-bot/systemd/discord-app-bot.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

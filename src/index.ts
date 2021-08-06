@@ -11,6 +11,7 @@ import dotenv from 'dotenv'
 import Storage from 'node-persist'
 import { getApplicant, saveApplicant } from './modules/applicant'
 import * as Commands from './modules/commands'
+import { log } from './modules/log'
 import ObjectCache from './modules/object-cache'
 import * as Util from './modules/util'
 
@@ -31,7 +32,7 @@ bot.on('ready', () => {
 
   guild = g
 
-  console.log('I am ready!')
+  log.info('I am ready!')
 
   run()
 })
@@ -89,7 +90,7 @@ async function handleMemberAdd(member: GuildMember | PartialGuildMember) {
       const m = await member.fetch()
       await Util.handlePermissions(m)
     } catch {
-      console.log('failed to fetch partial member on guildMemberAdd')
+      log.warn('failed to fetch partial member on guildMemberAdd')
     }
   } else {
     // GuildMember
@@ -130,9 +131,9 @@ async function handleMessage(message: Message) {
     const memberPermissions = await Util.memberPermissions(message.member)
 
     if (commands[command].reqAdmin && !memberPermissions.isAdmin) {
-      message.channel.send('You must have Administrator permissions to run this command.').catch(console.log)
+      message.channel.send('You must have Administrator permissions to run this command.').catch(console.error)
     } else if (commands[command].reqMod && !memberPermissions.isMod && !memberPermissions.isAdmin) {
-      message.channel.send('You do not have the required moderator role to run this command.').catch(console.log)
+      message.channel.send('You do not have the required moderator role to run this command.').catch(console.error)
     } else {
       commands[command].run(guild, message)
     }
