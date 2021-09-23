@@ -9,11 +9,10 @@ import Discord, {
 } from 'discord.js'
 import dotenv from 'dotenv'
 import Storage from 'node-persist'
-import { getApplicant, saveApplicant } from './modules/applicant'
-import * as Commands from './modules/commands'
-import { log } from './modules/log'
-import ObjectCache from './modules/object-cache'
-import * as Util from './modules/util'
+import { getApplicant, saveApplicant } from './modules/applicant.js'
+import * as Commands from './modules/commands.js'
+import ObjectCache from './modules/object-cache.js'
+import * as Util from './modules/util.js'
 
 dotenv.config()
 
@@ -32,7 +31,7 @@ bot.on('ready', () => {
 
   guild = g
 
-  log.info('I am ready!')
+  console.log('I am ready!')
 
   run()
 })
@@ -90,7 +89,7 @@ async function handleMemberAdd(member: GuildMember | PartialGuildMember) {
       const m = await member.fetch()
       await Util.handlePermissions(m)
     } catch {
-      log.warn('failed to fetch partial member on guildMemberAdd')
+      console.log('failed to fetch partial member on guildMemberAdd')
     }
   } else {
     // GuildMember

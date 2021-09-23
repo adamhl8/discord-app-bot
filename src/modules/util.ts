@@ -10,10 +10,10 @@ import Discord, {
   User,
 } from 'discord.js'
 import Storage from 'node-persist'
-import { cache } from '../index'
-import { Applicant, getApplicant, removeApplicant, saveApplicant } from './applicant'
-import ObjectCache from './object-cache'
-import { appResponse } from './text'
+import { cache } from '../index.js'
+import { Applicant, getApplicant, removeApplicant, saveApplicant } from './applicant.js'
+import ObjectCache from './object-cache.js'
+import { appResponse } from './text.js'
 
 export async function initStorage(): Promise<void> {
   await Storage.init()

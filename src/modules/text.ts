@@ -1,4 +1,4 @@
-import { Applicant } from './applicant'
+import { Applicant } from './applicant.js'
 
 export function initText(settings: Record<string, string>): string {
   return (

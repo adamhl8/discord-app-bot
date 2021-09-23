@@ -6,12 +6,13 @@
   "repository": "github:adamhl8/discord-app-bot",
   "license": "MIT",
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint -f pretty --fix .",
-    "start": "node --loader ts-node/esm --experimental-specifier-resolution=node ./src/index.ts"
+    "restart": "pm2 restart discord-app-bot",
+    "start": "pm2 start ecosystem.config.cjs"
   },
   "dependencies": {
     "@sindresorhus/slugify": "^2.1.0",
@@ -19,28 +20,28 @@
     "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0",
     "node-persist": "^3.1.0",
-    "tslog": "^3.2.0"
+    "tslog": "^3.2.2"
   },
   "devDependencies": {
     "@types/eslint": "^7.28.0",
-    "@types/fs-extra": "^9.0.12",
-    "@types/node": "^16.4.2",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^16.9.6",
     "@types/node-persist": "^3.1.2",
     "@types/prettier": "^2.3.2",
     "@types/ws": "^7.4.7",
-    "@typescript-eslint/eslint-plugin": "^4.28.4",
-    "@typescript-eslint/parser": "^4.28.4",
-    "eslint": "^7.31.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-formatter-pretty": "^4.1.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-sonarjs": "^0.9.1",
     "eslint-plugin-unicorn": "^34.0.1",
-    "prettier": "^2.3.2",
-    "prettier-plugin-organize-imports": "^2.3.3",
+    "prettier": "^2.4.1",
+    "prettier-plugin-organize-imports": "^2.3.4",
     "prettier-plugin-pkg": "^0.10.0",
     "prettier-plugin-sh": "^0.7.1",
-    "ts-node": "^10.1.0",
-    "typescript": "^4.3.5"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   }
 }
