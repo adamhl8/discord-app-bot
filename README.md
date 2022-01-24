@@ -45,10 +45,11 @@ While completely optional, it's recommended that you create a separate channel s
 
 ### Bot Installation
 
-1. Install prerequisites. [pnpm](https://pnpm.io) is used as the package manager. [pm2](https://github.com/Unitech/pm2) is used to handle running the Node process.
+1. Install prerequisites.
+   - [pm2](https://github.com/Unitech/pm2) is used to handle running the Node process.
 
 ```
-npm install -g pnpm pm2
+npm install -g pm2
 ```
 
 2. Clone the repo.
@@ -60,7 +61,7 @@ git clone https://github.com/adamhl8/discord-app-bot.git
 3. Install dependencies.
 
 ```
-pnpm i
+npm install
 ```
 
 4. Create a [Discord Developer Application](https://discord.com/developers/applications) for your bot.
@@ -80,7 +81,7 @@ TOKEN=yourtokenhere
 7. Start the bot.
 
 ```
-pnpm start
+npm start
 ```
 
 ## Commands
