@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { REST } from '@discordjs/rest'
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/v10'
 import { Collection, CommandInteraction } from 'discord.js'
-import * as fsp from 'node:fs/promises'
+import { readdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 interface CommandImport {
@@ -15,7 +15,7 @@ interface Command {
 }
 
 const commandsDirectory = fileURLToPath(new URL('commands', import.meta.url))
-const commandFiles = await fsp.readdir(commandsDirectory)
+const commandFiles = await readdir(commandsDirectory)
 
 const commands = new Collection<string, Command>()
 const commandData: RESTPostAPIApplicationCommandsJSONBody[] = []

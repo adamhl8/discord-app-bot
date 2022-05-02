@@ -11,8 +11,8 @@ const botIntents = {
 }
 
 const bot = new Client(botIntents)
-void registerEvents()
 void registerCommands(botToken, clientId, guildId)
+void registerEvents()
 void bot.login(botToken)
 
 export default bot
