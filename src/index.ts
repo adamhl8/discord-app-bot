@@ -1,158 +1,51 @@
-import Discord, {
-  GuildChannel,
-  GuildEmoji,
-  GuildMember,
-  Message,
-  MessageReaction,
-  PartialGuildMember,
-  Role,
-} from 'discord.js'
-import dotenv from 'dotenv'
-import Storage from 'node-persist'
-import { getApplicant, saveApplicant } from './modules/applicant.js'
-import * as Commands from './modules/commands.js'
-import ObjectCache from './modules/object-cache.js'
-import * as Util from './modules/util.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v10'
+import { Client, Intents } from 'discord.js'
 
-dotenv.config()
+const botToken = process.env.BOT_TOKEN || ''
+const clientId = process.env.CLIENT_ID || ''
+const guildId = process.env.GUILD_ID || ''
 
-const bot = new Discord.Client()
-void bot.login(process.env.TOKEN)
+const botIntents = {
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+}
 
-let guild: Discord.Guild
+const bot = new Client(botIntents)
+void bot.login(botToken)
 
-bot.on('ready', () => {
-  void Util.initStorage()
-
-  const g = bot.guilds.cache.first()
-  if (!g) {
-    throw new Error('failed to init guild')
-  }
-
-  guild = g
-
+bot.once('ready', () => {
   console.log('I am ready!')
-
-  run()
 })
 
-export const cache = {
-  roles: new ObjectCache<Role>(),
-  channels: new ObjectCache<GuildChannel>(),
-  emojis: new ObjectCache<GuildEmoji>(),
+const commands = [
+  new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
+  new SlashCommandBuilder().setName('server').setDescription('Replies with server info!'),
+  new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
+].map((command) => command.toJSON())
+
+const rest = new REST().setToken(botToken)
+try {
+  await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+  console.log('Successfully reloaded application (/) commands.')
+} catch (error) {
+  console.error(error)
 }
 
-function run() {
-  cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-  cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-  cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
+bot.on('interactionCreate', async (interaction) => {
+  if (!interaction.isCommand()) return
 
-  bot.on('roleUpdate', () => {
-    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-  })
-  bot.on('roleCreate', () => {
-    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-  })
-  bot.on('roleDelete', () => {
-    cache.roles = Util.collectionToCacheByName(guild.roles.cache)
-  })
+  const { commandName } = interaction
 
-  bot.on('channelUpdate', () => {
-    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-  })
-  bot.on('channelCreate', () => {
-    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-  })
-  bot.on('channelDelete', () => {
-    cache.channels = Util.collectionToCacheByName(guild.channels.cache)
-  })
-
-  bot.on('emojiUpdate', () => {
-    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-  })
-  bot.on('emojiCreate', () => {
-    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-  })
-  bot.on('emojiDelete', () => {
-    cache.emojis = Util.collectionToCacheByName(guild.emojis.cache)
-  })
-}
-
-function isPartial(member: GuildMember | PartialGuildMember): member is PartialGuildMember {
-  return member.partial
-}
-
-async function handleMemberAdd(member: GuildMember | PartialGuildMember) {
-  if (isPartial(member)) {
-    // PartialGuildMember
-    try {
-      const m = await member.fetch()
-      await Util.handlePermissions(m)
-    } catch {
-      console.log('failed to fetch partial member on guildMemberAdd')
-    }
-  } else {
-    // GuildMember
-    await Util.handlePermissions(member)
+  switch (commandName) {
+    case 'ping':
+      await interaction.reply('Pong!')
+      break
+    case 'server':
+      await interaction.reply('Server info.')
+      break
+    case 'user':
+      await interaction.reply('User info.')
+      break
   }
-}
-
-bot.on('guildMemberAdd', (member: GuildMember | PartialGuildMember) => {
-  void handleMemberAdd(member)
-})
-
-async function handleMessage(message: Message) {
-  const appsChannel = (await Storage.getItem('appsChannel')) as string
-  if (message.channel.id === cache.channels.getOrThrow(appsChannel).id) {
-    const applicant = await Util.handleApp(message, guild)
-    await saveApplicant(applicant)
-  }
-
-  if (message.author.bot) return
-
-  const prefix = '!'
-
-  if (!message.content.startsWith(prefix)) return
-
-  const match = /!(\S+)/g.exec(message.content)
-  let command = 'none'
-  if (match) {
-    command = match[1]
-  }
-
-  if (!message.member) {
-    throw new Error(`there is no member attached to message ${message.id}`)
-  }
-
-  const commands: Record<string, Commands.Command> = Commands
-
-  if (Object.prototype.hasOwnProperty.call(commands, command)) {
-    const memberPermissions = await Util.memberPermissions(message.member)
-
-    if (commands[command].reqAdmin && !memberPermissions.isAdmin) {
-      message.channel.send('You must have Administrator permissions to run this command.').catch(console.error)
-    } else if (commands[command].reqMod && !memberPermissions.isMod && !memberPermissions.isAdmin) {
-      message.channel.send('You do not have the required moderator role to run this command.').catch(console.error)
-    } else {
-      commands[command].run(guild, message)
-    }
-  }
-}
-
-bot.on('message', (message: Message) => {
-  void handleMessage(message)
-})
-
-async function handleMessageReaction(reaction: MessageReaction) {
-  const reactionChannel = reaction.message.channel
-  if (!Util.isTextChannel(reactionChannel)) return
-
-  const applicant = await getApplicant(reactionChannel.name)
-  if (!applicant) return
-
-  if (reaction.message.id === applicant.declineMessageID) Util.handleReaction(reaction, applicant, reactionChannel)
-}
-
-bot.on('messageReactionAdd', (reaction: MessageReaction) => {
-  void handleMessageReaction(reaction)
 })
