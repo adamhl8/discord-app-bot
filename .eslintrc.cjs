@@ -19,4 +19,15 @@ module.exports = {
     'plugin:eslint-comments/recommended',
     'prettier',
   ],
+  rules: {
+    'unicorn/filename-case': [
+      'error',
+      {
+        cases: {
+          kebabCase: true,
+          camelCase: true,
+        },
+      },
+    ],
+  },
 }

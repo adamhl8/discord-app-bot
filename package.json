@@ -10,7 +10,8 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "lint": "eslint -f pretty --fix ."
+    "lint": "eslint -f pretty --fix .",
+    "start": "node --trace-warnings --loader ts-node/esm ./src/index.ts"
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
