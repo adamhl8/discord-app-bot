@@ -7,7 +7,12 @@ const clientId = process.env.CLIENT_ID || ''
 const guildId = process.env.GUILD_ID || ''
 
 const botIntents = {
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILD_MESSAGES,
+  ],
 }
 
 const bot = new Client(botIntents)
