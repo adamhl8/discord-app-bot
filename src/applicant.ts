@@ -11,7 +11,11 @@ export interface Applicant {
 }
 
 function getApplicant(name: string): Applicant | undefined {
-  return storage.getObject<Applicant>(`/applicants/${name.toLowerCase()}`)
+  try {
+    return storage.getObject<Applicant>(`/applicants/${name.toLowerCase()}`)
+  } catch {
+    return
+  }
 }
 
 function saveApplicant(applicant: Applicant): void {

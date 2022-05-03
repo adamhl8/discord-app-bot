@@ -1,12 +1,12 @@
 import { Applicant, parseApplicantName, saveApplicant } from '../applicant.js'
-import { checkSettings } from '../commands/settings.js'
+import { checkSettings, Settings } from '../commands/settings.js'
 import bot from '../index.js'
 import storage from '../storage.js'
-import { guild } from './ready.js'
 
 bot.on('messageCreate', async (message) => {
   if (!(await checkSettings())) return
-  if (message.channelId !== storage.getData('/settings/appsChannel/id')) return
+  const settings = storage.getObject<Settings>('/settings')
+  if (message.channelId !== settings.appsChannel.id) return
 
   const fields = message.embeds[0].fields
   let tag
@@ -23,7 +23,8 @@ bot.on('messageCreate', async (message) => {
   const name = parseApplicantName(tag)
 
   try {
-    const appsCategory = await guild.channels.fetch(storage.getData('/settings/appsCategory/id') as string)
+    if (!message.guild) throw new Error(`failed to get guild`)
+    const appsCategory = await message.guild.channels.fetch(settings.appsCategory.id)
     if (!appsCategory || appsCategory.type !== 'GUILD_CATEGORY') throw new Error('Unable to get appsCategory channel')
     const channel = await appsCategory.createChannel(name)
     await channel.send({ embeds: message.embeds })

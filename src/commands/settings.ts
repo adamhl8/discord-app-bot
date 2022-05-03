@@ -59,7 +59,6 @@ interface Settings {
 
 async function listSettings(interaction: CommandInteraction) {
   if (!(await checkSettings(interaction))) return
-
   const settings = storage.getObject<Settings>('/settings')
 
   const currentSettings =
@@ -129,4 +128,4 @@ async function checkSettings(interaction?: CommandInteraction) {
 }
 
 export default settings
-export { checkSettings }
+export { Settings, checkSettings }
