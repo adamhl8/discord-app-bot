@@ -17,7 +17,7 @@ const botIntents: ClientOptions = {
 }
 
 const bot = new Client(botIntents)
-void registerCommands()
+void registerCommands(botToken, clientId, guildId)
 void registerEvents()
 void bot.login(botToken)
 

@@ -4,7 +4,6 @@ import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-type
 import { Collection, CommandInteraction } from 'discord.js'
 import { readdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
-import { botToken, clientId, guildId } from './index.js'
 
 interface CommandImport {
   default: Command
@@ -26,7 +25,7 @@ for (const file of commandFiles) {
   commandData.push(command.data.toJSON())
 }
 
-async function registerCommands() {
+async function registerCommands(botToken: string, clientId: string, guildId: string) {
   const rest = new REST().setToken(botToken)
   try {
     await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandData })
