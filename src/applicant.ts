@@ -11,11 +11,7 @@ export interface Applicant {
 }
 
 function getApplicant(name: string): Applicant | undefined {
-  try {
-    return storage.getObject<Applicant>(`/applicants/${name.toLowerCase()}`)
-  } catch {
-    return
-  }
+  return storage.get<Applicant>(`/applicants/${name.toLowerCase()}`)
 }
 
 function saveApplicant(applicant: Applicant): void {
@@ -26,11 +22,14 @@ function removeApplicant(applicant: Applicant): void {
   storage.delete(`/applicants/${applicant.name.toLowerCase()}`)
 }
 
-function parseApplicantName(tag: string): string {
+function parseApplicantName(tag: string): string | undefined {
   const match = /(.+)#.*?(\d+)/g.exec(tag)
 
   const fallbackMatch = /.+/g.exec(tag)
-  if (!fallbackMatch) throw new Error(`unable to match Discord Tag: ${tag}`)
+  if (!fallbackMatch) {
+    console.error(`unable to match Discord Tag: ${tag}`)
+    return undefined
+  }
 
   if (!match) return slugify(fallbackMatch[0].trim())
 

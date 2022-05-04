@@ -22,4 +22,3 @@ void registerEvents()
 void bot.login(botToken)
 
 export default bot
-export { botToken, clientId, guildId }

@@ -1,23 +1,33 @@
 import commands from '../commands.js'
+import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
-import { isModerator } from '../utils.js'
+import { getErrorMessage, isModerator } from '../utils.js'
 
 bot.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
 
-  if (!interaction.guild) return await interaction.reply(`Unable to get guild.`)
+  if (!interaction.guild) return await interaction.reply(`Unable to get guild.`).catch(console.error)
   const member = await interaction.guild.members.fetch(interaction.user.id).catch(console.error)
-  if (!member) return await interaction.reply(`Unable to get member.`)
-  if (!(await isModerator(member)))
-    return await interaction.reply({ content: 'You do not have permission to run this command.', ephemeral: true })
+  if (!member) return await interaction.reply(`Unable to get member.`).catch(console.error)
+  if (!isModerator(member))
+    return await interaction
+      .reply({ content: 'You do not have permission to run this command.', ephemeral: true })
+      .catch(console.error)
+
+  if (interaction.options.getSubcommand() !== 'set' && !getSettings())
+    await interaction
+      .reply({ content: `app-bot has not been configured. Please run the '/settings set' command.`, ephemeral: true })
+      .catch(console.error)
 
   const command = commands.get(interaction.commandName)
-  if (!command) return
+  if (!command) return await interaction.reply(`Unable to get command.`).catch(console.error)
 
   try {
     await command.run(interaction)
   } catch (error) {
-    console.error(error)
-    await interaction.reply({ content: 'There was an error while running this command.', ephemeral: true })
+    const errorMessage = getErrorMessage(error)
+    await interaction
+      .reply({ content: `There was an error while running this command.\n${errorMessage}`, ephemeral: true })
+      .catch(console.error)
   }
 })

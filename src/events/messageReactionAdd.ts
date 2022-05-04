@@ -1,17 +1,16 @@
 import { getApplicant, removeApplicant } from '../applicant.js'
-import { checkSettings, Settings } from '../commands/settings.js'
+import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
-import storage from '../storage.js'
 
 bot.on('messageReactionAdd', async (reaction, user) => {
-  if (!(await checkSettings())) return
-  const settings = storage.getObject<Settings>('/settings')
+  const settings = getSettings()
+  if (!settings) return
 
   if (reaction.partial) await reaction.fetch().catch(console.error)
   if (user.partial) await user.fetch().catch(console.error)
 
   const channel = reaction.message.channel
-  if (!channel || channel.type !== 'GUILD_TEXT') return
+  if (channel.type !== 'GUILD_TEXT') return
 
   const applicant = getApplicant(channel.name)
   if (!applicant) return

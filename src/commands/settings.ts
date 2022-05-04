@@ -58,8 +58,8 @@ interface Settings {
 }
 
 async function listSettings(interaction: CommandInteraction) {
-  if (!(await checkSettings(interaction))) return
-  const settings = storage.getObject<Settings>('/settings')
+  const settings = getSettings()
+  if (!settings) return console.error('Unable to get settings.')
 
   const currentSettings =
     'Current Settings:' +
@@ -120,12 +120,9 @@ async function setSettings(interaction: CommandInteraction) {
   await listSettings(interaction)
 }
 
-async function checkSettings(interaction?: CommandInteraction) {
-  const settingsFound = storage.exists('/settings')
-  if (!settingsFound && interaction)
-    await interaction.reply(`app-bot has not been configured. Please run the '/settings set' command.`)
-  return settingsFound
+function getSettings() {
+  return storage.get<Settings>('/settings')
 }
 
 export default settings
-export { Settings, checkSettings }
+export { Settings, getSettings }

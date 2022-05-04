@@ -27,13 +27,9 @@ for (const file of commandFiles) {
 
 async function registerCommands(botToken: string, clientId: string, guildId: string) {
   const rest = new REST().setToken(botToken)
-  try {
-    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandData })
-    await rest.put(Routes.applicationCommands(clientId), { body: commandData })
-    console.log('Successfully registered application (/) commands.')
-  } catch (error) {
-    console.error(error)
-  }
+  await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandData }).catch(console.error)
+  await rest.put(Routes.applicationCommands(clientId), { body: commandData }).catch(console.error)
+  console.log('Registered application (/) commands.')
 }
 
 export default commands

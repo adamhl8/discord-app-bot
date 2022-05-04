@@ -1,15 +1,19 @@
 import { GuildMember, Permissions } from 'discord.js'
-import { checkSettings, Settings } from './commands/settings.js'
-import storage from './storage.js'
+import { getSettings } from './commands/settings.js'
 
-async function isModerator(member: GuildMember) {
+function isModerator(member: GuildMember) {
   const isAdmin = member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
-  if (!(await checkSettings())) return isAdmin
-  const settings = storage.getObject<Settings>('/settings')
+  const settings = getSettings()
+  if (!settings) return isAdmin
   const roles = member.roles.cache
   const officerRoleId = settings.officerRole.id
 
   return roles.has(officerRoleId) || isAdmin
 }
 
-export { isModerator }
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message
+  return ''
+}
+
+export { isModerator, getErrorMessage }

@@ -1,42 +1,35 @@
 import { Applicant, parseApplicantName, saveApplicant } from '../applicant.js'
-import { checkSettings, Settings } from '../commands/settings.js'
+import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
-import storage from '../storage.js'
 
 bot.on('messageCreate', async (message) => {
-  if (!(await checkSettings())) return
-  const settings = storage.getObject<Settings>('/settings')
+  const settings = getSettings()
+  if (!settings) return
+
   if (message.channelId !== settings.appsChannel.id) return
 
   const fields = message.embeds[0].fields
-  let tag
-
-  for (const element of fields) {
-    if (element.name === 'Discord Tag') {
-      tag = element.value
-      break
-    }
-  }
-
-  if (!tag) throw new Error('tag is undefined')
+  const tag = fields.find((element) => element.name === 'Discord Tag')?.value
+  if (!tag) return console.error('Unable to get tag.')
 
   const name = parseApplicantName(tag)
+  if (!name) return console.error('Unable to get name.')
 
-  try {
-    if (!message.guild) throw new Error(`failed to get guild`)
-    const appsCategory = await message.guild.channels.fetch(settings.appsCategory.id)
-    if (!appsCategory || appsCategory.type !== 'GUILD_CATEGORY') throw new Error('Unable to get appsCategory channel')
-    const channel = await appsCategory.createChannel(name)
-    await channel.send({ embeds: message.embeds })
+  if (!message.guild) return console.error(`Unable to get guild.`)
+  const appsCategory = await message.guild.channels.fetch(settings.appsCategory.id).catch(console.error)
+  if (!appsCategory || appsCategory.type !== 'GUILD_CATEGORY')
+    return console.error('Unable to get appsCategory channel.')
 
-    const applicant: Applicant = {
-      tag,
-      name,
-      appMessageId: message.id,
-      channelId: channel.id,
-    }
-    saveApplicant(applicant)
-  } catch {
-    throw new Error(`failed to create channel for ${tag}`)
+  const channel = await appsCategory.createChannel(name).catch(console.error)
+  if (!channel) return console.error('Unable to create channel.')
+  await channel.send({ embeds: message.embeds })
+
+  const applicant: Applicant = {
+    tag,
+    name,
+    appMessageId: message.id,
+    channelId: channel.id,
   }
+
+  saveApplicant(applicant)
 })
