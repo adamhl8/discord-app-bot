@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from '@discordjs/builders'
 import { REST } from '@discordjs/rest'
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/v10'
 import { Collection, CommandInteraction } from 'discord.js'
@@ -10,7 +10,10 @@ interface CommandImport {
 }
 
 interface Command {
-  data: SlashCommandBuilder
+  command:
+    | SlashCommandBuilder
+    | SlashCommandSubcommandsOnlyBuilder
+    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
   run: (interaction: CommandInteraction) => void | Promise<void>
 }
 
@@ -21,8 +24,8 @@ const commands = new Collection<string, Command>()
 const commandData: RESTPostAPIApplicationCommandsJSONBody[] = []
 for (const file of commandFiles) {
   const { default: command } = (await import(`${commandsDirectory}/${file}`)) as CommandImport
-  commands.set(command.data.name, command)
-  commandData.push(command.data.toJSON())
+  commands.set(command.command.name, command)
+  commandData.push(command.command.toJSON())
 }
 
 async function registerCommands(botToken: string, clientId: string, guildId: string) {

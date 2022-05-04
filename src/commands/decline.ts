@@ -3,40 +3,37 @@ import slugify from '@sindresorhus/slugify'
 import { CommandInteraction } from 'discord.js'
 import { getApplicant, saveApplicant } from '../applicant.js'
 import { Command } from '../commands.js'
-import storage from '../storage.js'
-import { checkSettings, Settings } from './settings.js'
+import { getSettings } from './settings.js'
 
 const decline: Command = {
-  data: new SlashCommandBuilder()
+  command: new SlashCommandBuilder()
     .setName('decline')
     .setDescription('Decline an applicant.')
-    .addStringOption((option) =>
+    .addChannelOption((option) =>
       option
-        .setName('applicant')
-        .setDescription('Enter the channel name of the applicant you wish to decline.')
+        .setName('channel')
+        .setDescription('Select the channel of the applicant you wish to decline.')
         .setRequired(true),
     )
     .addStringOption((option) =>
       option.setName('decline-message').setDescription('Leave blank to send the default decline message.'),
-    ) as SlashCommandBuilder,
+    ),
   run: async (interaction: CommandInteraction) => {
-    if (!(await checkSettings(interaction))) return
-    const settings = storage.getObject<Settings>('/settings')
+    const channel = interaction.options.getChannel('channel')
+    if (!channel || channel.type !== 'GUILD_TEXT')
+      return await interaction.reply('Unable to get channel.').catch(console.error)
 
-    const applicantName = interaction.options.getString('applicant')
-    if (!applicantName) return await interaction.reply('Unable to get applicant option.')
-
-    const name = slugify(applicantName)
+    const name = slugify(channel.name)
     const applicant = getApplicant(name)
-    if (!applicant) return await interaction.reply(`Applicant does not exist: ${name}`)
+    if (!applicant) return await interaction.reply(`Unable to get applicant ${name}.`).catch(console.error)
 
     if (!applicant.memberId)
-      return await interaction.reply(`Applicant is not in the server or hasn't been linked: ${name}`)
+      return await interaction
+        .reply(`Applicant is not in the server or hasn't been linked: ${name}`)
+        .catch(console.error)
 
-    if (!interaction.guild) return await interaction.reply(`Unable to get guild.`)
-    const channel = await interaction.guild.channels.fetch(applicant.channelId)
-    if (!channel || channel.type !== 'GUILD_TEXT')
-      return await interaction.reply(`Channel does not exist for applicant: ${name}`)
+    const settings = getSettings()
+    if (!settings) return
 
     const declineMessageString = interaction.options.getString('decline-message')
     const declineMessageText = declineMessageString ? declineMessageString : settings.declineMessage

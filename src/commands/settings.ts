@@ -4,7 +4,7 @@ import { Command } from '../commands.js'
 import storage from '../storage.js'
 
 const settings: Command = {
-  data: new SlashCommandBuilder()
+  command: new SlashCommandBuilder()
     .setName('settings')
     .setDescription('Configure app-bot.')
     .addSubcommand((subcommand) => subcommand.setName('list').setDescription('List current settings.'))
@@ -33,10 +33,10 @@ const settings: Command = {
         .addStringOption((option) =>
           option
             .setName('decline-message')
-            .setDescription('The message sent upon using the /decline command.')
+            .setDescription('The message sent to the applicant upon using the /decline command.')
             .setRequired(true),
         ),
-    ) as SlashCommandBuilder, // This shouldn't be here.
+    ),
   run: async (interaction: CommandInteraction) => {
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === 'list') await listSettings(interaction)
@@ -59,7 +59,7 @@ interface Settings {
 
 async function listSettings(interaction: CommandInteraction) {
   const settings = getSettings()
-  if (!settings) return console.error('Unable to get settings.')
+  if (!settings) return await interaction.reply('Unable to get settings.').catch(console.error)
 
   const currentSettings =
     'Current Settings:' +
@@ -71,40 +71,40 @@ async function listSettings(interaction: CommandInteraction) {
     `Decline Message: ${settings.declineMessage}\n` +
     '```'
 
-  await interaction.reply(currentSettings)
+  await interaction.reply(currentSettings).catch(console.error)
 }
 
 async function setSettings(interaction: CommandInteraction) {
   const officerRoleData = interaction.options.getRole('officer-role')
-  if (!officerRoleData) throw new Error('Error getting officer-role')
+  if (!officerRoleData) return await interaction.reply('Unable to get officer-role.').catch(console.error)
   const officerRole: Setting = {
     name: officerRoleData.name,
     id: officerRoleData.id,
   }
 
   const applicantRoleData = interaction.options.getRole('applicant-role')
-  if (!applicantRoleData) throw new Error('Error getting applicant-role')
+  if (!applicantRoleData) return await interaction.reply('Unable to get applicant-role.').catch(console.error)
   const applicantRole: Setting = {
     name: applicantRoleData.name,
     id: applicantRoleData.id,
   }
 
   const appsChannelData = interaction.options.getChannel('apps-channel')
-  if (!appsChannelData) throw new Error('Error getting apps-channel')
+  if (!appsChannelData) return await interaction.reply('Unable to get apps-channel.').catch(console.error)
   const appsChannel: Setting = {
     name: appsChannelData.name,
     id: appsChannelData.id,
   }
 
   const appsCategoryData = interaction.options.getChannel('apps-category')
-  if (!appsCategoryData) throw new Error('Error getting apps-category')
+  if (!appsCategoryData) return await interaction.reply('Unable to get apps-category.').catch(console.error)
   const appsCategory: Setting = {
     name: appsCategoryData.name,
     id: appsCategoryData.id,
   }
 
   const declineMessageData = interaction.options.getString('decline-message')
-  if (!declineMessageData) throw new Error('Error getting decline-message')
+  if (!declineMessageData) return await interaction.reply('Unable to get decline-message.').catch(console.error)
   const declineMessage = declineMessageData
 
   const settings: Settings = {
@@ -125,4 +125,4 @@ function getSettings() {
 }
 
 export default settings
-export { Settings, getSettings }
+export { getSettings }

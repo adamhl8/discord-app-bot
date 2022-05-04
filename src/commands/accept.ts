@@ -7,7 +7,7 @@ import storage from '../storage.js'
 import { checkSettings, Settings } from './settings.js'
 
 const accept: Command = {
-  data: new SlashCommandBuilder()
+  command: new SlashCommandBuilder()
     .setName('accept')
     .setDescription('Accept an applicant.')
     .addStringOption((option) =>
@@ -15,7 +15,7 @@ const accept: Command = {
         .setName('applicant')
         .setDescription('Enter the channel name of the applicant you wish to accept.')
         .setRequired(true),
-    ) as SlashCommandBuilder,
+    ),
   run: async (interaction: CommandInteraction) => {
     if (!(await checkSettings(interaction))) return
     const settings = storage.getObject<Settings>('/settings')

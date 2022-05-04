@@ -1,4 +1,4 @@
-import { getApplicant, parseApplicantName, saveApplicant } from '../applicant.js'
+import { appResponse, getApplicant, parseApplicantName, saveApplicant } from '../applicant.js'
 import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
 
@@ -22,8 +22,5 @@ bot.on('guildMemberAdd', async (member) => {
 
   await channel.permissionOverwrites.create(member.user, { VIEW_CHANNEL: true }).catch(console.error)
 
-  const appResponse =
-    `<@${applicant.memberId}>\n\n` +
-    'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
-  await channel.send(appResponse).catch(console.error)
+  await channel.send(appResponse(applicant.memberId)).catch(console.error)
 })

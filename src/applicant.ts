@@ -36,4 +36,11 @@ function parseApplicantName(tag: string): string | undefined {
   return slugify(match[1].trim()) + match[2]
 }
 
-export { getApplicant, saveApplicant, removeApplicant, parseApplicantName }
+function appResponse(memberId: string) {
+  return (
+    `<@${memberId}>\n\n` +
+    'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
+  )
+}
+
+export { getApplicant, saveApplicant, removeApplicant, parseApplicantName, appResponse }
