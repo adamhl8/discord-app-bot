@@ -28,9 +28,11 @@ for (const file of commandFiles) {
   commandData.push(command.command.toJSON())
 }
 
-async function registerCommands(botToken: string, clientId: string, guildId: string) {
+async function registerCommands(botToken: string, clientId: string, guildId?: string) {
   const rest = new REST().setToken(botToken)
-  await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandData }).catch(console.error)
+  if (guildId)
+    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandData }).catch(console.error)
+  else rest.put(Routes.applicationCommands(clientId), { body: commandData }).catch(console.error)
   console.log('Registered application (/) commands.')
 }
 
