@@ -17,7 +17,7 @@ bot.on('guildMemberAdd', async (member) => {
   applicant.memberId = member.id
   saveApplicant(applicant)
 
-  const channel = await member.guild.channels.fetch(applicant.channelId)
+  const channel = await member.guild.channels.fetch(applicant.channelId).catch(console.error)
   if (!channel || channel.type !== 'GUILD_TEXT') return console.error('Unable to get channel.')
 
   await channel.permissionOverwrites.create(member.user, { VIEW_CHANNEL: true }).catch(console.error)

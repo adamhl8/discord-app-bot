@@ -29,7 +29,7 @@ const decline: Command = {
 
     if (!applicant.memberId)
       return await interaction
-        .reply(`Applicant is not in the server or hasn't been linked: ${name}`)
+        .reply(`Applicant ${name} is not in the server or hasn't been linked.`)
         .catch(console.error)
 
     const settings = getSettings()
@@ -43,23 +43,26 @@ const decline: Command = {
         `<@${applicant.memberId}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed and you will be removed from the server.`,
       )
       .catch(console.error)
-    if (!declineMessage) return await interaction.reply(`Unable to send decline message for: ${name}`)
+    if (!declineMessage)
+      return await interaction.reply(`Unable to send decline message for ${name}.`).catch(console.error)
 
     await declineMessage.react('👍').catch(console.error)
 
     applicant.declineMessageId = declineMessage.id
     saveApplicant(applicant)
 
-    const appsChannel = await interaction.guild.channels.fetch(settings.appsChannel.id)
-    if (!appsChannel || appsChannel.type !== 'GUILD_TEXT') return await interaction.reply(`Could not get Apps Channel.`)
+    if (!interaction.guild) return await interaction.reply(`Unable to get guild.`).catch(console.error)
+    const appsChannel = await interaction.guild.channels.fetch(settings.appsChannel.id).catch(console.error)
+    if (!appsChannel || appsChannel.type !== 'GUILD_TEXT')
+      return await interaction.reply(`Unable to get Apps Channel.`).catch(console.error)
 
     const declinedEmoji = interaction.guild.emojis.cache.find((emoji) => emoji.name === 'declined')
-    if (!declinedEmoji) return await interaction.reply(`Unable to find declined emoji.`)
+    if (!declinedEmoji) return await interaction.reply(`Unable to get declined emoji.`).catch(console.error)
     const appMessage = await appsChannel.messages.fetch(applicant.appMessageId).catch(console.error)
-    if (!appMessage) return await interaction.reply(`Unable to get App Message.`)
+    if (!appMessage) return await interaction.reply(`Unable to get App Message.`).catch(console.error)
     await appMessage.react(declinedEmoji).catch(console.error)
 
-    await interaction.reply(`${name} has been declined.`)
+    await interaction.reply(`${name} has been declined.\n${declineMessageText}`)
   },
 }
 

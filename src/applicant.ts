@@ -1,5 +1,5 @@
 import slugify from '@sindresorhus/slugify'
-import storage from './storage.js'
+import storage, { storageGet } from './storage.js'
 
 export interface Applicant {
   tag: string
@@ -11,7 +11,7 @@ export interface Applicant {
 }
 
 function getApplicant(name: string): Applicant | undefined {
-  return storage.get<Applicant>(`/applicants/${name.toLowerCase()}`)
+  return storageGet<Applicant>(`/applicants/${name.toLowerCase()}`)
 }
 
 function saveApplicant(applicant: Applicant): void {

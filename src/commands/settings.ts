@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { CommandInteraction } from 'discord.js'
 import { Command } from '../commands.js'
-import storage from '../storage.js'
+import storage, { storageGet } from '../storage.js'
 
 const settings: Command = {
   command: new SlashCommandBuilder()
@@ -121,7 +121,7 @@ async function setSettings(interaction: CommandInteraction) {
 }
 
 function getSettings() {
-  return storage.get<Settings>('/settings')
+  return storageGet<Settings>('/settings')
 }
 
 export default settings

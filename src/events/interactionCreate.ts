@@ -14,8 +14,13 @@ bot.on('interactionCreate', async (interaction) => {
       .reply({ content: 'You do not have permission to run this command.', ephemeral: true })
       .catch(console.error)
 
-  if (interaction.options.getSubcommand() !== 'set' && !getSettings())
-    await interaction
+  let subcommand = ''
+  try {
+    subcommand = interaction.options.getSubcommand()
+    // eslint-disable-next-line no-empty
+  } catch {}
+  if (subcommand !== 'set' && !getSettings())
+    return await interaction
       .reply({ content: `app-bot has not been configured. Please run the '/settings set' command.`, ephemeral: true })
       .catch(console.error)
 
