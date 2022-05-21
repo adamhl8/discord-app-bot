@@ -17,6 +17,9 @@ const decline: Command = {
     )
     .addStringOption((option) =>
       option.setName('decline-message').setDescription('Leave blank to send the default decline message.'),
+    )
+    .addBooleanOption((option) =>
+      option.setName('kick').setDescription('Choose whether the applicant is kicked from the server. (Default: true)'),
     ),
   run: async (interaction: CommandInteraction) => {
     const channel = interaction.options.getChannel('channel')
@@ -38,9 +41,11 @@ const decline: Command = {
     const declineMessageString = interaction.options.getString('decline-message')
     const declineMessageText = declineMessageString ? declineMessageString : settings.declineMessage
 
+    const kick = interaction.options.getBoolean('kick') !== false
+    const kickText = !kick ? '.' : ' and you will be removed from the server.'
     const declineMessage = await channel
       .send(
-        `<@${applicant.memberId}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed and you will be removed from the server.`,
+        `<@${applicant.memberId}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed${kickText}`,
       )
       .catch(console.error)
     if (!declineMessage)
@@ -48,6 +53,7 @@ const decline: Command = {
 
     await declineMessage.react('👍').catch(console.error)
 
+    applicant.kick = kick
     applicant.declineMessageId = declineMessage.id
     saveApplicant(applicant)
 

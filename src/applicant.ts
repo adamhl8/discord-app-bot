@@ -8,6 +8,7 @@ export interface Applicant {
   channelId: string
   memberId?: string
   declineMessageId?: string
+  kick?: boolean
 }
 
 function getApplicant(name: string): Applicant | undefined {

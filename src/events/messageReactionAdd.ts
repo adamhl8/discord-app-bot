@@ -30,7 +30,7 @@ bot.on('messageReactionAdd', async (reaction, user) => {
   const member = await reaction.message.guild.members.fetch(applicant.memberId).catch(console.error)
   if (!member) return console.error(`Unable to get member.`)
 
-  await member.kick().catch(console.error)
+  await (applicant.kick ? member.kick().catch(console.error) : member.roles.remove(settings.applicantRole.id).catch(console.error));
 
   removeApplicant(applicant)
 })

@@ -8,7 +8,9 @@ bot.on('messageCreate', async (message) => {
 
   if (message.channelId !== settings.appsChannel.id) return
 
-  const fields = message.embeds[0].fields
+  const embed = message.embeds[0]
+  if (!embed) return
+  const fields = embed.fields
   const tag = fields.find((element) => element.name === 'Discord Tag')?.value
   if (!tag) return console.error('Unable to get tag.')
 
