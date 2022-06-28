@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import slugify from '@sindresorhus/slugify'
+import { Command } from 'discord-bot-shared'
 import { CommandInteraction } from 'discord.js'
 import { appResponse, getApplicant, saveApplicant } from '../applicant.js'
-import { Command } from '../commands.js'
 import { getSettings } from './settings.js'
 
 const link: Command = {
@@ -20,7 +20,7 @@ const link: Command = {
         .setName('applicant')
         .setDescription('The applicant to be linked to the selected channel.')
         .setRequired(true),
-    ),
+    ) as SlashCommandBuilder,
   run: async (interaction: CommandInteraction) => {
     const channel = interaction.options.getChannel('channel')
     if (!channel || channel.type !== 'GUILD_TEXT')

@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import slugify from '@sindresorhus/slugify'
+import { Command } from 'discord-bot-shared'
 import { CommandInteraction } from 'discord.js'
 import { getApplicant, removeApplicant } from '../applicant.js'
-import { Command } from '../commands.js'
 import { getSettings } from './settings.js'
 
 const accept: Command = {
@@ -14,7 +14,7 @@ const accept: Command = {
         .setName('channel')
         .setDescription('Select the channel of the applicant you wish to accept.')
         .setRequired(true),
-    ),
+    ) as SlashCommandBuilder,
   run: async (interaction: CommandInteraction) => {
     const channel = interaction.options.getChannel('channel')
     if (!channel || channel.type !== 'GUILD_TEXT')

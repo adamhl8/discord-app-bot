@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import slugify from '@sindresorhus/slugify'
+import { Command } from 'discord-bot-shared'
 import { CommandInteraction } from 'discord.js'
 import { getApplicant, saveApplicant } from '../applicant.js'
-import { Command } from '../commands.js'
 import { getSettings } from './settings.js'
 
 const decline: Command = {
@@ -20,7 +20,7 @@ const decline: Command = {
     )
     .addBooleanOption((option) =>
       option.setName('kick').setDescription('Choose whether the applicant is kicked from the server. (Default: true)'),
-    ),
+    ) as SlashCommandBuilder,
   run: async (interaction: CommandInteraction) => {
     const channel = interaction.options.getChannel('channel')
     if (!channel || channel.type !== 'GUILD_TEXT')

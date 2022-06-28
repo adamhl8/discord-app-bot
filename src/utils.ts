@@ -11,9 +11,4 @@ function isModerator(member: GuildMember) {
   return roles.has(officerRoleId) || isAdmin
 }
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message
-  return ''
-}
-
-export { isModerator, getErrorMessage }
+export { isModerator }

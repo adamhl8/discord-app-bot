@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
+import { Command } from 'discord-bot-shared'
 import { CommandInteraction } from 'discord.js'
-import { Command } from '../commands.js'
 import storage, { storageGet } from '../storage.js'
 
 const settings: Command = {
@@ -36,7 +36,7 @@ const settings: Command = {
             .setDescription('The message sent to the applicant upon using the /decline command.')
             .setRequired(true),
         ),
-    ),
+    ) as SlashCommandBuilder,
   run: async (interaction: CommandInteraction) => {
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === 'list') await listSettings(interaction)
