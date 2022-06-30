@@ -9,6 +9,6 @@ ENV GUILD_ID=
 WORKDIR /app
 
 COPY . .
-RUN npm install
+RUN npm ci --omit=dev
 
 CMD node --loader ts-node/esm ./src/index.ts
