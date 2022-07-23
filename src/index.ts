@@ -1,15 +1,16 @@
-import { login } from 'discord-bot-shared'
-import { ClientOptions, Intents } from 'discord.js'
+import login from 'discord-bot-shared'
+import { ClientOptions, GatewayIntentBits as Intents, Partials } from 'discord.js'
 import interactionCheck from './interactionCheck.js'
 
 const botIntents: ClientOptions = {
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.Guilds,
+    Intents.GuildMembers,
+    Intents.GuildMessages,
+    Intents.GuildMessageReactions,
+    Intents.MessageContent,
   ],
-  partials: ['REACTION'],
+  partials: [Partials.Reaction],
 }
 
 const bot = await login(botIntents, import.meta.url, interactionCheck)

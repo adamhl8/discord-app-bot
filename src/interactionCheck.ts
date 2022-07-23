@@ -1,25 +1,16 @@
-import { CommandInteraction } from 'discord.js'
+import { getGuildCache, throwError } from 'discord-bot-shared'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { getSettings } from './commands/settings.js'
-import { isModerator } from './utils.js'
+import { isModerator } from './util.js'
 
-async function interactionCheck(interaction: CommandInteraction) {
-  if (!interaction.guild) return await interaction.reply(`Unable to get guild.`).catch(console.error)
-  const member = await interaction.guild.members.fetch(interaction.user.id).catch(console.error)
-  if (!member) return await interaction.reply(`Unable to get member.`).catch(console.error)
-  if (!isModerator(member))
-    return await interaction
-      .reply({ content: 'You do not have permission to run this command.', ephemeral: true })
-      .catch(console.error)
+async function interactionCheck(interaction: ChatInputCommandInteraction) {
+  const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+  const member = members.get(interaction.user.id) || throwError('Unable to get member.')
+  if (!isModerator(member)) throwError('You do not have permission to run this command.')
 
-  let subcommand = ''
-  try {
-    subcommand = interaction.options.getSubcommand()
-    // eslint-disable-next-line no-empty
-  } catch {}
+  const subcommand = interaction.options.getSubcommand(false)
   if (subcommand !== 'set' && !getSettings())
-    return await interaction
-      .reply({ content: `app-bot has not been configured. Please run the '/settings set' command.`, ephemeral: true })
-      .catch(console.error)
+    throwError("app-bot has not been configured. Please run the '/settings set' command.")
 
   return true
 }

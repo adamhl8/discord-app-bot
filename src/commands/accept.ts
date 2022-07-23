@@ -1,7 +1,6 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import slugify from '@sindresorhus/slugify'
-import { Command } from 'discord-bot-shared'
-import { CommandInteraction } from 'discord.js'
+import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
+import { SlashCommandBuilder } from 'discord.js'
 import { getApplicant, removeApplicant } from '../applicant.js'
 import { getSettings } from './settings.js'
 
@@ -15,40 +14,30 @@ const accept: Command = {
         .setDescription('Select the channel of the applicant you wish to accept.')
         .setRequired(true),
     ) as SlashCommandBuilder,
-  run: async (interaction: CommandInteraction) => {
-    const channel = interaction.options.getChannel('channel')
-    if (!channel || channel.type !== 'GUILD_TEXT')
-      return await interaction.reply('Unable to get channel.').catch(console.error)
+  run: async (interaction) => {
+    const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
+    if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
     const name = slugify(channel.name)
-    const applicant = getApplicant(name)
-    if (!applicant) return await interaction.reply(`Unable to get applicant ${name}.`).catch(console.error)
+    const applicant = getApplicant(name) || throwError(`Unable to get applicant ${name}.`)
+    if (!applicant.memberId) throwError(`Applicant ${name} is not in the server or hasn't been linked.`)
 
-    if (!applicant.memberId)
-      return await interaction
-        .reply(`Applicant ${name} is not in the server or hasn't been linked.`)
-        .catch(console.error)
+    const { members, channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+    const member = members.get(applicant.memberId) || throwError(`Unable to get member.`)
 
-    if (!interaction.guild) return await interaction.reply(`Unable to get guild.`).catch(console.error)
-    const member = await interaction.guild.members.fetch(applicant.memberId).catch(console.error)
-    if (!member) return await interaction.reply(`Unable to get member.`).catch(console.error)
+    const settings = getSettings() || throwError('Unable to get settings.')
 
-    const settings = getSettings()
-    if (!settings) return
+    await member.roles.remove(settings.applicantRole.id)
+    await channel.delete()
 
-    await member.roles.remove(settings.applicantRole.id).catch(console.error)
+    const appsChannel = channels.get(settings.appsChannel.id) || throwError(`Unable to get Apps channel.`)
+    if (!isTextChannel(appsChannel)) throwError('Channel is not a text channel.')
 
-    await channel.delete().catch(console.error)
-
-    const appsChannel = await interaction.guild.channels.fetch(settings.appsChannel.id).catch(console.error)
-    if (!appsChannel || appsChannel.type !== 'GUILD_TEXT')
-      return await interaction.reply(`Could not get Apps Channel.`).catch(console.error)
-
-    const approvedEmoji = interaction.guild.emojis.cache.find((emoji) => emoji.name === 'approved')
-    if (!approvedEmoji) return await interaction.reply(`Unable to find approved emoji.`).catch(console.error)
-    const appMessage = await appsChannel.messages.fetch(applicant.appMessageId).catch(console.error)
-    if (!appMessage) return await interaction.reply(`Unable to get App Message.`).catch(console.error)
-    await appMessage.react(approvedEmoji).catch(console.error)
+    const approvedEmoji =
+      emojis.find((emoji) => emoji.name === 'approved') || throwError(`Unable to find approved emoji.`)
+    const appMessage =
+      (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
+    await appMessage.react(approvedEmoji)
 
     removeApplicant(applicant)
 

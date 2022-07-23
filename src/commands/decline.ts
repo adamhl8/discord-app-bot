@@ -1,7 +1,6 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import slugify from '@sindresorhus/slugify'
-import { Command } from 'discord-bot-shared'
-import { CommandInteraction } from 'discord.js'
+import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
+import { SlashCommandBuilder } from 'discord.js'
 import { getApplicant, saveApplicant } from '../applicant.js'
 import { getSettings } from './settings.js'
 
@@ -21,52 +20,39 @@ const decline: Command = {
     .addBooleanOption((option) =>
       option.setName('kick').setDescription('Choose whether the applicant is kicked from the server. (Default: true)'),
     ) as SlashCommandBuilder,
-  run: async (interaction: CommandInteraction) => {
-    const channel = interaction.options.getChannel('channel')
-    if (!channel || channel.type !== 'GUILD_TEXT')
-      return await interaction.reply('Unable to get channel.').catch(console.error)
+  run: async (interaction) => {
+    const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
+    if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
     const name = slugify(channel.name)
-    const applicant = getApplicant(name)
-    if (!applicant) return await interaction.reply(`Unable to get applicant ${name}.`).catch(console.error)
+    const applicant = getApplicant(name) || throwError(`Unable to get applicant ${name}.`)
+    if (!applicant.memberId) throwError(`Applicant ${name} is not in the server or hasn't been linked.`)
 
-    if (!applicant.memberId)
-      return await interaction
-        .reply(`Applicant ${name} is not in the server or hasn't been linked.`)
-        .catch(console.error)
-
-    const settings = getSettings()
-    if (!settings) return
+    const settings = getSettings() || throwError('Unable to get settings.')
 
     const declineMessageString = interaction.options.getString('decline-message')
     const declineMessageText = declineMessageString || settings.declineMessage
 
     const kick = interaction.options.getBoolean('kick') !== false
     const kickText = !kick ? '.' : ' and you will be removed from the server.'
-    const declineMessage = await channel
-      .send(
-        `<@${applicant.memberId}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed${kickText}`,
-      )
-      .catch(console.error)
-    if (!declineMessage)
-      return await interaction.reply(`Unable to send decline message for ${name}.`).catch(console.error)
-
-    await declineMessage.react('👍').catch(console.error)
+    const declineMessage = await channel.send(
+      `<@${applicant.memberId}>\n\n${declineMessageText}\n\nPlease click the 👍 reaction on this message to confirm that you have read this message. Upon confirmation your application will be closed${kickText}`,
+    )
+    await declineMessage.react('👍')
 
     applicant.kick = kick
     applicant.declineMessageId = declineMessage.id
     saveApplicant(applicant)
 
-    if (!interaction.guild) return await interaction.reply(`Unable to get guild.`).catch(console.error)
-    const appsChannel = await interaction.guild.channels.fetch(settings.appsChannel.id).catch(console.error)
-    if (!appsChannel || appsChannel.type !== 'GUILD_TEXT')
-      return await interaction.reply(`Unable to get Apps Channel.`).catch(console.error)
+    const { channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+    const appsChannel = channels.get(settings.appsChannel.id) || throwError('Unable to get Apps channel.')
+    if (!isTextChannel(appsChannel)) throwError('Channel is not a text channel.')
 
-    const declinedEmoji = interaction.guild.emojis.cache.find((emoji) => emoji.name === 'declined')
-    if (!declinedEmoji) return await interaction.reply(`Unable to get declined emoji.`).catch(console.error)
-    const appMessage = await appsChannel.messages.fetch(applicant.appMessageId).catch(console.error)
-    if (!appMessage) return await interaction.reply(`Unable to get App Message.`).catch(console.error)
-    await appMessage.react(declinedEmoji).catch(console.error)
+    const declinedEmoji =
+      emojis.find((emoji) => emoji.name === 'declined') || throwError(`Unable to get declined emoji.`)
+    const appMessage =
+      (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
+    await appMessage.react(declinedEmoji)
 
     await interaction.reply(`${name} has been declined.\n${declineMessageText}`)
   },

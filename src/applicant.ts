@@ -28,7 +28,7 @@ function parseApplicantName(tag: string): string | undefined {
 
   const fallbackMatch = /.+/g.exec(tag)
   if (!fallbackMatch) {
-    console.error(`unable to match Discord Tag: ${tag}`)
+    console.error(`Unable to match Discord tag: ${tag}`)
     return undefined
   }
 

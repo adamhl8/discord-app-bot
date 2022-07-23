@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { Command } from 'discord-bot-shared'
-import { CommandInteraction } from 'discord.js'
+import { Command, throwError } from 'discord-bot-shared'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import storage, { storageGet } from '../storage.js'
 
 const settings: Command = {
@@ -37,7 +36,7 @@ const settings: Command = {
             .setRequired(true),
         ),
     ) as SlashCommandBuilder,
-  run: async (interaction: CommandInteraction) => {
+  run: async (interaction) => {
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === 'list') await listSettings(interaction)
     if (subcommand === 'set') await setSettings(interaction)
@@ -57,9 +56,8 @@ interface Settings {
   declineMessage: string
 }
 
-async function listSettings(interaction: CommandInteraction) {
-  const settings = getSettings()
-  if (!settings) return await interaction.reply('Unable to get settings.').catch(console.error)
+async function listSettings(interaction: ChatInputCommandInteraction) {
+  const settings = getSettings() || throwError('Unable to get settings.')
 
   const currentSettings =
     'Current Settings:' +
@@ -71,40 +69,36 @@ async function listSettings(interaction: CommandInteraction) {
     `Decline Message: ${settings.declineMessage}\n` +
     '```'
 
-  await interaction.reply(currentSettings).catch(console.error)
+  await interaction.reply(currentSettings)
 }
 
-async function setSettings(interaction: CommandInteraction) {
-  const officerRoleData = interaction.options.getRole('officer-role')
-  if (!officerRoleData) return await interaction.reply('Unable to get officer-role.').catch(console.error)
+async function setSettings(interaction: ChatInputCommandInteraction) {
+  const officerRoleData = interaction.options.getRole('officer-role') || throwError('Unable to get officer-role.')
   const officerRole: Setting = {
     name: officerRoleData.name,
     id: officerRoleData.id,
   }
 
-  const applicantRoleData = interaction.options.getRole('applicant-role')
-  if (!applicantRoleData) return await interaction.reply('Unable to get applicant-role.').catch(console.error)
+  const applicantRoleData = interaction.options.getRole('applicant-role') || throwError('Unable to get applicant-role.')
   const applicantRole: Setting = {
     name: applicantRoleData.name,
     id: applicantRoleData.id,
   }
 
-  const appsChannelData = interaction.options.getChannel('apps-channel')
-  if (!appsChannelData) return await interaction.reply('Unable to get apps-channel.').catch(console.error)
+  const appsChannelData = interaction.options.getChannel('apps-channel') || throwError('Unable to get apps-channel.')
   const appsChannel: Setting = {
     name: appsChannelData.name,
     id: appsChannelData.id,
   }
 
-  const appsCategoryData = interaction.options.getChannel('apps-category')
-  if (!appsCategoryData) return await interaction.reply('Unable to get apps-category.').catch(console.error)
+  const appsCategoryData = interaction.options.getChannel('apps-category') || throwError('Unable to get apps-category.')
   const appsCategory: Setting = {
     name: appsCategoryData.name,
     id: appsCategoryData.id,
   }
 
-  const declineMessageData = interaction.options.getString('decline-message')
-  if (!declineMessageData) return await interaction.reply('Unable to get decline-message.').catch(console.error)
+  const declineMessageData =
+    interaction.options.getString('decline-message') || throwError('Unable to get decline-message.')
   const declineMessage = declineMessageData
 
   const settings: Settings = {
