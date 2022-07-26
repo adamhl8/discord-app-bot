@@ -1,4 +1,3 @@
-import slugify from '@sindresorhus/slugify'
 import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
 import { SlashCommandBuilder } from 'discord.js'
 import { getApplicant, saveApplicant } from '../applicant.js'
@@ -24,9 +23,8 @@ const decline: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const name = slugify(channel.name)
-    const applicant = getApplicant(name) || throwError(`Unable to get applicant ${name}.`)
-    if (!applicant.memberId) throwError(`Applicant ${name} is not in the server or hasn't been linked.`)
+    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
+    if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
 
     const settings = getSettings() || throwError('Unable to get settings.')
 
@@ -54,7 +52,7 @@ const decline: Command = {
       (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(declinedEmoji)
 
-    await interaction.reply(`${name} has been declined.\n${declineMessageText}`)
+    await interaction.reply(`${channel.name} has been declined.\n${declineMessageText}`)
   },
 }
 

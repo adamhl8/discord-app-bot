@@ -1,4 +1,3 @@
-import slugify from '@sindresorhus/slugify'
 import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
 import { SlashCommandBuilder } from 'discord.js'
 import { appResponse, getApplicant, saveApplicant } from '../applicant.js'
@@ -24,8 +23,7 @@ const link: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const name = slugify(channel.name)
-    const applicant = getApplicant(name) || throwError(`Unable to get applicant ${name}.`)
+    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
     const user = interaction.options.getUser('applicant') || throwError(`Unable to get user.`)
 
     const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
@@ -41,7 +39,7 @@ const link: Command = {
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
     await channel.send(appResponse(applicant.memberId))
 
-    await interaction.reply(`${member.user.tag} has been linked to ${name}.`)
+    await interaction.reply(`${member.user.tag} has been linked to ${channel.name}.`)
   },
 }
 

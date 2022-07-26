@@ -3,14 +3,14 @@ import { SlashCommandBuilder } from 'discord.js'
 import { getApplicant, removeApplicant } from '../applicant.js'
 import { getSettings } from './settings.js'
 
-const accept: Command = {
+const deleteApplication: Command = {
   command: new SlashCommandBuilder()
-    .setName('accept')
-    .setDescription('Accept an applicant.')
+    .setName('delete')
+    .setDescription('Delete an application.')
     .addChannelOption((option) =>
       option
         .setName('channel')
-        .setDescription('Select the channel of the applicant you wish to accept.')
+        .setDescription('Select the channel of the application you wish to delete.')
         .setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
@@ -18,29 +18,23 @@ const accept: Command = {
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
     const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
-    if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
-
-    const { members, channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
-    const member = members.get(applicant.memberId) || throwError(`Unable to get member.`)
-
     const settings = getSettings() || throwError('Unable to get settings.')
 
-    await member.roles.remove(settings.applicantRole.id)
-    await channel.delete()
-
-    const appsChannel = channels.get(settings.appsChannel.id) || throwError(`Unable to get Apps channel.`)
+    const { channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+    const appsChannel = channels.get(settings.appsChannel.id) || throwError('Unable to get Apps channel.')
     if (!isTextChannel(appsChannel)) throwError('Channel is not a text channel.')
 
-    const approvedEmoji =
-      emojis.find((emoji) => emoji.name === 'approved') || throwError(`Unable to find approved emoji.`)
+    const declinedEmoji =
+      emojis.find((emoji) => emoji.name === 'declined') || throwError(`Unable to get declined emoji.`)
     const appMessage =
       (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
-    await appMessage.react(approvedEmoji)
+    await appMessage.react(declinedEmoji)
 
+    await channel.delete()
     removeApplicant(applicant)
 
-    await interaction.reply(`${channel.name} has been accepted.`)
+    await interaction.reply(`${channel.name} has been deleted.`)
   },
 }
 
-export default accept
+export default deleteApplication
