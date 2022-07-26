@@ -19,6 +19,8 @@ async function handleMessageCreate(message: Message) {
   const tag = fields.find((element) => element.name === 'Discord Tag')?.value || throwError('Unable to get tag.')
   const name = parseApplicantName(tag) || throwError('Unable to get name.')
 
+  const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes('warcraftlogs'))?.value
+
   const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
   const appsCategory = channels.get(settings.appsCategory.id) || throwError('Unable to get Apps category.')
   if (!isCategoryChannel(appsCategory)) throwError('Channel is not a category channel.')
@@ -32,6 +34,8 @@ async function handleMessageCreate(message: Message) {
     appMessageId: message.id,
     channelId: channel.id,
   }
+
+  if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
   saveApplicant(applicant)
 }

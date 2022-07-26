@@ -9,6 +9,7 @@ export interface Applicant {
   memberId?: string
   declineMessageId?: string
   kick?: boolean
+  warcraftlogs?: string
 }
 
 function getApplicant(name: string): Applicant | undefined {
@@ -37,9 +38,9 @@ function parseApplicantName(tag: string): string | undefined {
   return slugify(match[1].trim()) + match[2]
 }
 
-function appResponse(memberId: string) {
+function appResponse(memberMention: string) {
   return (
-    `<@${memberId}>\n\n` +
+    `${memberMention}\n\n` +
     'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
   )
 }

@@ -3,6 +3,7 @@ import { GuildMember } from 'discord.js'
 import { appResponse, getApplicant, parseApplicantName, saveApplicant } from '../applicant.js'
 import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
+import { sendWarcraftlogsEmbed } from '../util.js'
 
 bot.on('guildMemberAdd', (member) => {
   void handleGuildMemberAdd(member).catch(console.error)
@@ -23,5 +24,7 @@ async function handleGuildMemberAdd(member: GuildMember) {
   if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
   await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
-  await channel.send(appResponse(applicant.memberId))
+  await channel.send(appResponse(member.toString()))
+
+  if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member.toString(), applicant.warcraftlogs)
 }

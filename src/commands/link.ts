@@ -1,6 +1,7 @@
 import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
 import { SlashCommandBuilder } from 'discord.js'
 import { appResponse, getApplicant, saveApplicant } from '../applicant.js'
+import { sendWarcraftlogsEmbed } from '../util.js'
 import { getSettings } from './settings.js'
 
 const link: Command = {
@@ -38,6 +39,8 @@ const link: Command = {
     await member.roles.add(settings.applicantRole.id)
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
     await channel.send(appResponse(applicant.memberId))
+
+    if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member.toString(), applicant.warcraftlogs)
 
     await interaction.reply(`${member.user.tag} has been linked to ${channel.name}.`)
   },
