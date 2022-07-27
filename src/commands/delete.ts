@@ -12,8 +12,13 @@ const deleteApplication: Command = {
         .setName('channel')
         .setDescription('Select the channel of the application you wish to delete.')
         .setRequired(true),
+    )
+    .addStringOption((option) =>
+      option.setName('reason').setDescription('Provide a reason for deletion.'),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    await interaction.deferReply()
+
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
@@ -30,10 +35,12 @@ const deleteApplication: Command = {
       (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(declinedEmoji)
 
+    const reason = interaction.options.getString('reason') || ''
+
     await channel.delete()
     removeApplicant(applicant)
 
-    await interaction.reply(`${channel.name} has been deleted.`)
+    await interaction.editReply(`${channel.name} has been deleted.\n${reason}`)
   },
 }
 

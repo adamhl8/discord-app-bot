@@ -28,8 +28,7 @@ const decline: Command = {
 
     const settings = getSettings() || throwError('Unable to get settings.')
 
-    const declineMessageString = interaction.options.getString('decline-message')
-    const declineMessageText = declineMessageString || settings.declineMessage
+    const declineMessageText = interaction.options.getString('decline-message') || settings.declineMessage
 
     const kick = interaction.options.getBoolean('kick') !== false
     const kickText = !kick ? '.' : ' and you will be removed from the server.'
