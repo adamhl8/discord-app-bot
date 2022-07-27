@@ -1,5 +1,6 @@
 import { getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
 import { EmbedBuilder, GuildMember } from 'discord.js'
+import getUrls from 'get-urls'
 import { getSettings } from './commands/settings.js'
 
 function isModerator(member: GuildMember) {
@@ -13,9 +14,15 @@ function isModerator(member: GuildMember) {
 }
 
 async function sendWarcraftlogsEmbed(memberMention: string, warcraftlogs: string) {
+  const warcraftlogsUrls = getUrls(warcraftlogs)
+  let warcraftlogsText = `\n\n`
+  for (const url of warcraftlogsUrls) {
+    warcraftlogsText += `${url}\n`
+  }
+
   const warcraftlogsEmbed = new EmbedBuilder()
     .setTitle('New Applicant')
-    .setDescription(`${memberMention}\n\n${warcraftlogs}`)
+    .setDescription(`${memberMention}${warcraftlogsText}`)
 
   const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
   const membersChannel =
