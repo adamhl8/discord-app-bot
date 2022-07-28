@@ -22,18 +22,18 @@ See the Commands section for more details.
 
 The only requirement for your Google From is that it has a short answer question with the name/title `Discord Tag`. Applicants must enter their Discord Tag in the correct format. e.g. User#1234
 
-It's recommended that you provide an invite link to your server at the end of the form. The applicant must join the server _after_ submitting their application for this bot to work as intended.
+It's recommended that you provide an invite link to your server at the end of the form. The applicant should join the server _after_ submitting their application for this bot to work as intended. If the applicant joins early or is not matched to their application correct, you can use the `/link` command to fix this.
 
 ### Discord Server Setup
 
-This bot requires that your Discord server is set up in a certain way. You can name the roles/channels whatever you want. See the Commands section on how to set your roles/channels if you're not using the default names.
+This bot requires that your Discord server is set up in a certain way. You can name the roles/channels whatever you want. See the Commands section for how to set your roles/channels.
 
-By default the bot looks for the following:
+The bot needs the following:
 
-- A role named `Officer`. Anyone with this role can manage applications through the bot.
-- A role named `Applicant`. This is the role automatically given to the applicant when they join the server.
-- A channel named `Apps`. This is the channel where you have your webhook set up for your form responses. The bot monitors for applications in this channel.
-- A category named `Applicants`. Applicant channels are created under this category.
+- An Officer/Moderator role. Anyone with this role can manage applications through the bot.
+- An Applicant role. This is the role automatically given to the applicant when they join the server.
+- An Applications channel. This is the channel where you have your webhook set up for your form responses. The bot monitors for applications in this channel.
+- An Applicants channel category. Applicant channels are created under this category.
 
 It's intended that you add the Applicant role to the Applicants category's permissions and decline the `View Channels` permission. That way the applicant can only see their own channel (applicants are automatically given permission to view their own channel when they join). You can also decline the `Send Messages` permission if you don't want applicants to be able to send messages in their own channel.
 
@@ -41,77 +41,43 @@ Additionally, you need to upload two custom server emoji:
 
 - One named `approved` and one named `declined`. If an applicant is approved/declined, the emoji is added as a reaction to the application in the apps channel.
 
-While completely optional, it's recommended that you create a separate channel specifically for sending bot commands.
+While completely optional, it's recommended that you create a separate channel specifically for sending bot commands, as this will serve as a log for processed applications.
 
 ### Bot Installation
 
-1. Install prerequisites. [pnpm](https://pnpm.io) is used as the package manager. [pm2](https://github.com/Unitech/pm2) is used to handle running the Node process.
-
 ```
-npm install -g pnpm pm2
-```
-
-2. Clone the repo.
-
-```
-git clone https://github.com/adamhl8/discord-app-bot.git
+docker run -d \
+  --name=discord-app-bot \
+  -e BOT_TOKEN=<YOUR_BOT_TOKEN>
+  -e CLIENT_ID=<YOUR_BOT_CLIENT_ID>
+  -v /path/to/storage.json:/app/storage.json \
+  --restart unless-stopped \
+  ghcr.io/adamhl8/discord-app-bot:latest
 ```
 
-3. Install dependencies.
-
-```
-pnpm i
-```
-
-4. Create a [Discord Developer Application](https://discord.com/developers/applications) for your bot.
-
-   - Make sure to turn on Server Members Intent in the Bot menu.
-
-5. Add the bot to your server using this link: `https://discord.com/api/oauth2/authorize?client_id=APP_ID&permissions=8&scope=bot`
-
-   - Replace "APP_ID" in the URL with your bot's Application ID (General Information menu).
-
-6. Create a file named `.env` in the root of the project directory and paste your bot's token (found in the Bot menu) in the file like this:
-
-```
-TOKEN=yourtokenhere
-```
-
-7. Start the bot.
-
-```
-pnpm start
-```
+- Before the first run, you will probably need to `echo "{}" | tee storage.json` to avoid errors.
+- You need to enable the `Server Members` and `Message Content` intents in your bot's settings.
 
 ## Commands
 
 Use the following commands to manage the bot and applicants.
 
-### Administrator Commands
+`/settings set <officer-role> <applicant-role> <apps-channel> <apps-category> <decline-message>` - The bot won't do anything unless this has been run.
 
-You must have Administrator permissions in the server to run these commands.
+`/settings list` - Prints current settings.
 
-`!init` - Prints current settings and command info.
+`/accept <applicant-channel>` - Accept an applicant.
 
-Use the following commands to override the default settings:
-`!officerRole roleName`
-`!applicantRole roleName`
-`!appsChannel channelName`
-`!applicantsCategory categoryName`
-`!declineMessage message`
+`/decline <applicant-channen>` - Decline an applicant.
 
-- `appsChannel` and `applicantsCategory` must have different names. For example, both can't be named `apps`.
+- Optionally takes:
+  - `<decline-message>` - Overwrite the default decline message.
+  - `<kick>` - Whether or not the applicant is kicked from the server on decline.
 
-### Bot Commands
+`/delete <applicant-channel>` - Delete an application.
+Optionally takes:
 
-`!d user1234 [message]` - Decline an applicant.
+- Optionally takes:
+  - `<reasnon>` - Provide a reason for the deletion.
 
-- The applicant is pinged and sent a message in their channel with the provided message (or the set declineMessage if one isn't provided). A 👍 emoji is added as a reaction to the message and the applicant is asked to confirm that they've read the message by clicking on the reaction. Once the applicant has reacted, they are removed from the server and the channel is deleted.
-
-- Those with the officer role can also click the reaction to close the application if the applicant never responds.
-
-`!a user1234` - Accept an applicant. The Applicant role is immediately removed from the applicant and their channel is deleted.
-
-`!l channelName1234 @userTag#1234` - Manually links a server member with an application. You can use this if an applicant did not correctly input their Discord Tag into the form or if they joined the server before submitting their application.
-
-- The applicant needs to actually be tagged in the command as if you were mentioning them normally. Once linked, the Applicant role is immediately applied and the application is handled as if the applicant had just joined the server.
+`/link <applicant-channel> <server-member>` - Link an application to a server member.
