@@ -68,7 +68,7 @@ Use the following commands to manage the bot and applicants.
 
 `/accept <applicant-channel>` - Accept an applicant.
 
-`/decline <applicant-channen>` - Decline an applicant.
+`/decline <applicant-channel>` - Decline an applicant.
 
 - Optionally takes:
   - `<decline-message>` - Overwrite the default decline message.
@@ -78,6 +78,6 @@ Use the following commands to manage the bot and applicants.
 Optionally takes:
 
 - Optionally takes:
-  - `<reasnon>` - Provide a reason for the deletion.
+  - `<reason>` - Provide a reason for the deletion.
 
 `/link <applicant-channel> <server-member>` - Link an application to a server member.
