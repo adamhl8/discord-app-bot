@@ -17,7 +17,7 @@ async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
   const channel = reaction.message.channel
   if (!isTextChannel(channel)) return
 
-  const applicant = getApplicant(channel.name)
+  const applicant = await getApplicant(channel.name)
   if (!applicant) return
 
   if (reaction.message.id !== applicant.declineMessageId) return
@@ -25,7 +25,7 @@ async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
   const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
   const guildMember = members.get(user.id) || throwError(`Unable to get guild member.`)
 
-  const settings = getSettings() || throwError('Unable to get settings.')
+  const settings = (await getSettings()) || throwError('Unable to get settings.')
 
   const officerRoleId = settings.officerRole.id
   if (!(guildMember.id === applicant.memberId || guildMember.roles.cache.has(officerRoleId))) return
@@ -37,5 +37,5 @@ async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
 
   await (applicant.kick ? member.kick() : member.roles.remove(settings.applicantRole.id))
 
-  removeApplicant(applicant)
+  await removeApplicant(applicant)
 }

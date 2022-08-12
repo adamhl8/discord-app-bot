@@ -6,10 +6,10 @@ import { isModerator } from './util.js'
 async function interactionCheck(interaction: ChatInputCommandInteraction) {
   const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
   const member = members.get(interaction.user.id) || throwError('Unable to get member.')
-  if (!isModerator(member)) throwError('You do not have permission to run this command.')
+  if (!(await isModerator(member))) throwError('You do not have permission to run this command.')
 
   const subcommand = interaction.options.getSubcommand(false)
-  if (subcommand !== 'set' && !getSettings())
+  if (subcommand !== 'set' && !(await getSettings()))
     throwError("app-bot has not been configured. Please run the '/settings set' command.")
 
   return true

@@ -23,10 +23,10 @@ const decline: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
     if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
 
-    const settings = getSettings() || throwError('Unable to get settings.')
+    const settings = (await getSettings()) || throwError('Unable to get settings.')
 
     const declineMessageText = interaction.options.getString('decline-message') || settings.declineMessage
 
@@ -39,7 +39,7 @@ const decline: Command = {
 
     applicant.kick = kick
     applicant.declineMessageId = declineMessage.id
-    saveApplicant(applicant)
+    await saveApplicant(applicant)
 
     const { channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
     const appsChannel = channels.get(settings.appsChannel.id) || throwError('Unable to get Apps channel.')

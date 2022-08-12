@@ -57,7 +57,7 @@ interface Settings {
 }
 
 async function listSettings(interaction: ChatInputCommandInteraction) {
-  const settings = getSettings() || throwError('Unable to get settings.')
+  const settings = (await getSettings()) || throwError('Unable to get settings.')
 
   const currentSettings =
     'Current Settings:' +
@@ -109,13 +109,13 @@ async function setSettings(interaction: ChatInputCommandInteraction) {
     declineMessage,
   }
 
-  storage.push('/settings', settings)
+  await storage.push('/settings', settings)
 
   await listSettings(interaction)
 }
 
-function getSettings() {
-  return storageGet<Settings>('/settings')
+async function getSettings() {
+  return await storageGet<Settings>('/settings')
 }
 
 export default settings

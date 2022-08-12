@@ -22,8 +22,8 @@ const deleteApplication: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
-    const settings = getSettings() || throwError('Unable to get settings.')
+    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
+    const settings = (await getSettings()) || throwError('Unable to get settings.')
 
     const { channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
     const appsChannel = channels.get(settings.appsChannel.id) || throwError('Unable to get Apps channel.')
@@ -38,7 +38,7 @@ const deleteApplication: Command = {
     const reason = interaction.options.getString('reason') || ''
 
     await channel.delete()
-    removeApplicant(applicant)
+    await removeApplicant(applicant)
 
     await interaction.editReply(`${channel.name} has been deleted.\n${reason}`)
   },

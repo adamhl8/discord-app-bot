@@ -11,13 +11,13 @@ bot.on('guildMemberAdd', (member) => {
 
 async function handleGuildMemberAdd(member: GuildMember) {
   const name = parseApplicantName(member.user.tag) || throwError('Unable to parse applicant name.')
-  const applicant = getApplicant(name)
+  const applicant = await getApplicant(name)
   if (!applicant) return
-  const settings = getSettings() || throwError('Unable to get settings.')
+  const settings = (await getSettings()) || throwError('Unable to get settings.')
 
   await member.roles.add(settings.applicantRole.id)
   applicant.memberId = member.id
-  saveApplicant(applicant)
+  await saveApplicant(applicant)
 
   const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
   const channel = channels.get(applicant.channelId) || throwError('Unable to get channel.')

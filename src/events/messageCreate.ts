@@ -9,7 +9,7 @@ bot.on('messageCreate', (message) => {
 })
 
 async function handleMessageCreate(message: Message) {
-  const settings = getSettings()
+  const settings = await getSettings()
   if (!settings) return
 
   if (message.channelId !== settings.appsChannel.id) return
@@ -37,5 +37,5 @@ async function handleMessageCreate(message: Message) {
 
   if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
-  saveApplicant(applicant)
+  await saveApplicant(applicant)
 }

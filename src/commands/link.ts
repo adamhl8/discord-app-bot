@@ -24,7 +24,7 @@ const link: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
     const user = interaction.options.getUser('applicant') || throwError(`Unable to get user.`)
 
     const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
@@ -32,9 +32,9 @@ const link: Command = {
 
     applicant.memberId = member.id
     applicant.tag = member.user.tag
-    saveApplicant(applicant)
+    await saveApplicant(applicant)
 
-    const settings = getSettings() || throwError('Unable to get settings.')
+    const settings = (await getSettings()) || throwError('Unable to get settings.')
 
     await member.roles.add(settings.applicantRole.id)
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })

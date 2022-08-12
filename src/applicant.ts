@@ -12,16 +12,16 @@ export interface Applicant {
   warcraftlogs?: string
 }
 
-function getApplicant(name: string): Applicant | undefined {
-  return storageGet<Applicant>(`/applicants/${name.toLowerCase()}`)
+async function getApplicant(name: string): Promise<Applicant | undefined> {
+  return await storageGet<Applicant>(`/applicants/${name.toLowerCase()}`)
 }
 
-function saveApplicant(applicant: Applicant): void {
-  storage.push(`/applicants/${applicant.name.toLowerCase()}`, applicant)
+async function saveApplicant(applicant: Applicant): Promise<void> {
+  await storage.push(`/applicants/${applicant.name.toLowerCase()}`, applicant)
 }
 
-function removeApplicant(applicant: Applicant): void {
-  storage.delete(`/applicants/${applicant.name.toLowerCase()}`)
+async function removeApplicant(applicant: Applicant): Promise<void> {
+  await storage.delete(`/applicants/${applicant.name.toLowerCase()}`)
 }
 
 function parseApplicantName(tag: string): string | undefined {

@@ -17,13 +17,13 @@ const accept: Command = {
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
-    const applicant = getApplicant(channel.name) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
     if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
 
     const { members, channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
     const member = members.get(applicant.memberId) || throwError(`Unable to get member.`)
 
-    const settings = getSettings() || throwError('Unable to get settings.')
+    const settings = (await getSettings()) || throwError('Unable to get settings.')
 
     await member.roles.remove(settings.applicantRole.id)
     await channel.delete()
@@ -37,7 +37,7 @@ const accept: Command = {
       (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(approvedEmoji)
 
-    removeApplicant(applicant)
+    await removeApplicant(applicant)
 
     await interaction.reply(`${channel.name} has been accepted.`)
   },
