@@ -40,7 +40,7 @@ const link: Command = {
 
     await member.roles.add(settings.applicantRole.id)
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
-    await channel.send(appResponse(applicant.memberId))
+    await channel.send(appResponse(member.toString()))
 
     if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member.toString(), applicant.warcraftlogs)
 
