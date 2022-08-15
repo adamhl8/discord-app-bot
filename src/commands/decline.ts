@@ -20,6 +20,8 @@ const decline: Command = {
       option.setName('kick').setDescription('Choose whether the applicant is kicked from the server. (Default: true)'),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    await interaction.deferReply()
+
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
@@ -51,7 +53,7 @@ const decline: Command = {
       (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(declinedEmoji)
 
-    await interaction.reply(`${channel.name} has been declined.\n${declineMessageText}`)
+    await interaction.editReply(`${channel.name} has been declined.\n${declineMessageText}`)
   },
 }
 

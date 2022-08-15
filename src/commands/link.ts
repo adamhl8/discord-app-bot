@@ -21,6 +21,8 @@ const link: Command = {
         .setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    await interaction.deferReply()
+
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
@@ -42,7 +44,7 @@ const link: Command = {
 
     if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member.toString(), applicant.warcraftlogs)
 
-    await interaction.reply(`${member.user.tag} has been linked to ${channel.name}.`)
+    await interaction.editReply(`${member.user.tag} has been linked to ${channel.name}.`)
   },
 }
 

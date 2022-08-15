@@ -14,6 +14,8 @@ const accept: Command = {
         .setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    await interaction.deferReply()
+
     const channel = interaction.options.getChannel('channel') || throwError('Unable to get channel.')
     if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
 
@@ -39,7 +41,7 @@ const accept: Command = {
 
     await removeApplicant(applicant)
 
-    await interaction.reply(`${channel.name} has been accepted.`)
+    await interaction.editReply(`${channel.name} has been accepted.`)
   },
 }
 
