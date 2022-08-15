@@ -50,12 +50,11 @@ docker run -d \
   --name=discord-app-bot \
   -e BOT_TOKEN=<YOUR_BOT_TOKEN>
   -e CLIENT_ID=<YOUR_BOT_CLIENT_ID>
-  -v /path/to/storage.json:/app/storage.json \
+  -v ./data/:/app/data/ \
   --restart unless-stopped \
   ghcr.io/adamhl8/discord-app-bot:latest
 ```
 
-- Before the first run, you will probably need to `echo "{}" | tee storage.json` to avoid errors.
 - You need to enable the `Server Members` and `Message Content` intents in your bot's settings.
 
 ## Commands
