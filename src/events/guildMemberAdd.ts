@@ -1,5 +1,5 @@
-import { getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
-import { GuildMember } from 'discord.js'
+import { getChannel, throwError } from 'discord-bot-shared'
+import { ChannelType, GuildMember, TextChannel } from 'discord.js'
 import { appResponse, getApplicant, parseApplicantName, saveApplicant } from '../applicant.js'
 import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
@@ -19,10 +19,7 @@ async function handleGuildMemberAdd(member: GuildMember) {
   applicant.memberId = member.id
   await saveApplicant(applicant)
 
-  const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
-  const channel = channels.get(applicant.channelId) || throwError('Unable to get channel.')
-  if (!isTextChannel(channel)) throwError('Channel is not a text channel.')
-
+  const channel = (await getChannel<TextChannel>(applicant.channelId, ChannelType.GuildText)) || throwError('Unable to get channel.')
   await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
   await channel.send(appResponse(member.toString()))
 

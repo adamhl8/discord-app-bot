@@ -9,8 +9,7 @@ async function interactionCheck(interaction: ChatInputCommandInteraction) {
   if (!(await isModerator(member))) throwError('You do not have permission to run this command.')
 
   const subcommand = interaction.options.getSubcommand(false)
-  if (subcommand !== 'set' && !(await getSettings()))
-    throwError("app-bot has not been configured. Please run the '/settings set' command.")
+  if (subcommand !== 'set' && !(await getSettings())) throwError("app-bot has not been configured. Please run the '/settings set' command.")
 
   return true
 }

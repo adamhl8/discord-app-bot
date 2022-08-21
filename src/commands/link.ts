@@ -9,16 +9,10 @@ const link: Command = {
     .setName('link')
     .setDescription('Link an applicant.')
     .addChannelOption((option) =>
-      option
-        .setName('channel')
-        .setDescription('Select the channel that the applicant will be linked to.')
-        .setRequired(true),
+      option.setName('channel').setDescription('Select the channel that the applicant will be linked to.').setRequired(true),
     )
     .addUserOption((option) =>
-      option
-        .setName('applicant')
-        .setDescription('The applicant to be linked to the selected channel.')
-        .setRequired(true),
+      option.setName('applicant').setDescription('The applicant to be linked to the selected channel.').setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
     await interaction.deferReply()

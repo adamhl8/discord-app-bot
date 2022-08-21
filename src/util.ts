@@ -1,5 +1,5 @@
-import { getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
-import { GuildMember } from 'discord.js'
+import { getChannel, throwError } from 'discord-bot-shared'
+import { ChannelType, GuildMember, TextChannel } from 'discord.js'
 import getUrls from 'get-urls'
 import { getSettings } from './commands/settings.js'
 
@@ -20,11 +20,7 @@ async function sendWarcraftlogsEmbed(memberMention: string, warcraftlogs: string
     warcraftlogsText += `${url}\n`
   }
 
-  const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
-  const membersChannel =
-    channels.find((channel) => channel.name === 'members') || throwError('Unable to get members channel.')
-  if (!isTextChannel(membersChannel)) throwError('Channel is not a text channel.')
-
+  const membersChannel = (await getChannel<TextChannel>('members', ChannelType.GuildText)) || throwError('Unable to get members channel.')
   await membersChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
 }
 

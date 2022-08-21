@@ -40,8 +40,7 @@ function parseApplicantName(tag: string): string | undefined {
 
 function appResponse(memberMention: string) {
   return (
-    `${memberMention}\n\n` +
-    'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
+    `${memberMention}\n\n` + 'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
   )
 }
 

@@ -3,13 +3,7 @@ import { ClientOptions, GatewayIntentBits as Intents, Partials } from 'discord.j
 import interactionCheck from './interactionCheck.js'
 
 const botIntents: ClientOptions = {
-  intents: [
-    Intents.Guilds,
-    Intents.GuildMembers,
-    Intents.GuildMessages,
-    Intents.GuildMessageReactions,
-    Intents.MessageContent,
-  ],
+  intents: [Intents.Guilds, Intents.GuildMembers, Intents.GuildMessages, Intents.GuildMessageReactions, Intents.MessageContent],
   partials: [Partials.Reaction],
 }
 

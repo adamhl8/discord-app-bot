@@ -12,14 +12,9 @@ const settings: Command = {
         .setName('set')
         .setDescription('Set all app-bot settings.')
         .addRoleOption((option) =>
-          option
-            .setName('officer-role')
-            .setDescription('Members must have this role to interact with app-bot.')
-            .setRequired(true),
+          option.setName('officer-role').setDescription('Members must have this role to interact with app-bot.').setRequired(true),
         )
-        .addRoleOption((option) =>
-          option.setName('applicant-role').setDescription('The role given to each applicant.').setRequired(true),
-        )
+        .addRoleOption((option) => option.setName('applicant-role').setDescription('The role given to each applicant.').setRequired(true))
         .addChannelOption((option) =>
           option.setName('apps-channel').setDescription('The channel where applications are posted.').setRequired(true),
         )
@@ -97,8 +92,7 @@ async function setSettings(interaction: ChatInputCommandInteraction) {
     id: appsCategoryData.id,
   }
 
-  const declineMessageData =
-    interaction.options.getString('decline-message') || throwError('Unable to get decline-message.')
+  const declineMessageData = interaction.options.getString('decline-message') || throwError('Unable to get decline-message.')
   const declineMessage = declineMessageData
 
   const settings: Settings = {

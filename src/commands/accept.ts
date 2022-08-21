@@ -1,5 +1,5 @@
-import { Command, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
-import { SlashCommandBuilder } from 'discord.js'
+import { Command, getChannel, getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
+import { ChannelType, SlashCommandBuilder, TextChannel } from 'discord.js'
 import { getApplicant, removeApplicant } from '../applicant.js'
 import { getSettings } from './settings.js'
 
@@ -8,10 +8,7 @@ const accept: Command = {
     .setName('accept')
     .setDescription('Accept an applicant.')
     .addChannelOption((option) =>
-      option
-        .setName('channel')
-        .setDescription('Select the channel of the applicant you wish to accept.')
-        .setRequired(true),
+      option.setName('channel').setDescription('Select the channel of the applicant you wish to accept.').setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
     await interaction.deferReply()
@@ -22,7 +19,7 @@ const accept: Command = {
     const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
     if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
 
-    const { members, channels, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+    const { members, emojis } = (await getGuildCache()) || throwError('Unable to get guild cache.')
     const member = members.get(applicant.memberId) || throwError(`Unable to get member.`)
 
     const settings = (await getSettings()) || throwError('Unable to get settings.')
@@ -30,13 +27,11 @@ const accept: Command = {
     await member.roles.remove(settings.applicantRole.id)
     await channel.delete()
 
-    const appsChannel = channels.get(settings.appsChannel.id) || throwError(`Unable to get Apps channel.`)
-    if (!isTextChannel(appsChannel)) throwError('Channel is not a text channel.')
+    const appsChannel =
+      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText)) || throwError(`Unable to get Apps channel.`)
 
-    const approvedEmoji =
-      emojis.find((emoji) => emoji.name === 'approved') || throwError(`Unable to find approved emoji.`)
-    const appMessage =
-      (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
+    const approvedEmoji = emojis.find((emoji) => emoji.name === 'approved') || throwError(`Unable to find approved emoji.`)
+    const appMessage = (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(approvedEmoji)
 
     await removeApplicant(applicant)

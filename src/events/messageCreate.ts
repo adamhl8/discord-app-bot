@@ -1,5 +1,5 @@
-import { getGuildCache, isCategoryChannel, throwError } from 'discord-bot-shared'
-import { Message } from 'discord.js'
+import { getChannel, throwError } from 'discord-bot-shared'
+import { CategoryChannel, ChannelType, Message } from 'discord.js'
 import { Applicant, parseApplicantName, saveApplicant } from '../applicant.js'
 import { getSettings } from '../commands/settings.js'
 import bot from '../index.js'
@@ -21,9 +21,8 @@ async function handleMessageCreate(message: Message) {
 
   const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes('warcraftlogs'))?.value
 
-  const { channels } = (await getGuildCache()) || throwError('Unable to get guild cache.')
-  const appsCategory = channels.get(settings.appsCategory.id) || throwError('Unable to get Apps category.')
-  if (!isCategoryChannel(appsCategory)) throwError('Channel is not a category channel.')
+  const appsCategory =
+    (await getChannel<CategoryChannel>(settings.appsCategory.id, ChannelType.GuildCategory)) || throwError('Unable to get Apps category.')
 
   const channel = (await appsCategory.children.create({ name })) || throwError('Unable to create channel.')
   await channel.send({ embeds: message.embeds })
