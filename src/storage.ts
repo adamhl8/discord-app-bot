@@ -1,5 +1,4 @@
-import { JsonDB } from 'node-json-db'
-import { Config } from 'node-json-db/dist/lib/JsonDBConfig.js'
+import { Config, JsonDB } from 'node-json-db'
 
 const storage = new JsonDB(new Config('./data/storage', true, true, '/'))
 
