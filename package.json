@@ -10,7 +10,7 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "lint": "eslint -f pretty --fix .",
+    "lint": "eslint -f pretty",
     "start": "ts-node-esm ./src/index.ts"
   },
   "dependencies": {
