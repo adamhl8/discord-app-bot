@@ -1,6 +1,6 @@
-import { Config, JsonDB } from 'node-json-db'
+import { Config, JsonDB } from "node-json-db"
 
-const storage = new JsonDB(new Config('./data/storage', true, true, '/'))
+const storage = new JsonDB(new Config("./data/storage", true, true, "/"))
 
 async function storageGet<T>(dataPath: string): Promise<T | undefined> {
   if (!(await storage.exists(dataPath))) return undefined

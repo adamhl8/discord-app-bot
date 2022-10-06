@@ -1,10 +1,10 @@
-import { getGuildCache, isTextChannel, throwError } from 'discord-bot-shared'
-import { MessageReaction, User } from 'discord.js'
-import { getApplicant, removeApplicant } from '../applicant.js'
-import { getSettings } from '../commands/settings.js'
-import bot from '../index.js'
+import { getGuildCache, isTextChannel, throwError } from "discord-bot-shared"
+import { MessageReaction, User } from "discord.js"
+import { getApplicant, removeApplicant } from "../applicant.js"
+import { getSettings } from "../commands/settings.js"
+import bot from "../index.js"
 
-bot.on('messageReactionAdd', async (reactionOrPartial, userOrPartial) => {
+bot.on("messageReactionAdd", async (reactionOrPartial, userOrPartial) => {
   const reaction = await reactionOrPartial.fetch().catch(console.error)
   if (!reaction) return
   const user = await userOrPartial.fetch().catch(console.error)
@@ -22,10 +22,10 @@ async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
 
   if (reaction.message.id !== applicant.declineMessageId) return
 
-  const { members } = (await getGuildCache()) || throwError('Unable to get guild cache.')
+  const { members } = (await getGuildCache()) || throwError("Unable to get guild cache.")
   const guildMember = members.get(user.id) || throwError(`Unable to get guild member.`)
 
-  const settings = (await getSettings()) || throwError('Unable to get settings.')
+  const settings = (await getSettings()) || throwError("Unable to get settings.")
 
   const officerRoleId = settings.officerRole.id
   if (!(guildMember.id === applicant.memberId || guildMember.roles.cache.has(officerRoleId))) return

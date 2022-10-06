@@ -1,10 +1,10 @@
-import { getChannel, throwError } from 'discord-bot-shared'
-import { ChannelType, GuildMember, TextChannel } from 'discord.js'
-import getUrls from 'get-urls'
-import { getSettings } from './commands/settings.js'
+import { getChannel, throwError } from "discord-bot-shared"
+import { ChannelType, GuildMember, TextChannel } from "discord.js"
+import getUrls from "get-urls"
+import { getSettings } from "./commands/settings.js"
 
 async function isModerator(member: GuildMember) {
-  const isAdmin = member.permissions.has('Administrator')
+  const isAdmin = member.permissions.has("Administrator")
   const settings = await getSettings()
   if (!settings) return isAdmin
   const roles = member.roles.cache
@@ -20,7 +20,7 @@ async function sendWarcraftlogsEmbed(memberMention: string, warcraftlogs: string
     warcraftlogsText += `${url}\n`
   }
 
-  const membersChannel = (await getChannel<TextChannel>('members', ChannelType.GuildText)) || throwError('Unable to get members channel.')
+  const membersChannel = (await getChannel<TextChannel>("members", ChannelType.GuildText)) || throwError("Unable to get members channel.")
   await membersChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
 }
 

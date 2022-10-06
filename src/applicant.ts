@@ -1,5 +1,5 @@
-import slugify from '@sindresorhus/slugify'
-import storage, { storageGet } from './storage.js'
+import slugify from "@sindresorhus/slugify"
+import storage, { storageGet } from "./storage.js"
 
 export interface Applicant {
   tag: string
@@ -28,19 +28,19 @@ function parseApplicantName(tag: string): string | undefined {
   const match = /(.+)#.*?(\d+)/g.exec(tag)
 
   const fallbackMatch = /.+/g.exec(tag)
-  if (!fallbackMatch) {
+  if (!fallbackMatch || !fallbackMatch[0]) {
     console.error(`Unable to match Discord tag: ${tag}`)
-    return undefined
+    return
   }
 
-  if (!match) return slugify(fallbackMatch[0].trim())
+  if (!match || !match[1] || !match[2]) return slugify(fallbackMatch[0].trim())
 
   return slugify(match[1].trim()) + match[2]
 }
 
 function appResponse(memberMention: string) {
   return (
-    `${memberMention}\n\n` + 'Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.'
+    `${memberMention}\n\n` + "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response."
   )
 }
 

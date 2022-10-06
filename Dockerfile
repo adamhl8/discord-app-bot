@@ -9,6 +9,6 @@ ENV GUILD_ID=
 WORKDIR /app
 
 COPY . .
-RUN npm ci --omit=dev
+RUN npm i --omit=dev
 
-CMD node --loader ts-node/esm ./src/index.ts
+CMD node --enable-source-maps ./dist/index.js
