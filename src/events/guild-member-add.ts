@@ -10,18 +10,21 @@ bot.on("guildMemberAdd", (member) => {
 })
 
 async function handleGuildMemberAdd(member: GuildMember) {
+  if (!member.guild.id) throwError("Unable to get guild ID.")
+
   const name = parseApplicantName(member.user.tag) || throwError("Unable to parse applicant name.")
-  const applicant = await getApplicant(name)
+  const applicant = await getApplicant(name, member.guild.id)
   if (!applicant) return
-  const settings = (await getSettings()) || throwError("Unable to get settings.")
+  const settings = (await getSettings(member.guild.id)) || throwError("Unable to get settings.")
 
   await member.roles.add(settings.applicantRole.id)
   applicant.memberId = member.id
-  await saveApplicant(applicant)
+  await saveApplicant(applicant, member.guild.id)
 
-  const channel = (await getChannel<TextChannel>(applicant.channelId, ChannelType.GuildText)) || throwError("Unable to get channel.")
+  const channel =
+    (await getChannel<TextChannel>(applicant.channelId, ChannelType.GuildText, member.guild.id)) || throwError("Unable to get channel.")
   await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
   await channel.send(appResponse(member.toString()))
 
-  if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member.toString(), applicant.warcraftlogs)
+  if (settings.postLogs && applicant.warcraftlogs) await sendWarcraftlogsEmbed(member, applicant.warcraftlogs)
 }

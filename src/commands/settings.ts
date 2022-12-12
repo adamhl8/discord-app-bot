@@ -29,6 +29,15 @@ const settings: Command = {
             .setName("decline-message")
             .setDescription("The message sent to the applicant upon using the /decline command.")
             .setRequired(true),
+        )
+        .addBooleanOption((option) =>
+          option
+            .setName("post-logs")
+            .setDescription("If the applicant's Warcraft Logs should be posted (to members-channel).")
+            .setRequired(true),
+        )
+        .addChannelOption((option) =>
+          option.setName("post-logs-channel").setDescription("The channel where the applicant's Warcraft Logs will be posted."),
         ),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
@@ -49,10 +58,16 @@ interface Settings {
   appsChannel: Setting
   appsCategory: Setting
   declineMessage: string
+  postLogs: boolean
+  postLogsChannel: Setting | undefined
 }
 
 async function listSettings(interaction: ChatInputCommandInteraction) {
-  const settings = (await getSettings()) || throwError("Unable to get settings.")
+  const guildId = interaction.guildId
+  if (!guildId) throwError("Unable to get guild ID.")
+  const settings = (await getSettings(guildId)) || throwError("Unable to get settings.")
+
+  const postLogsChannel = settings.postLogsChannel ? settings.postLogsChannel.name : "Not set"
 
   const currentSettings =
     "Current Settings:" +
@@ -62,12 +77,16 @@ async function listSettings(interaction: ChatInputCommandInteraction) {
     `Apps Channel: ${settings.appsChannel.name}\n` +
     `Apps Category: ${settings.appsCategory.name}\n` +
     `Decline Message: ${settings.declineMessage}\n` +
+    `Post Logs: ${settings.postLogs ? "True" : "False"}\n` +
+    `Post Logs Channel: ${postLogsChannel}\n` +
     "```"
 
   await interaction.reply(currentSettings)
 }
 
 async function setSettings(interaction: ChatInputCommandInteraction) {
+  const channelNameError = "Unable to get channel name"
+
   const officerRoleData = interaction.options.getRole("officer-role") || throwError("Unable to get officer-role.")
   const officerRole: Setting = {
     name: officerRoleData.name,
@@ -82,18 +101,29 @@ async function setSettings(interaction: ChatInputCommandInteraction) {
 
   const appsChannelData = interaction.options.getChannel("apps-channel") || throwError("Unable to get apps-channel.")
   const appsChannel: Setting = {
-    name: appsChannelData.name,
+    name: appsChannelData.name ?? channelNameError,
     id: appsChannelData.id,
   }
 
   const appsCategoryData = interaction.options.getChannel("apps-category") || throwError("Unable to get apps-category.")
   const appsCategory: Setting = {
-    name: appsCategoryData.name,
+    name: appsCategoryData.name ?? channelNameError,
     id: appsCategoryData.id,
   }
 
   const declineMessageData = interaction.options.getString("decline-message") || throwError("Unable to get decline-message.")
   const declineMessage = declineMessageData
+
+  const postLogsData = interaction.options.getBoolean("post-logs") ?? throwError("Unable to get post-logs.")
+  const postLogs = postLogsData
+
+  const postLogsChannelData = interaction.options.getChannel("post-logs-channel")
+  const postLogsChannel = postLogsChannelData
+    ? {
+        name: postLogsChannelData.name ?? channelNameError,
+        id: postLogsChannelData.id,
+      }
+    : undefined
 
   const settings: Settings = {
     officerRole,
@@ -101,15 +131,20 @@ async function setSettings(interaction: ChatInputCommandInteraction) {
     appsChannel,
     appsCategory,
     declineMessage,
+    postLogs,
+    postLogsChannel,
   }
 
-  await storage.push("/settings", settings)
+  const guildId = interaction.guildId
+  if (!guildId) throwError("Unable to get guild ID.")
+
+  await storage.push(`/${guildId}/settings`, settings)
 
   await listSettings(interaction)
 }
 
-async function getSettings() {
-  return await storageGet<Settings>("/settings")
+async function getSettings(guildId: string) {
+  return await storageGet<Settings>(`/${guildId}/settings`)
 }
 
 export default settings

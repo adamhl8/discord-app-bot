@@ -9,7 +9,8 @@ bot.on("messageCreate", (message) => {
 })
 
 async function handleMessageCreate(message: Message) {
-  const settings = await getSettings()
+  if (!message.guildId) throwError("Unable to get guild ID.")
+  const settings = await getSettings(message.guildId)
   if (!settings) return
 
   if (message.channelId !== settings.appsChannel.id) return
@@ -22,7 +23,8 @@ async function handleMessageCreate(message: Message) {
   const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
   const appsCategory =
-    (await getChannel<CategoryChannel>(settings.appsCategory.id, ChannelType.GuildCategory)) || throwError("Unable to get Apps category.")
+    (await getChannel<CategoryChannel>(settings.appsCategory.id, ChannelType.GuildCategory, message.guildId)) ||
+    throwError("Unable to get Apps category.")
 
   const channel = (await appsCategory.children.create({ name })) || throwError("Unable to create channel.")
   await channel.send({ embeds: message.embeds })
@@ -36,5 +38,5 @@ async function handleMessageCreate(message: Message) {
 
   if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
-  await saveApplicant(applicant)
+  await saveApplicant(applicant, message.guildId)
 }

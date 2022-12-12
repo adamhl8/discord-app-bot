@@ -17,12 +17,14 @@ const deleteApplication: Command = {
     const channel = interaction.options.getChannel("channel") || throwError("Unable to get channel.")
     if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
 
-    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
-    const settings = (await getSettings()) || throwError("Unable to get settings.")
+    if (!interaction.guildId) throwError("Unable to get guild ID.")
+    const applicant = (await getApplicant(channel.name, interaction.guildId)) || throwError(`Unable to get applicant ${channel.name}.`)
+    const settings = (await getSettings(interaction.guildId)) || throwError("Unable to get settings.")
 
-    const { emojis } = (await getGuildCache()) || throwError("Unable to get guild cache.")
+    const { emojis } = (await getGuildCache(interaction.guildId)) || throwError("Unable to get guild cache.")
     const appsChannel =
-      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText)) || throwError("Unable to get Apps channel.")
+      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText, interaction.guildId)) ||
+      throwError("Unable to get Apps channel.")
 
     const declinedEmoji = emojis.find((emoji) => emoji.name === "declined") || throwError(`Unable to get declined emoji.`)
     const appMessage = (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
@@ -31,7 +33,7 @@ const deleteApplication: Command = {
     const reason = interaction.options.getString("reason") || ""
 
     await channel.delete()
-    await removeApplicant(applicant)
+    await removeApplicant(applicant, interaction.guildId)
 
     await interaction.editReply(`${channel.name} has been deleted.\n${reason}`)
   },

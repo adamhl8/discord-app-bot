@@ -11,30 +11,33 @@ const accept: Command = {
       option.setName("channel").setDescription("Select the channel of the applicant you wish to accept.").setRequired(true),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    if (!interaction.guildId) throwError("Unable to get guild ID.")
+
     await interaction.deferReply()
 
     const channel = interaction.options.getChannel("channel") || throwError("Unable to get channel.")
     if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
 
-    const applicant = (await getApplicant(channel.name)) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name, interaction.guildId)) || throwError(`Unable to get applicant ${channel.name}.`)
     if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
 
-    const { members, emojis } = (await getGuildCache()) || throwError("Unable to get guild cache.")
+    const { members, emojis } = (await getGuildCache(interaction.guildId)) || throwError("Unable to get guild cache.")
     const member = members.get(applicant.memberId) || throwError(`Unable to get member.`)
 
-    const settings = (await getSettings()) || throwError("Unable to get settings.")
+    const settings = (await getSettings(interaction.guildId)) || throwError("Unable to get settings.")
 
     await member.roles.remove(settings.applicantRole.id)
     await channel.delete()
 
     const appsChannel =
-      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText)) || throwError(`Unable to get Apps channel.`)
+      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText, interaction.guildId)) ||
+      throwError(`Unable to get Apps channel.`)
 
     const approvedEmoji = emojis.find((emoji) => emoji.name === "approved") || throwError(`Unable to find approved emoji.`)
     const appMessage = (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
     await appMessage.react(approvedEmoji)
 
-    await removeApplicant(applicant)
+    await removeApplicant(applicant, interaction.guildId)
 
     await interaction.editReply(`${channel.name} has been accepted.`)
   },
