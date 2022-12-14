@@ -1,5 +1,4 @@
-import { throwError } from "discord-bot-shared"
-import Guild from "discord-bot-shared/dist/types/Guild.js"
+import { Guild, throwError } from "discord-bot-shared"
 import { ChannelType, GuildMember, TextChannel } from "discord.js"
 import getUrls from "get-urls"
 import { getSettings, Settings } from "./commands/settings.js"
