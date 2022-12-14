@@ -1,32 +1,34 @@
-import { getGuildCache, isTextChannel, throwError } from "discord-bot-shared"
-import { MessageReaction, User } from "discord.js"
+import { isTextChannel, throwError } from "discord-bot-shared"
+import { Client, MessageReaction, User } from "discord.js"
 import { getApplicant, removeApplicant } from "../applicant.js"
-import { getSettings } from "../commands/settings.js"
-import bot from "../index.js"
+import { getGuildInfo } from "../util.js"
 
-bot.on("messageReactionAdd", async (reactionOrPartial, userOrPartial) => {
-  const reaction = await reactionOrPartial.fetch().catch(console.error)
-  if (!reaction) return
-  const user = await userOrPartial.fetch().catch(console.error)
-  if (!user) return
+function registerMessageReactionAdd(bot: Client) {
+  bot.on("messageReactionAdd", async (reactionOrPartial, userOrPartial) => {
+    const reaction = await reactionOrPartial.fetch().catch(console.error)
+    if (!reaction) return
+    const user = await userOrPartial.fetch().catch(console.error)
+    if (!user) return
 
-  void handleMessageReactionAdd(reaction, user).catch(console.error)
-})
+    void handleMessageReactionAdd(reaction, user).catch(console.error)
+  })
+}
 
 async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
+  if (!reaction.message.guildId) return
+  const { guild, settings } = await getGuildInfo(reaction.message.guildId)
+  if (!settings) return
+
   const channel = reaction.message.channel
   if (!isTextChannel(channel)) return
 
-  if (!reaction.message.guildId) throwError("Unable to get guild ID.")
-  const applicant = await getApplicant(channel.name, reaction.message.guildId)
+  const applicant = await getApplicant(channel.name, guild.id)
   if (!applicant) return
 
   if (reaction.message.id !== applicant.declineMessageId) return
 
-  const { members } = (await getGuildCache(reaction.message.guildId)) || throwError("Unable to get guild cache.")
+  const members = await guild.members
   const guildMember = members.get(user.id) || throwError(`Unable to get guild member.`)
-
-  const settings = (await getSettings(reaction.message.guildId)) || throwError("Unable to get settings.")
 
   const officerRoleId = settings.officerRole.id
   if (!(guildMember.id === applicant.memberId || guildMember.roles.cache.has(officerRoleId))) return
@@ -38,5 +40,7 @@ async function handleMessageReactionAdd(reaction: MessageReaction, user: User) {
 
   await (applicant.kick ? member.kick() : member.roles.remove(settings.applicantRole.id))
 
-  await removeApplicant(applicant, reaction.message.guildId)
+  await removeApplicant(applicant, guild.id)
 }
+
+export default registerMessageReactionAdd

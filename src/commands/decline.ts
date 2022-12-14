@@ -1,7 +1,7 @@
-import { Command, getChannel, getGuildCache, isTextChannel, throwError } from "discord-bot-shared"
+import { Command, isTextChannel, throwError } from "discord-bot-shared"
 import { ChannelType, SlashCommandBuilder, TextChannel } from "discord.js"
 import { getApplicant, saveApplicant } from "../applicant.js"
-import { getSettings } from "./settings.js"
+import { getGuildInfo } from "../util.js"
 
 const decline: Command = {
   command: new SlashCommandBuilder()
@@ -15,15 +15,17 @@ const decline: Command = {
       option.setName("kick").setDescription("Choose whether the applicant is kicked from the server. (Default: true)"),
     ) as SlashCommandBuilder,
   run: async (interaction) => {
+    if (!interaction.guildId) throwError("Unable to get guild ID.")
+    const { guild, settings } = await getGuildInfo(interaction.guildId)
+    if (!settings) return
+
     await interaction.deferReply()
 
     const channel = interaction.options.getChannel("channel") || throwError("Unable to get channel.")
     if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
-    if (!interaction.guildId) throwError("Unable to get guild ID.")
 
-    const applicant = (await getApplicant(channel.name, interaction.guildId)) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name, guild.id)) || throwError(`Unable to get applicant ${channel.name}.`)
     if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
-    const settings = (await getSettings(interaction.guildId)) || throwError("Unable to get settings.")
 
     const declineMessageText = interaction.options.getString("decline-message") || settings.declineMessage
 
@@ -36,12 +38,11 @@ const decline: Command = {
 
     applicant.kick = kick
     applicant.declineMessageId = declineMessage.id
-    await saveApplicant(applicant, interaction.guildId)
+    await saveApplicant(applicant, guild.id)
 
-    const { emojis } = (await getGuildCache(interaction.guildId)) || throwError("Unable to get guild cache.")
+    const emojis = await guild.emojis
     const appsChannel =
-      (await getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText, interaction.guildId)) ||
-      throwError("Unable to get Apps channel.")
+      (await guild.getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText)) || throwError("Unable to get Apps channel.")
 
     const declinedEmoji = emojis.find((emoji) => emoji.name === "declined") || throwError(`Unable to get declined emoji.`)
     const appMessage = (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)

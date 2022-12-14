@@ -1,7 +1,21 @@
-import { getChannel, throwError } from "discord-bot-shared"
+import { throwError } from "discord-bot-shared"
+import Guild from "discord-bot-shared/dist/types/Guild.js"
 import { ChannelType, GuildMember, TextChannel } from "discord.js"
 import getUrls from "get-urls"
-import { getSettings } from "./commands/settings.js"
+import { getSettings, Settings } from "./commands/settings.js"
+import { getGuildCollection } from "./index.js"
+
+interface GuildInfo {
+  guild: Guild
+  settings: Settings | undefined
+}
+
+async function getGuildInfo(guildId: string): Promise<GuildInfo> {
+  const GuildCollection = getGuildCollection()
+  const guild = GuildCollection.get(guildId) || throwError("Unable to get guild.")
+  const settings = await getSettings(guild.id)
+  return { guild, settings }
+}
 
 async function isModerator(member: GuildMember) {
   if (!member.guild.id) throwError("Unable to get guild ID.")
@@ -14,9 +28,11 @@ async function isModerator(member: GuildMember) {
   return roles.has(officerRoleId) || isAdmin
 }
 
-async function sendWarcraftlogsEmbed(member: GuildMember, warcraftlogs: string) {
-  if (!member.guild.id) throwError("Unable to get guild ID.")
-  const settings = (await getSettings(member.guild.id)) || throwError("Unable to get settings.")
+async function sendWarcraftlogsMessage(guildInfo: GuildInfo, memberMention: string, warcraftlogs: string) {
+  const { guild, settings } = guildInfo
+  if (!settings) return
+
+  if (!(settings.postLogs && settings.postLogsChannel)) return
 
   const warcraftlogsUrls = getUrls(warcraftlogs)
   let warcraftlogsText = `\n\n`
@@ -24,11 +40,11 @@ async function sendWarcraftlogsEmbed(member: GuildMember, warcraftlogs: string) 
     warcraftlogsText += `${url}\n`
   }
 
-  if (!settings.postLogsChannel) throwError("Unable to get post logs channel.")
   const postLogsChannel =
-    (await getChannel<TextChannel>(settings.postLogsChannel.id, ChannelType.GuildText, member.guild.id)) ||
-    throwError("Unable to get members channel.")
-  await postLogsChannel.send(`New Applicant: ${member.toString()}${warcraftlogsText}`)
+    (await guild.getChannel<TextChannel>(settings.postLogsChannel.id, ChannelType.GuildText)) ||
+    throwError("Unable to get post logs channel.")
+
+  await postLogsChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
 }
 
-export { isModerator, sendWarcraftlogsEmbed }
+export { getGuildInfo, isModerator, sendWarcraftlogsMessage }

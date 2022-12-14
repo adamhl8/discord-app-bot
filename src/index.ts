@@ -1,5 +1,7 @@
 import login from "discord-bot-shared"
 import { ClientOptions, GatewayIntentBits as Intents, Partials } from "discord.js"
+import commands from "./commands/_commands.js"
+import events from "./events/_events.js"
 import interactionCheck from "./interaction-check.js"
 
 const botIntents: ClientOptions = {
@@ -7,6 +9,8 @@ const botIntents: ClientOptions = {
   partials: [Partials.Reaction],
 }
 
-const bot = await login(botIntents, import.meta.url, interactionCheck)
+const { GuildCollection } = await login(botIntents, commands, events, interactionCheck)
 
-export default bot
+const getGuildCollection = () => GuildCollection
+
+export { getGuildCollection }

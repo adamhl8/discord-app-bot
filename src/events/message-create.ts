@@ -1,16 +1,17 @@
-import { getChannel, throwError } from "discord-bot-shared"
-import { CategoryChannel, ChannelType, Message } from "discord.js"
+import { throwError } from "discord-bot-shared"
+import { CategoryChannel, ChannelType, Client, Message } from "discord.js"
 import { Applicant, parseApplicantName, saveApplicant } from "../applicant.js"
-import { getSettings } from "../commands/settings.js"
-import bot from "../index.js"
+import { getGuildInfo } from "../util.js"
 
-bot.on("messageCreate", (message) => {
-  void handleMessageCreate(message).catch(console.error)
-})
+function registerMessageCreate(bot: Client) {
+  bot.on("messageCreate", (message) => {
+    void handleMessageCreate(message).catch(console.error)
+  })
+}
 
 async function handleMessageCreate(message: Message) {
-  if (!message.guildId) throwError("Unable to get guild ID.")
-  const settings = await getSettings(message.guildId)
+  if (!message.guildId) return
+  const { guild, settings } = await getGuildInfo(message.guildId)
   if (!settings) return
 
   if (message.channelId !== settings.appsChannel.id) return
@@ -23,7 +24,7 @@ async function handleMessageCreate(message: Message) {
   const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
   const appsCategory =
-    (await getChannel<CategoryChannel>(settings.appsCategory.id, ChannelType.GuildCategory, message.guildId)) ||
+    (await guild.getChannel<CategoryChannel>(settings.appsCategory.id, ChannelType.GuildCategory)) ||
     throwError("Unable to get Apps category.")
 
   const channel = (await appsCategory.children.create({ name })) || throwError("Unable to create channel.")
@@ -38,5 +39,7 @@ async function handleMessageCreate(message: Message) {
 
   if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
-  await saveApplicant(applicant, message.guildId)
+  await saveApplicant(applicant, guild.id)
 }
+
+export default registerMessageCreate

@@ -1,8 +1,7 @@
-import { Command, getGuildCache, isTextChannel, throwError } from "discord-bot-shared"
+import { Command, isTextChannel, throwError } from "discord-bot-shared"
 import { SlashCommandBuilder } from "discord.js"
 import { appResponse, getApplicant, saveApplicant } from "../applicant.js"
-import { sendWarcraftlogsEmbed } from "../util.js"
-import { getSettings } from "./settings.js"
+import { getGuildInfo, sendWarcraftlogsMessage } from "../util.js"
 
 const link: Command = {
   command: new SlashCommandBuilder()
@@ -16,29 +15,29 @@ const link: Command = {
     ) as SlashCommandBuilder,
   run: async (interaction) => {
     if (!interaction.guildId) throwError("Unable to get guild ID.")
+    const { guild, settings } = await getGuildInfo(interaction.guildId)
+    if (!settings) return
 
     await interaction.deferReply()
 
     const channel = interaction.options.getChannel("channel") || throwError("Unable to get channel.")
     if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
 
-    const applicant = (await getApplicant(channel.name, interaction.guildId)) || throwError(`Unable to get applicant ${channel.name}.`)
+    const applicant = (await getApplicant(channel.name, guild.id)) || throwError(`Unable to get applicant ${channel.name}.`)
     const user = interaction.options.getUser("applicant") || throwError(`Unable to get user.`)
 
-    const { members } = (await getGuildCache(interaction.guildId)) || throwError("Unable to get guild cache.")
+    const members = await guild.members
     const member = members.get(user.id) || throwError(`Unable to get member.`)
 
     applicant.memberId = member.id
     applicant.tag = member.user.tag
-    await saveApplicant(applicant, interaction.guildId)
-
-    const settings = (await getSettings(interaction.guildId)) || throwError("Unable to get settings.")
+    await saveApplicant(applicant, guild.id)
 
     await member.roles.add(settings.applicantRole.id)
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
     await channel.send(appResponse(member.toString()))
 
-    if (applicant.warcraftlogs) await sendWarcraftlogsEmbed(member, applicant.warcraftlogs)
+    if (applicant.warcraftlogs) await sendWarcraftlogsMessage({ guild, settings }, member.toString(), applicant.warcraftlogs)
 
     await interaction.editReply(`${member.user.tag} has been linked to ${channel.name}.`)
   },

@@ -52,7 +52,7 @@ interface Setting {
   id: string
 }
 
-interface Settings {
+export interface Settings {
   officerRole: Setting
   applicantRole: Setting
   appsChannel: Setting
