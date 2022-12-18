@@ -39,8 +39,9 @@ const settings: Command = {
         .addChannelOption((option) =>
           option.setName("post-logs-channel").setDescription("The channel where the applicant's Warcraft Logs will be posted."),
         ),
-    ) as SlashCommandBuilder,
-  run: async (interaction) => {
+    )
+    .toJSON(),
+  run: async (_, interaction) => {
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === "list") await listSettings(interaction)
     if (subcommand === "set") await setSettings(interaction)

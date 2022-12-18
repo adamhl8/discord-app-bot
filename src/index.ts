@@ -1,16 +1,22 @@
-import login from "discord-bot-shared"
+import { Bot } from "discord-bot-shared"
 import { ClientOptions, GatewayIntentBits as Intents, Partials } from "discord.js"
-import commands from "./commands/_commands.js"
-import events from "./events/_events.js"
+import { addCommands } from "./commands/_commands.js"
+import { addEvents } from "./events/_events.js"
 import interactionCheck from "./interaction-check.js"
 
-const botIntents: ClientOptions = {
+const applicationId = process.env.APPLICATION_ID || ""
+const token = process.env.BOT_TOKEN || ""
+
+const clientOptions: ClientOptions = {
   intents: [Intents.Guilds, Intents.GuildMembers, Intents.GuildMessages, Intents.GuildMessageReactions, Intents.MessageContent],
   partials: [Partials.Reaction],
 }
 
-const { GuildCollection } = await login(botIntents, commands, events, interactionCheck)
+const bot = new Bot({ applicationId, token, clientOptions })
 
-const getGuildCollection = () => GuildCollection
+bot.commands.setGlobalPreRunHook(interactionCheck)
 
-export { getGuildCollection }
+addCommands(bot)
+addEvents(bot)
+
+await bot.login()

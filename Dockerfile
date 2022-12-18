@@ -2,8 +2,8 @@ FROM node:slim
 
 LABEL org.opencontainers.image.source https://github.com/adamlh8/discord-app-bot
 
+ENV APPLICATION_ID=
 ENV BOT_TOKEN=
-ENV CLIENT_ID=
 
 WORKDIR /app
 

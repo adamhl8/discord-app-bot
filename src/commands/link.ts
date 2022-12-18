@@ -1,7 +1,8 @@
 import { Command, isTextChannel, throwError } from "discord-bot-shared"
 import { SlashCommandBuilder } from "discord.js"
 import { appResponse, getApplicant, saveApplicant } from "../applicant.js"
-import { getGuildInfo, sendWarcraftlogsMessage } from "../util.js"
+import { sendWarcraftlogsMessage } from "../util.js"
+import { getSettings } from "./settings.js"
 
 const link: Command = {
   command: new SlashCommandBuilder()
@@ -12,10 +13,11 @@ const link: Command = {
     )
     .addUserOption((option) =>
       option.setName("applicant").setDescription("The applicant to be linked to the selected channel.").setRequired(true),
-    ) as SlashCommandBuilder,
-  run: async (interaction) => {
-    if (!interaction.guildId) throwError("Unable to get guild ID.")
-    const { guild, settings } = await getGuildInfo(interaction.guildId)
+    )
+    .toJSON(),
+  run: async (context, interaction) => {
+    const guild = context.guild
+    const settings = await getSettings(guild.id)
     if (!settings) return
 
     await interaction.deferReply()
@@ -26,7 +28,7 @@ const link: Command = {
     const applicant = (await getApplicant(channel.name, guild.id)) || throwError(`Unable to get applicant ${channel.name}.`)
     const user = interaction.options.getUser("applicant") || throwError(`Unable to get user.`)
 
-    const members = await guild.members
+    const members = await guild.members.fetch()
     const member = members.get(user.id) || throwError(`Unable to get member.`)
 
     applicant.memberId = member.id

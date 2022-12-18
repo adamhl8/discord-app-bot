@@ -1,19 +1,11 @@
-import { Guild, throwError } from "discord-bot-shared"
-import { ChannelType, GuildMember, TextChannel } from "discord.js"
+import { getChannel, throwError } from "discord-bot-shared"
+import { ChannelType, Guild, GuildMember, TextChannel } from "discord.js"
 import getUrls from "get-urls"
 import { getSettings, Settings } from "./commands/settings.js"
-import { getGuildCollection } from "./index.js"
 
 interface GuildInfo {
   guild: Guild
   settings: Settings | undefined
-}
-
-async function getGuildInfo(guildId: string): Promise<GuildInfo> {
-  const GuildCollection = getGuildCollection()
-  const guild = GuildCollection.get(guildId) || throwError("Unable to get guild.")
-  const settings = await getSettings(guild.id)
-  return { guild, settings }
 }
 
 async function isModerator(member: GuildMember) {
@@ -39,11 +31,10 @@ async function sendWarcraftlogsMessage(guildInfo: GuildInfo, memberMention: stri
     warcraftlogsText += `${url}\n`
   }
 
-  const postLogsChannel =
-    (await guild.getChannel<TextChannel>(settings.postLogsChannel.id, ChannelType.GuildText)) ||
-    throwError("Unable to get post logs channel.")
+  const postLogsChannel = await getChannel<TextChannel>(guild, settings.postLogsChannel.id, ChannelType.GuildText)
+  if (!postLogsChannel) throwError("Unable to get post logs channel.")
 
   await postLogsChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
 }
 
-export { getGuildInfo, isModerator, sendWarcraftlogsMessage }
+export { isModerator, sendWarcraftlogsMessage }

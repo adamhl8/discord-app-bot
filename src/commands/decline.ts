@@ -1,7 +1,7 @@
-import { Command, isTextChannel, throwError } from "discord-bot-shared"
+import { Command, getChannel, isTextChannel, throwError } from "discord-bot-shared"
 import { ChannelType, SlashCommandBuilder, TextChannel } from "discord.js"
 import { getApplicant, saveApplicant } from "../applicant.js"
-import { getGuildInfo } from "../util.js"
+import { getSettings } from "./settings.js"
 
 const decline: Command = {
   command: new SlashCommandBuilder()
@@ -13,10 +13,11 @@ const decline: Command = {
     .addStringOption((option) => option.setName("decline-message").setDescription("Leave blank to send the default decline message."))
     .addBooleanOption((option) =>
       option.setName("kick").setDescription("Choose whether the applicant is kicked from the server. (Default: true)"),
-    ) as SlashCommandBuilder,
-  run: async (interaction) => {
-    if (!interaction.guildId) throwError("Unable to get guild ID.")
-    const { guild, settings } = await getGuildInfo(interaction.guildId)
+    )
+    .toJSON(),
+  run: async (context, interaction) => {
+    const guild = context.guild
+    const settings = await getSettings(guild.id)
     if (!settings) return
 
     await interaction.deferReply()
@@ -40,9 +41,9 @@ const decline: Command = {
     applicant.declineMessageId = declineMessage.id
     await saveApplicant(applicant, guild.id)
 
-    const emojis = await guild.emojis
-    const appsChannel =
-      (await guild.getChannel<TextChannel>(settings.appsChannel.id, ChannelType.GuildText)) || throwError("Unable to get Apps channel.")
+    const emojis = await guild.emojis.fetch()
+    const appsChannel = await getChannel<TextChannel>(guild, settings.appsChannel.id, ChannelType.GuildText)
+    if (!appsChannel) throwError("Unable to get Apps channel.")
 
     const declinedEmoji = emojis.find((emoji) => emoji.name === "declined") || throwError(`Unable to get declined emoji.`)
     const appMessage = (await appsChannel.messages.fetch(applicant.appMessageId)) || throwError(`Unable to get App message.`)
