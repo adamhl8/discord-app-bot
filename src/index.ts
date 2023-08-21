@@ -4,11 +4,17 @@ import { addCommands } from "./commands/_commands.js"
 import { addEvents } from "./events/_events.js"
 import interactionCheck from "./interaction-check.js"
 
-const applicationId = process.env.APPLICATION_ID || ""
-const token = process.env.BOT_TOKEN || ""
+const applicationId = process.env.APPLICATION_ID ?? ""
+const token = process.env.BOT_TOKEN ?? ""
 
 const clientOptions: ClientOptions = {
-  intents: [Intents.Guilds, Intents.GuildMembers, Intents.GuildMessages, Intents.GuildMessageReactions, Intents.MessageContent],
+  intents: [
+    Intents.Guilds,
+    Intents.GuildMembers,
+    Intents.GuildMessages,
+    Intents.GuildMessageReactions,
+    Intents.MessageContent,
+  ],
   partials: [Partials.Reaction],
 }
 

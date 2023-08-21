@@ -1,7 +1,7 @@
 import { getChannel, throwError } from "discord-bot-shared"
 import { ChannelType, Guild, GuildMember, TextChannel } from "discord.js"
 import getUrls from "get-urls"
-import { getSettings, Settings } from "./commands/settings.js"
+import { Settings, getSettings, isSettingsSet } from "./commands/settings.js"
 
 interface GuildInfo {
   guild: Guild
@@ -12,7 +12,7 @@ async function isModerator(member: GuildMember) {
   if (!member.guild.id) throwError("Unable to get guild ID.")
   const isAdmin = member.permissions.has("Administrator")
   const settings = await getSettings(member.guild.id)
-  if (!settings) return isAdmin
+  if (!(await isSettingsSet(member.guild.id))) return isAdmin
   const roles = member.roles.cache
   const officerRoleId = settings.officerRole.id
 
@@ -32,7 +32,6 @@ async function sendWarcraftlogsMessage(guildInfo: GuildInfo, memberMention: stri
   }
 
   const postLogsChannel = await getChannel<TextChannel>(guild, settings.postLogsChannel.id, ChannelType.GuildText)
-  if (!postLogsChannel) throwError("Unable to get post logs channel.")
 
   await postLogsChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
 }

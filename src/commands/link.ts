@@ -9,37 +9,42 @@ const link: Command = {
     .setName("link")
     .setDescription("Link an applicant.")
     .addChannelOption((option) =>
-      option.setName("channel").setDescription("Select the channel that the applicant will be linked to.").setRequired(true),
+      option
+        .setName("channel")
+        .setDescription("Select the channel that the applicant will be linked to.")
+        .setRequired(true),
     )
     .addUserOption((option) =>
-      option.setName("applicant").setDescription("The applicant to be linked to the selected channel.").setRequired(true),
+      option
+        .setName("applicant")
+        .setDescription("The applicant to be linked to the selected channel.")
+        .setRequired(true),
     )
     .toJSON(),
   run: async (context, interaction) => {
     const guild = context.guild
     const settings = await getSettings(guild.id)
-    if (!settings) return
 
     await interaction.deferReply()
 
-    const channel = interaction.options.getChannel("channel") || throwError("Unable to get channel.")
+    const channel = interaction.options.getChannel("channel") ?? throwError("Unable to get channel.")
     if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
 
-    const applicant = (await getApplicant(channel.name, guild.id)) || throwError(`Unable to get applicant ${channel.name}.`)
-    const user = interaction.options.getUser("applicant") || throwError(`Unable to get user.`)
+    const applicant = await getApplicant(channel.name, guild.id)
+    const user = interaction.options.getUser("applicant") ?? throwError(`Unable to get user.`)
 
     const members = await guild.members.fetch()
-    const member = members.get(user.id) || throwError(`Unable to get member.`)
+    const member = members.get(user.id) ?? throwError(`Unable to get member.`)
 
     applicant.memberId = member.id
-    applicant.tag = member.user.tag
     await saveApplicant(applicant, guild.id)
 
     await member.roles.add(settings.applicantRole.id)
     await channel.permissionOverwrites.create(member.user, { ViewChannel: true })
     await channel.send(appResponse(member.toString()))
 
-    if (applicant.warcraftlogs) await sendWarcraftlogsMessage({ guild, settings }, member.toString(), applicant.warcraftlogs)
+    if (applicant.warcraftlogs)
+      await sendWarcraftlogsMessage({ guild, settings }, member.toString(), applicant.warcraftlogs)
 
     await interaction.editReply(`${member.user.tag} has been linked to ${channel.name}.`)
   },

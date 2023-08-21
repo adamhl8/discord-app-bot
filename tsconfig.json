@@ -1,19 +1,15 @@
 {
-  "include": ["src"],
-
+  "include": ["./src/"],
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist/",
     "target": "ESNext",
     "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "isolatedModules": true,
     "inlineSourceMap": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true
-  },
-
-  "ts-node": {
-    "esm": true,
-    "swc": true
   }
 }
