@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "docker:push": "pnpm build && docker build . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
+    "docker:push": "pnpm build && docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "format": "prettier --write .",
     "lint": "eslint ./src/",
     "start": "tsx watch --trace-warnings ./src/index.ts"

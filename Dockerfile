@@ -10,4 +10,4 @@ WORKDIR /app
 COPY . .
 RUN npm i --omit=dev
 
-CMD node --enable-source-maps ./dist/index.js
+ENTRYPOINT [ "node", "--enable-source-maps", "./dist/index.js"]
