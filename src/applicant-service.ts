@@ -79,17 +79,6 @@ async function deleteApplicant(context: CommandContext, interaction: ChatInputCo
   if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
 
   const applicant = await getApplicant(channel.name, guild.id)
-  if (!applicant.memberId) throwError(`Applicant ${channel.name} is not in the server or hasn't been linked.`)
-
-  const guild = context.guild
-  const settings = await getSettings(guild.id)
-
-  await interaction.deferReply()
-
-  const channel = interaction.options.getChannel("channel") ?? throwError("Unable to get channel.")
-  if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
-
-  const applicant = await getApplicant(channel.name, guild.id)
 
   const appsChannel = await getChannel<TextChannel>(guild, settings.appsChannel.id, ChannelType.GuildText)
 
