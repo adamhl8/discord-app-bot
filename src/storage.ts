@@ -1,5 +1,5 @@
-import { Config, JsonDB } from "node-json-db"
+import { PrismaClient } from "@prisma/client"
 
-const storage = new JsonDB(new Config("./data/storage", true, true, "/"))
+const prisma = new PrismaClient()
 
-export default storage
+export default prisma

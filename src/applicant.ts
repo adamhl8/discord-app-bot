@@ -1,4 +1,4 @@
-import storage from "./storage.js"
+import { default as prisma, default as storage } from "./storage.js"
 
 export interface Applicant {
   username: string
@@ -15,6 +15,7 @@ async function getApplicant(username: string, guildId: string) {
 }
 
 async function saveApplicant(applicant: Applicant, guildId: string) {
+  prisma.applicant.update
   await storage.push(`/${guildId}/applicants/${applicant.username.toLowerCase()}`, applicant)
 }
 

@@ -13,15 +13,16 @@
     "docker:push": "pnpm build && docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "format": "prettier --write .",
     "lint": "eslint ./src/",
+    "prisma:migrate": "prisma migrate dev",
     "start": "tsx watch --trace-warnings ./src/index.ts"
   },
   "dependencies": {
+    "@prisma/client": "5.2.0",
     "@sindresorhus/slugify": "^2.2.1",
     "discord-bot-shared": "^0.10.0",
     "discord.js": "^14.13.0",
     "fs-extra": "^11.1.1",
-    "get-urls": "^12.1.0",
-    "node-json-db": "^2.2.0"
+    "get-urls": "^12.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.5.1",
@@ -35,6 +36,7 @@
     "prettier-plugin-organize-imports": "^3.2.3",
     "prettier-plugin-pkg": "^0.18.0",
     "prettier-plugin-sh": "^0.13.1",
+    "prisma": "^5.2.0",
     "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   }
