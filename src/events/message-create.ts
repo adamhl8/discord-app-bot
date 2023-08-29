@@ -1,7 +1,7 @@
 import slugify from "@sindresorhus/slugify"
 import { Event, getChannel, throwError } from "discord-bot-shared"
 import { CategoryChannel, ChannelType, Events } from "discord.js"
-import { Applicant, saveApplicant } from "../applicant.js"
+import { Applicant, saveApplicant } from "../applicant/applicant-db.js"
 import { getSettings } from "../commands/settings.js"
 
 const event: Event<Events.MessageCreate> = {

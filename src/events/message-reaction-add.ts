@@ -1,6 +1,6 @@
 import { Event, isTextChannel, throwError } from "discord-bot-shared"
 import { Events } from "discord.js"
-import { getApplicant, removeApplicant } from "../applicant.js"
+import { getApplicant, removeApplicant } from "../applicant/applicant-db.js"
 import { getSettings } from "../commands/settings.js"
 
 const event: Event<Events.MessageReactionAdd> = {

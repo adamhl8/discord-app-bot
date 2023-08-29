@@ -1,7 +1,7 @@
 import slugify from "@sindresorhus/slugify"
 import { Event, getChannel } from "discord-bot-shared"
 import { ChannelType, Events, TextChannel } from "discord.js"
-import { appResponse, getApplicant, saveApplicant } from "../applicant.js"
+import { appResponse, getApplicant, saveApplicant } from "../applicant/applicant-db.js"
 import { getSettings } from "../commands/settings.js"
 import { sendWarcraftlogsMessage } from "../util.js"
 

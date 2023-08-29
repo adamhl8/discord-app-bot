@@ -13,7 +13,7 @@
     "docker:push": "pnpm build && docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "format": "prettier --write .",
     "lint": "eslint ./src/",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate": "prisma migrate dev --name init",
     "start": "tsx watch --trace-warnings ./src/index.ts"
   },
   "dependencies": {

@@ -1,10 +1,10 @@
-import { CommandContext, getChannel, isTextChannel, throwError } from "discord-bot-shared"
+import { NonNullChatInputCommandInteraction, getChannel, isTextChannel, throwError } from "discord-bot-shared"
 import { ChannelType, ChatInputCommandInteraction, TextChannel } from "discord.js"
-import { getApplicant, removeApplicant, saveApplicant } from "./applicant.js"
-import { getSettings } from "./commands/settings.js"
+import { getSettings } from "../settings/settings-db.js"
+import { getApplicant, removeApplicant, saveApplicant } from "./applicant-db.js"
 
-async function acceptApplicant(context: CommandContext, interaction: ChatInputCommandInteraction) {
-  const guild = context.guild
+async function acceptApplicant(interaction: NonNullChatInputCommandInteraction) {
+  const guild = interaction.guild
   const settings = await getSettings(guild.id)
 
   await interaction.deferReply()
@@ -18,10 +18,10 @@ async function acceptApplicant(context: CommandContext, interaction: ChatInputCo
   const members = await guild.members.fetch()
   const member = members.get(applicant.memberId) ?? throwError(`Unable to get member.`)
 
-  await member.roles.remove(settings.applicantRole.id)
+  await member.roles.remove(settings.applicantRoleId)
   await channel.delete()
 
-  const appsChannel = await getChannel<TextChannel>(guild, settings.appsChannel.id, ChannelType.GuildText)
+  const appsChannel = await getChannel<TextChannel>(guild, settings.appsChannelId, ChannelType.GuildText)
 
   const emojis = await guild.emojis.fetch()
   const approvedEmoji =

@@ -13,7 +13,7 @@ dependencies:
     version: 2.2.1
   discord-bot-shared:
     specifier: ^0.10.0
-    version: 0.10.0(discord.js@14.13.0)
+    version: link:../discord-bot-shared
   discord.js:
     specifier: ^14.13.0
     version: 14.13.0
@@ -859,14 +859,6 @@ packages:
 
   /discord-api-types@0.37.50:
     resolution: {integrity: sha512-X4CDiMnDbA3s3RaUXWXmgAIbY1uxab3fqe3qwzg5XutR3wjqi7M3IkgQbsIBzpqBN2YWr/Qdv7JrFRqSgb4TFg==}
-    dev: false
-
-  /discord-bot-shared@0.10.0(discord.js@14.13.0):
-    resolution: {integrity: sha512-/KCCxfLmCUNqVv6FAnM6nCg+ILIQUv9lMjMXbfp0pZWM0i8LJ1pIvJwz61rZiga8sZGFDEsXIXEVc40qdwbNsg==}
-    peerDependencies:
-      discord.js: '>14.0.0'
-    dependencies:
-      discord.js: 14.13.0
     dev: false
 
   /discord.js@14.13.0:

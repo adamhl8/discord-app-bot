@@ -1,26 +1,40 @@
-import { default as prisma, default as storage } from "./storage.js"
+import prisma from "../storage.js"
 
 export interface Applicant {
   username: string
   appMessageId: string
   channelId: string
-  memberId?: string
-  declineMessageId?: string
-  kick?: boolean
-  warcraftlogs?: string
+  memberId: string | null
+  declineMessageId: string | null
+  kick: boolean | null
+  warcraftlogs: string | null
 }
 
 async function getApplicant(username: string, guildId: string) {
-  return await storage.getObject<Applicant>(`/${guildId}/applicants/${username.toLowerCase()}`)
+  return prisma.applicant.findUniqueOrThrow({
+    where: {
+      username,
+      guildId,
+    },
+  })
 }
 
 async function saveApplicant(applicant: Applicant, guildId: string) {
-  prisma.applicant.update
-  await storage.push(`/${guildId}/applicants/${applicant.username.toLowerCase()}`, applicant)
+  await prisma.applicant.create({
+    data: {
+      ...applicant,
+      guildId,
+    },
+  })
 }
 
 async function removeApplicant(applicant: Applicant, guildId: string) {
-  await storage.delete(`/${guildId}/applicants/${applicant.username.toLowerCase()}`)
+  await prisma.applicant.delete({
+    where: {
+      username: applicant.username,
+      guildId,
+    },
+  })
 }
 
 function appResponse(memberMention: string) {

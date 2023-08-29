@@ -15,4 +15,8 @@ module.exports = {
     "prettier",
   ],
   ignorePatterns: [".eslintrc.cjs", "prettier.config.js", "dist"],
+  rules: {
+    "unicorn/prevent-abbreviations": "off",
+    "sonarjs/no-duplicate-string": "off",
+  },
 }
