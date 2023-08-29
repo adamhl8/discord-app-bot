@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Guild {
+  id String @id
+  officerRoleId String
+  applicantRoleId String
+  appsChannelId String
+  appsCategoryId String
+  declineMessage String
+  postLogs Boolean
+  postLogsChannel String?
+  applicants Applicant[]
+}
+
+model Applicant {
+  username String @id
+  appMessageId String
+  channelId String
+  memberId String?
+  declineMessageId String?
+  kick Boolean?
+  warcraftlogs String?
+  guildId String
+  guild Guild @relation(fields: [guildId], references: [id])
+}
