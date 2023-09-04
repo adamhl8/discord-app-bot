@@ -1,47 +1,42 @@
+import { Applicant } from "@prisma/client"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js"
+import { throwError } from "discord-bot-shared"
 import prisma from "../storage.js"
 
-export interface Applicant {
-  username: string
-  appMessageId: string
-  channelId: string
-  memberId: string | null
-  declineMessageId: string | null
-  kick: boolean | null
-  warcraftlogs: string | null
-}
-
 async function getApplicant(username: string, guildId: string) {
-  return prisma.applicant.findUniqueOrThrow({
-    where: {
-      username,
-      guildId,
-    },
-  })
+  try {
+    return await prisma.applicant.findUniqueOrThrow({
+      where: {
+        username,
+        guildId,
+      },
+    })
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2025")
+      throwError(`Failed to find applicant in database with username: ${username}`)
+    else throw error
+  }
 }
 
-async function saveApplicant(applicant: Applicant, guildId: string) {
-  await prisma.applicant.create({
-    data: {
+async function saveApplicant(applicant: Applicant) {
+  await prisma.applicant.upsert({
+    where: { username: applicant.username },
+    update: {
       ...applicant,
-      guildId,
+    },
+    create: {
+      ...applicant,
     },
   })
 }
 
-async function removeApplicant(applicant: Applicant, guildId: string) {
+async function removeApplicant(applicant: Applicant) {
   await prisma.applicant.delete({
     where: {
       username: applicant.username,
-      guildId,
+      guildId: applicant.guildId,
     },
   })
 }
 
-function appResponse(memberMention: string) {
-  return (
-    `${memberMention}\n\n` +
-    "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response."
-  )
-}
-
-export { appResponse, getApplicant, removeApplicant, saveApplicant }
+export { getApplicant, removeApplicant, saveApplicant }

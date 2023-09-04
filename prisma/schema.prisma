@@ -7,7 +7,7 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Guild {
+model GuildSettings {
   id String @id
   officerRoleId String
   applicantRoleId String
@@ -15,7 +15,7 @@ model Guild {
   appsCategoryId String
   declineMessage String
   postLogs Boolean
-  postLogsChannel String?
+  postLogsChannelId String?
   applicants Applicant[]
 }
 
@@ -28,5 +28,5 @@ model Applicant {
   kick Boolean?
   warcraftlogs String?
   guildId String
-  guild Guild @relation(fields: [guildId], references: [id])
+  guildSettings GuildSettings @relation(fields: [guildId], references: [id])
 }

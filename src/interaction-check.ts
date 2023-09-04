@@ -1,16 +1,16 @@
-import { CommandContext, throwError } from "discord-bot-shared"
+import { throwError, throwUserError } from "discord-bot-shared"
 import { ChatInputCommandInteraction } from "discord.js"
-import { isSettingsSet } from "./commands/settings.js"
+import prisma from "./storage.js"
 import { isModerator } from "./util.js"
 
-async function interactionCheck(context: CommandContext, interaction: ChatInputCommandInteraction) {
-  const members = await context.guild.members.fetch()
-  const member = members.get(interaction.user.id) ?? throwError("Unable to get member.")
-  if (!(await isModerator(member))) throwError("You do not have permission to run this command.")
+async function interactionCheck(interaction: ChatInputCommandInteraction<"cached">) {
+  const members = await interaction.guild.members.fetch()
+  const member = members.get(interaction.user.id) ?? throwError(`Failed to get member with ID: ${interaction.user.id}`)
+  if (!(await isModerator(member))) throwUserError("You do not have permission to run this command.")
 
   const subcommand = interaction.options.getSubcommand(false)
-  if (subcommand !== "set" && !(await isSettingsSet(context.guild.id)))
-    throwError("app-bot has not been configured. Please run the '/settings set' command.")
+  if (subcommand !== "set" && !(await prisma.guildSettings.findUnique({ where: { id: interaction.guild.id } })))
+    throwUserError("app-bot has not been configured. Please run the '/settings set' command.")
 
   return true
 }

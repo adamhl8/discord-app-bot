@@ -1,9 +1,9 @@
 import { Event, isTextChannel, throwError } from "discord-bot-shared"
 import { Events } from "discord.js"
 import { getApplicant, removeApplicant } from "../applicant/applicant-db.js"
-import { getSettings } from "../commands/settings.js"
+import { getSettings } from "../settings/settings-db.js"
 
-const event: Event<Events.MessageReactionAdd> = {
+const MessageReactionAdd: Event<Events.MessageReactionAdd> = {
   event: Events.MessageReactionAdd,
   async handler(context, reactionOrPartial, userOrPartial) {
     const reaction = await reactionOrPartial.fetch()
@@ -21,20 +21,20 @@ const event: Event<Events.MessageReactionAdd> = {
     if (reaction.message.id !== applicant.declineMessageId) return
 
     const members = await guild.members.fetch()
-    const guildMember = members.get(user.id) ?? throwError(`Unable to get guild member.`)
+    const guildMember = members.get(user.id) ?? throwError(`Failed to get member with ID: ${user.id}`)
 
-    const officerRoleId = settings.officerRole.id
+    const officerRoleId = settings.officerRoleId
     if (!(guildMember.id === applicant.memberId || guildMember.roles.cache.has(officerRoleId))) return
 
     await channel.delete()
 
     if (!applicant.memberId) return
-    const member = members.get(applicant.memberId) ?? throwError(`Unable to get member.`)
+    const member = members.get(applicant.memberId) ?? throwError(`Failed to get member with ID: ${applicant.memberId}`)
 
-    await (applicant.kick ? member.kick() : member.roles.remove(settings.applicantRole.id))
+    await (applicant.kick ? member.kick() : member.roles.remove(settings.applicantRoleId))
 
-    await removeApplicant(applicant, guild.id)
+    await removeApplicant(applicant)
   },
 }
 
-export default event
+export default MessageReactionAdd

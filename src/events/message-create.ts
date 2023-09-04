@@ -1,27 +1,29 @@
+import { Applicant } from "@prisma/client"
 import slugify from "@sindresorhus/slugify"
 import { Event, getChannel, throwError } from "discord-bot-shared"
-import { CategoryChannel, ChannelType, Events } from "discord.js"
-import { Applicant, saveApplicant } from "../applicant/applicant-db.js"
-import { getSettings } from "../commands/settings.js"
+import { ChannelType, Events } from "discord.js"
+import { saveApplicant } from "../applicant/applicant-db.js"
+import { getSettings } from "../settings/settings-db.js"
 
-const event: Event<Events.MessageCreate> = {
+const MessageCreate: Event<Events.MessageCreate> = {
   event: Events.MessageCreate,
   async handler(context, message) {
     if (!message.guildId) return
     const guild = await context.client.guilds.fetch(message.guildId)
     const settings = await getSettings(guild.id)
 
-    if (message.channelId !== settings.appsChannel.id) return
+    if (message.channelId !== settings.appsChannelId) return
 
-    const embed = message.embeds[0] ?? throwError("Unable to get embed.")
+    const embed = message.embeds[0] ?? throwError("Failed to get embed from message.")
     const fields = embed.fields
     const discordUsername =
-      fields.find((element) => element.name === "Discord Username")?.value ?? throwError("Unable to get username.")
+      fields.find((element) => element.name === "Discord Username")?.value ??
+      throwError("Failed to get username from fields.")
     const username = slugify(discordUsername)
 
     const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
-    const appsCategory = await getChannel<CategoryChannel>(guild, settings.appsCategory.id, ChannelType.GuildCategory)
+    const appsCategory = await getChannel(guild, settings.appsCategoryId, ChannelType.GuildCategory)
     const channel = await appsCategory.children.create({ name: username })
     await channel.send({ embeds: message.embeds })
 
@@ -29,12 +31,17 @@ const event: Event<Events.MessageCreate> = {
       username,
       appMessageId: message.id,
       channelId: channel.id,
+      memberId: null,
+      declineMessageId: null,
+      kick: null,
+      warcraftlogs: null,
+      guildId: guild.id,
     }
 
     if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
-    await saveApplicant(applicant, guild.id)
+    await saveApplicant(applicant)
   },
 }
 
-export default event
+export default MessageCreate

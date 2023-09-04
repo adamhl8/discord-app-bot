@@ -1,6 +1,6 @@
 import { Command } from "discord-bot-shared"
 import { SlashCommandBuilder } from "discord.js"
-import { linkApplicant } from "../applicant-service.js"
+import { linkApplicant } from "../applicant/applicant-service.js"
 
 const link: Command = {
   command: new SlashCommandBuilder()
