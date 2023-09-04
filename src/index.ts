@@ -6,6 +6,8 @@ import interactionCheck from "./interaction-check.js"
 
 const applicationId = process.env.APPLICATION_ID ?? ""
 const token = process.env.BOT_TOKEN ?? ""
+const unregisterGuildCommands = process.env.UNREGISTER_GUILD_COMMANDS?.toLowerCase() === "true"
+const unregisterApplicationCommands = process.env.UNREGISTER_APPLICATION_COMMANDS?.toLowerCase() === "true"
 
 const clientOptions: ClientOptions = {
   intents: [
@@ -25,4 +27,8 @@ bot.commands.setGlobalPreRunHook(interactionCheck)
 addCommands(bot)
 addEvents(bot)
 
+await bot.commands.register()
 await bot.login()
+
+if (unregisterGuildCommands) await bot.commands.unregisterGuildCommands()
+if (unregisterApplicationCommands) await bot.commands.unregisterApplicationCommands()

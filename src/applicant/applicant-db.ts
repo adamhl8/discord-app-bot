@@ -1,14 +1,19 @@
-import { Applicant } from "@prisma/client"
+import { Applicant, Prisma } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js"
 import { throwError } from "discord-bot-shared"
-import prisma from "../storage.js"
+import prisma from "../db.js"
 
-async function getApplicant(username: string, guildId: string) {
+type ApplicantWithSettings = Prisma.ApplicantGetPayload<{ include: { guildSettings: true } }>
+
+async function getApplicantOrThrow(username: string, guildId: string) {
   try {
     return await prisma.applicant.findUniqueOrThrow({
       where: {
         username,
         guildId,
+      },
+      include: {
+        guildSettings: true,
       },
     })
   } catch (error) {
@@ -18,9 +23,21 @@ async function getApplicant(username: string, guildId: string) {
   }
 }
 
+async function getApplicant(username: string, guildId: string) {
+  return await prisma.applicant.findUnique({
+    where: {
+      username,
+      guildId,
+    },
+    include: {
+      guildSettings: true,
+    },
+  })
+}
+
 async function saveApplicant(applicant: Applicant) {
   await prisma.applicant.upsert({
-    where: { username: applicant.username },
+    where: { username: applicant.username, guildId: applicant.guildId },
     update: {
       ...applicant,
     },
@@ -39,4 +56,5 @@ async function removeApplicant(applicant: Applicant) {
   })
 }
 
-export { getApplicant, removeApplicant, saveApplicant }
+export { getApplicant, getApplicantOrThrow, removeApplicant, saveApplicant }
+export type { ApplicantWithSettings }

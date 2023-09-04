@@ -3,14 +3,14 @@ import slugify from "@sindresorhus/slugify"
 import { Event, getChannel, throwError } from "discord-bot-shared"
 import { ChannelType, Events } from "discord.js"
 import { saveApplicant } from "../applicant/applicant-db.js"
-import { getSettings } from "../settings/settings-db.js"
+import { getSettingsOrThrow } from "../settings/settings-db.js"
 
-const MessageCreate: Event<Events.MessageCreate> = {
+const appCreate: Event = {
   event: Events.MessageCreate,
-  async handler(context, message) {
+  async handler(client, message) {
     if (!message.guildId) return
-    const guild = await context.client.guilds.fetch(message.guildId)
-    const settings = await getSettings(guild.id)
+    const guild = await client.guilds.fetch(message.guildId)
+    const settings = await getSettingsOrThrow(guild.id)
 
     if (message.channelId !== settings.appsChannelId) return
 
@@ -24,24 +24,22 @@ const MessageCreate: Event<Events.MessageCreate> = {
     const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
     const appsCategory = await getChannel(guild, settings.appsCategoryId, ChannelType.GuildCategory)
-    const channel = await appsCategory.children.create({ name: username })
-    await channel.send({ embeds: message.embeds })
+    const applicantChannel = await appsCategory.children.create({ name: username })
+    await applicantChannel.send({ embeds: message.embeds })
 
     const applicant: Applicant = {
       username,
       appMessageId: message.id,
-      channelId: channel.id,
+      channelId: applicantChannel.id,
       memberId: null,
       declineMessageId: null,
       kick: null,
-      warcraftlogs: null,
+      warcraftlogs: warcraftlogs ?? null,
       guildId: guild.id,
     }
-
-    if (warcraftlogs) applicant.warcraftlogs = warcraftlogs
 
     await saveApplicant(applicant)
   },
 }
 
-export default MessageCreate
+export default appCreate

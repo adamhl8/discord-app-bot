@@ -1,10 +1,10 @@
 import { GuildSettings } from "@prisma/client"
 import { ChatInputCommandInteraction } from "discord.js"
-import { getSettings, saveSettings } from "./settings-db.js"
+import { getSettingsOrThrow, saveSettings } from "./settings-db.js"
 
 async function listSettings(interaction: ChatInputCommandInteraction<"cached">) {
   const guild = interaction.guild
-  const settings = await getSettings(guild.id)
+  const settings = await getSettingsOrThrow(guild.id)
 
   const officerRole = await guild.roles.fetch(settings.officerRoleId)
   const applicantRole = await guild.roles.fetch(settings.applicantRoleId)
