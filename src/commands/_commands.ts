@@ -1,4 +1,4 @@
-import { Bot } from "discord-bot-shared"
+import Bot from "discord-bot-shared"
 import accept from "./accept.js"
 import decline from "./decline.js"
 import deleteApplication from "./delete.js"

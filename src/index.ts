@@ -1,4 +1,4 @@
-import { Bot } from "discord-bot-shared"
+import Bot from "discord-bot-shared"
 import { ClientOptions, GatewayIntentBits as Intents, Partials } from "discord.js"
 import { addCommands } from "./commands/_commands.js"
 import { addEvents } from "./events/_events.js"
@@ -25,4 +25,7 @@ bot.commands.setGlobalPreRunHook(interactionCheck)
 addCommands(bot)
 addEvents(bot)
 
+await bot.commands.unregisterGuildCommands()
+await bot.commands.unregisterApplicationCommands()
+await bot.commands.register()
 await bot.login()

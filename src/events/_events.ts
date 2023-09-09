@@ -1,12 +1,12 @@
-import { Bot } from "discord-bot-shared"
-import registerGuildMemberAdd from "./guild-member-add.js"
-import registerMessageCreate from "./message-create.js"
-import registerMessageReactionAdd from "./message-reaction-add.js"
+import Bot from "discord-bot-shared"
+import appCreate from "./app-create.js"
+import appReactionAdd from "./app-reaction-add.js"
+import applicantJoin from "./applicant-join.js"
 
 function addEvents(bot: Bot) {
-  bot.events.add(registerGuildMemberAdd)
-  bot.events.add(registerMessageCreate)
-  bot.events.add(registerMessageReactionAdd)
+  bot.events.add(applicantJoin)
+  bot.events.add(appCreate)
+  bot.events.add(appReactionAdd)
 }
 
 export { addEvents }

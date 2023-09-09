@@ -1,7 +1,6 @@
-import { Command, getChannel, isTextChannel, throwError } from "discord-bot-shared"
-import { ChannelType, SlashCommandBuilder, TextChannel } from "discord.js"
-import { getApplicant, removeApplicant } from "../applicant.js"
-import { getSettings } from "./settings.js"
+import { Command } from "discord-bot-shared"
+import { SlashCommandBuilder } from "discord.js"
+import deleteApplicant from "../applicant/delete-applicant.js"
 
 const deleteApplication: Command = {
   command: new SlashCommandBuilder()
@@ -15,32 +14,7 @@ const deleteApplication: Command = {
     )
     .addStringOption((option) => option.setName("reason").setDescription("Provide a reason for deletion."))
     .toJSON(),
-  run: async (context, interaction) => {
-    const guild = context.guild
-    const settings = await getSettings(guild.id)
-
-    await interaction.deferReply()
-
-    const channel = interaction.options.getChannel("channel") ?? throwError("Unable to get channel.")
-    if (!isTextChannel(channel)) throwError("Channel is not a text channel.")
-
-    const applicant = await getApplicant(channel.name, guild.id)
-
-    const appsChannel = await getChannel<TextChannel>(guild, settings.appsChannel.id, ChannelType.GuildText)
-
-    const emojis = await guild.emojis.fetch()
-    const declinedEmoji =
-      emojis.find((emoji) => emoji.name === "declined") ?? throwError(`Unable to get declined emoji.`)
-    const appMessage = await appsChannel.messages.fetch(applicant.appMessageId)
-    await appMessage.react(declinedEmoji)
-
-    const reason = interaction.options.getString("reason") ?? ""
-
-    await channel.delete()
-    await removeApplicant(applicant, guild.id)
-
-    await interaction.editReply(`${channel.name} has been deleted.\n${reason}`)
-  },
+  run: deleteApplicant,
 }
 
 export default deleteApplication

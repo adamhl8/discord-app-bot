@@ -1,39 +1,19 @@
-import { getChannel, throwError } from "discord-bot-shared"
-import { ChannelType, Guild, GuildMember, TextChannel } from "discord.js"
-import getUrls from "get-urls"
-import { Settings, getSettings, isSettingsSet } from "./commands/settings.js"
-
-interface GuildInfo {
-  guild: Guild
-  settings: Settings | undefined
-}
+import { throwError } from "discord-bot-shared"
+import { Guild, GuildMember } from "discord.js"
+import { getSettings } from "./settings/settings-db.js"
 
 async function isModerator(member: GuildMember) {
-  if (!member.guild.id) throwError("Unable to get guild ID.")
   const isAdmin = member.permissions.has("Administrator")
   const settings = await getSettings(member.guild.id)
-  if (!(await isSettingsSet(member.guild.id))) return isAdmin
-  const roles = member.roles.cache
-  const officerRoleId = settings.officerRole.id
+  if (!settings) return isAdmin
+  const officerRoleId = settings.officerRoleId
 
-  return roles.has(officerRoleId) || isAdmin
+  return member.roles.cache.has(officerRoleId) || isAdmin
 }
 
-async function sendWarcraftlogsMessage(guildInfo: GuildInfo, memberMention: string, warcraftlogs: string) {
-  const { guild, settings } = guildInfo
-  if (!settings) return
-
-  if (!(settings.postLogs && settings.postLogsChannel)) return
-
-  const warcraftlogsUrls = getUrls(warcraftlogs)
-  let warcraftlogsText = `\n\n`
-  for (const url of warcraftlogsUrls) {
-    warcraftlogsText += `${url}\n`
-  }
-
-  const postLogsChannel = await getChannel<TextChannel>(guild, settings.postLogsChannel.id, ChannelType.GuildText)
-
-  await postLogsChannel.send(`New Applicant: ${memberMention}${warcraftlogsText}`)
+async function fetchMemberById(guild: Guild, id: string) {
+  const members = await guild.members.fetch()
+  return members.get(id) ?? throwError(`Failed to get member with ID: ${id}`)
 }
 
-export { isModerator, sendWarcraftlogsMessage }
+export { fetchMemberById, isModerator }

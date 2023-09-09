@@ -1,16 +1,15 @@
-import { CommandContext, throwError } from "discord-bot-shared"
+import { throwUserError } from "discord-bot-shared"
 import { ChatInputCommandInteraction } from "discord.js"
-import { isSettingsSet } from "./commands/settings.js"
-import { isModerator } from "./util.js"
+import { getSettings } from "./settings/settings-db.js"
+import { fetchMemberById, isModerator } from "./util.js"
 
-async function interactionCheck(context: CommandContext, interaction: ChatInputCommandInteraction) {
-  const members = await context.guild.members.fetch()
-  const member = members.get(interaction.user.id) ?? throwError("Unable to get member.")
-  if (!(await isModerator(member))) throwError("You do not have permission to run this command.")
+async function interactionCheck(interaction: ChatInputCommandInteraction<"cached">) {
+  const member = await fetchMemberById(interaction.guild, interaction.user.id)
+  if (!(await isModerator(member))) throwUserError("You do not have permission to run this command.")
 
-  const subcommand = interaction.options.getSubcommand(false)
-  if (subcommand !== "set" && !(await isSettingsSet(context.guild.id)))
-    throwError("app-bot has not been configured. Please run the '/settings set' command.")
+  const subcommand = interaction.options.getSubcommand()
+  if (subcommand !== "set" && !(await getSettings(interaction.guild.id)))
+    throwUserError("app-bot has not been configured. Please run the '/settings set' command.")
 
   return true
 }
