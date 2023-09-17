@@ -14,19 +14,19 @@ The basic workflow looks like this:
 - The applicant can either be accepted or declined.
 - In either case, the application is closed. On decline the applicant is removed from the server.
 
-See the Commands section for more details.
+See the [Commands](#commands) section for more details.
 
 ## Installation/Setup
 
 ### Google Form Setup
 
-The only requirement for your Google From is that it has a short answer question with the name/title `Discord Tag`. Applicants must enter their Discord Tag in the correct format. e.g. User#1234
+The only requirement for your Google From is that it has a short answer question with the name/title `Discord Username`. This is used to match applicants who join the server to their application.
 
 It's recommended that you provide an invite link to your server at the end of the form. The applicant should join the server _after_ submitting their application for this bot to work as intended. If the applicant joins early or is not matched to their application correct, you can use the `/link` command to fix this.
 
 ### Discord Server Setup
 
-This bot requires that your Discord server is set up in a certain way. You can name the roles/channels whatever you want. See the Commands section for how to set your roles/channels.
+This bot requires that your Discord server is set up in a certain way. You can name the roles/channels whatever you want. See the [Commands](#commands) section for how to set your roles/channels.
 
 The bot needs the following:
 
@@ -49,8 +49,9 @@ While completely optional, it's recommended that you create a separate channel s
 docker run -d \
   --name=discord-app-bot \
   -e BOT_TOKEN=<YOUR_BOT_TOKEN>
-  -e CLIENT_ID=<YOUR_BOT_CLIENT_ID>
-  -v ./data/:/app/data/ \
+  -e APPLICATION_ID=<YOUR_BOT_APPLICATION_ID>
+  -e DATABASE_URL=file:db/prod.db
+  -v ./data/:/app/prisma/db/ \
   --restart unless-stopped \
   ghcr.io/adamhl8/discord-app-bot:latest
 ```
@@ -61,7 +62,9 @@ docker run -d \
 
 Use the following commands to manage the bot and applicants.
 
-`/settings set <officer-role> <applicant-role> <apps-channel> <apps-category> <decline-message>` - The bot won't do anything unless this has been run.
+`/settings set <officer-role> <applicant-role> <apps-channel> <apps-category> <decline-message> <post-logs>` - The bot won't do anything unless this has been run.
+
+- You can always set `post-logs` to false. This exists as special functionality because this bot was originally created to help with applications to a World of Warcraft guild.
 
 `/settings list` - Prints current settings.
 
@@ -71,12 +74,11 @@ Use the following commands to manage the bot and applicants.
 
 - Optionally takes:
   - `<decline-message>` - Overwrite the default decline message.
-  - `<kick>` - Whether or not the applicant is kicked from the server on decline.
+  - `<kick>` - Whether or not the applicant is kicked from the server on decline confirmation.
 
 `/delete <applicant-channel>` - Delete an application.
-Optionally takes:
 
 - Optionally takes:
   - `<reason>` - Provide a reason for the deletion.
 
-`/link <applicant-channel> <server-member>` - Link an application to a server member.
+`/link <server-member> <applicant-channel>` - Link an applicant to an applicant channel.

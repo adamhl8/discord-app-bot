@@ -13,4 +13,4 @@ function addCommands(bot: Bot) {
   bot.commands.add(settings)
 }
 
-export { addCommands }
+export default addCommands

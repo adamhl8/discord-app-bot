@@ -1,35 +1,32 @@
 {
   "name": "discord-app-bot",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
   "repository": "github:adamhl8/discord-app-bot",
+  "author": "adamhl8",
   "license": "MIT",
-  "engines": {
-    "node": ">=18"
-  },
   "scripts": {
-    "build": "tsc",
-    "docker:push": "pnpm build && docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsx --trace-warnings ./src/index.ts",
+    "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "format": "prettier --write .",
-    "lint": "eslint ./src/",
-    "prebuild": "pnpm format && pnpm lint && rm -rf dist",
-    "prisma:migrate": "DATABASE_URL=file:dev.db prisma migrate dev",
-    "start": "tsx --trace-warnings ./src/index.ts",
+    "lint": "tsc --noEmit && eslint ./src/",
+    "migrate:dev": "prisma migrate dev",
     "start:prod": "prisma migrate deploy && node --enable-source-maps ./dist/index.js"
   },
   "dependencies": {
-    "@prisma/client": "5.2.0",
+    "@prisma/client": "5.3.1",
     "@sindresorhus/slugify": "^2.2.1",
-    "discord-bot-shared": "^0.12.0",
+    "discord-bot-shared": "^0.14.0",
     "discord.js": "^14.13.0",
     "get-urls": "^12.1.0",
-    "prisma": "^5.2.0"
+    "prisma": "^5.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.6.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
+    "@types/node": "^20.6.2",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-sonarjs": "^0.21.0",
@@ -38,7 +35,7 @@
     "prettier-plugin-organize-imports": "^3.2.3",
     "prettier-plugin-pkg": "^0.18.0",
     "prettier-plugin-sh": "^0.13.1",
-    "tsx": "^3.12.8",
+    "tsx": "^3.12.10",
     "typescript": "^5.2.2"
   }
 }

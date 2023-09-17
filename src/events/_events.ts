@@ -9,4 +9,4 @@ function addEvents(bot: Bot) {
   bot.events.add(appReactionAdd)
 }
 
-export { addEvents }
+export default addEvents

@@ -1,8 +1,8 @@
 import Bot from "discord-bot-shared"
 import { ClientOptions, GatewayIntentBits as Intents, Partials } from "discord.js"
-import { addCommands } from "./commands/_commands.js"
-import { addEvents } from "./events/_events.js"
-import interactionCheck from "./interaction-check.js"
+import addCommands from "./commands/_commands.js"
+import commandHook from "./commands/command-hook.js"
+import addEvents from "./events/_events.js"
 
 const applicationId = process.env.APPLICATION_ID ?? ""
 const token = process.env.BOT_TOKEN ?? ""
@@ -20,7 +20,7 @@ const clientOptions: ClientOptions = {
 
 const bot = new Bot({ applicationId, token, clientOptions })
 
-bot.commands.setGlobalPreRunHook(interactionCheck)
+bot.commands.setGlobalCommandHook(commandHook)
 
 addCommands(bot)
 addEvents(bot)

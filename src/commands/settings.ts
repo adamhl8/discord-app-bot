@@ -48,7 +48,7 @@ const settings: Command = {
         ),
     )
     .toJSON(),
-  run: async (interaction) => {
+  async run(interaction) {
     const subcommand = interaction.options.getSubcommand()
     if (subcommand === "list") await listSettings(interaction)
     if (subcommand === "set") await setSettings(interaction)
