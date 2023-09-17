@@ -5,9 +5,9 @@ import { getCommonDetails, reactToApplication } from "./applicant-service.js"
 async function deleteApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 
-  const { guild, applicantChannel, applicant } = await getCommonDetails(interaction)
+  const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
 
-  await reactToApplication(guild, applicant, "declined")
+  await reactToApplication(guild, settings.appsChannelId, applicant, "declined")
   await applicantChannel.delete()
   await removeApplicant(applicant)
 

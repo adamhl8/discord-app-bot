@@ -23,7 +23,7 @@ async function declineApplicant(interaction: ChatInputCommandInteraction<"cached
   applicant.declineMessageId = declineMessage.id
   await saveApplicant(applicant)
 
-  await reactToApplication(guild, applicant, "declined")
+  await reactToApplication(guild, settings.appsChannelId, applicant, "declined")
 
   await interaction.editReply(`${applicantChannel.name} has been declined.\n${declineMessageText}`)
 }

@@ -1,6 +1,6 @@
 {
   "name": "discord-app-bot",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
   "repository": "github:adamhl8/discord-app-bot",

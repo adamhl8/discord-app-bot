@@ -15,7 +15,7 @@ async function acceptApplicant(interaction: ChatInputCommandInteraction<"cached"
   await member.roles.remove(settings.applicantRoleId)
 
   await applicantChannel.delete()
-  await reactToApplication(guild, applicant, "approved")
+  await reactToApplication(guild, settings.appsChannelId, applicant, "approved")
   await removeApplicant(applicant)
 
   await interaction.editReply(`\`${applicantChannel.name}\` has been accepted.`)
