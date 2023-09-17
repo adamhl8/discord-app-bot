@@ -22,12 +22,8 @@ async function saveSettings(settings: GuildSettings) {
     where: {
       id: settings.id,
     },
-    update: {
-      ...settings,
-    },
-    create: {
-      ...settings,
-    },
+    update: settings,
+    create: settings,
   })
 }
 

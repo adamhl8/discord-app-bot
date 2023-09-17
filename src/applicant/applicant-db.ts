@@ -35,15 +35,21 @@ async function getApplicant(username: string, guildId: string) {
   })
 }
 
-async function saveApplicant(applicant: Applicant) {
+async function saveApplicant(applicant: Applicant | ApplicantWithSettings) {
+  const applicantDetails = {
+    appMessageId: applicant.appMessageId,
+    channelId: applicant.channelId,
+    declineMessageId: applicant.declineMessageId,
+    guildId: applicant.guildId,
+    kick: applicant.kick,
+    memberId: applicant.memberId,
+    username: applicant.username,
+    warcraftlogs: applicant.warcraftlogs,
+  }
   await prisma.applicant.upsert({
-    where: { username: applicant.username, guildId: applicant.guildId },
-    update: {
-      ...applicant,
-    },
-    create: {
-      ...applicant,
-    },
+    where: { username: applicantDetails.username, guildId: applicantDetails.guildId },
+    update: applicantDetails,
+    create: applicantDetails,
   })
 }
 
