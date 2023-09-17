@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "lint": "tsc --noEmit && eslint ./src/",
     "migrate:dev": "prisma migrate dev",
+    "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\;",
     "start:prod": "prisma migrate deploy && node --enable-source-maps ./dist/index.js"
   },
   "dependencies": {
