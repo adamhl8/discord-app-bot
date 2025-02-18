@@ -48,9 +48,9 @@ While completely optional, it's recommended that you create a separate channel s
 ```
 docker run -d \
   --name=discord-app-bot \
-  -e BOT_TOKEN=<YOUR_BOT_TOKEN>
-  -e APPLICATION_ID=<YOUR_BOT_APPLICATION_ID>
-  -e DATABASE_URL=file:db/prod.db
+  -e BOT_TOKEN=<YOUR_BOT_TOKEN> \
+  -e APPLICATION_ID=<YOUR_BOT_APPLICATION_ID> \
+  -e DATABASE_URL=file:db/prod.db \
   -v ./data/:/app/prisma/db/ \
   --restart unless-stopped \
   ghcr.io/adamhl8/discord-app-bot:latest

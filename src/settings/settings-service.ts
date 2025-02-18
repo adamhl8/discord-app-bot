@@ -1,7 +1,11 @@
-import { GuildSettings } from "@prisma/client"
-import { ChatInputCommandInteraction } from "discord.js"
+import type { GuildSettings } from "@prisma/client"
+import type { ChatInputCommandInteraction } from "discord.js"
+
 import { getSettingsOrThrow, saveSettings } from "./settings-db.js"
 
+/**
+ * @param interaction The interaction that triggered the command
+ */
 async function listSettings(interaction: ChatInputCommandInteraction<"cached">) {
   const guild = interaction.guild
   const settings = await getSettingsOrThrow(guild.id)
@@ -16,10 +20,10 @@ async function listSettings(interaction: ChatInputCommandInteraction<"cached">) 
   const currentSettings =
     "Current Settings:" +
     "```\n" +
-    `Officer Role: ${officerRole?.name}\n` +
-    `Applicant Role: ${applicantRole?.name}\n` +
-    `Apps Channel: ${appsChannel?.name}\n` +
-    `Apps Category: ${appsCategory?.name}\n` +
+    `Officer Role: ${officerRole?.name ?? "Not found"}\n` +
+    `Applicant Role: ${applicantRole?.name ?? "Not found"}\n` +
+    `Apps Channel: ${appsChannel?.name ?? "Not found"}\n` +
+    `Apps Category: ${appsCategory?.name ?? "Not found"}\n` +
     `Decline Message: ${settings.declineMessage}\n` +
     `Post Logs: ${settings.postLogs ? "True" : "False"}\n` +
     `Post Logs Channel: ${postLogsChannelName}\n` +
@@ -28,6 +32,9 @@ async function listSettings(interaction: ChatInputCommandInteraction<"cached">) 
   await interaction.reply(currentSettings)
 }
 
+/**
+ * @param interaction The interaction that triggered the command
+ */
 async function setSettings(interaction: ChatInputCommandInteraction<"cached">) {
   const officerRoleId = interaction.options.getRole("officer-role", true).id
   const applicantRoleId = interaction.options.getRole("applicant-role", true).id
@@ -35,6 +42,7 @@ async function setSettings(interaction: ChatInputCommandInteraction<"cached">) {
   const appsCategoryId = interaction.options.getChannel("apps-category", true).id
   const declineMessage = interaction.options.getString("decline-message", true)
   const postLogs = interaction.options.getBoolean("post-logs", true)
+  // eslint-disable-next-line unicorn/no-null
   const postLogsChannelId = interaction.options.getChannel("post-logs-channel")?.id ?? null
 
   const settings: GuildSettings = {

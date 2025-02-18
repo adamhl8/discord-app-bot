@@ -1,4 +1,3 @@
 #!/bin/sh
 
-pnpm format
-pnpm lint
+bun lint

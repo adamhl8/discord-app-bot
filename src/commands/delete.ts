@@ -1,5 +1,7 @@
-import { Command } from "discord-bot-shared"
+import type { Command } from "discord-bot-shared"
+
 import { SlashCommandBuilder } from "discord.js"
+
 import deleteApplicant from "../applicant/delete-applicant.js"
 
 const deleteApplication: Command = {

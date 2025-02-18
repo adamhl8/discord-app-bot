@@ -1,5 +1,7 @@
-import { Command } from "discord-bot-shared"
+import type { Command } from "discord-bot-shared"
+
 import { SlashCommandBuilder } from "discord.js"
+
 import acceptApplicant from "../applicant/accept-applicant.js"
 
 const accept: Command = {

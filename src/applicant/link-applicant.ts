@@ -1,10 +1,16 @@
-import { Applicant } from "@prisma/client"
+import type { Applicant } from "@prisma/client"
+import type { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js"
+
 import { getChannel } from "discord-bot-shared"
-import { ChannelType, ChatInputCommandInteraction, Guild, GuildMember } from "discord.js"
+import { ChannelType } from "discord.js"
+
 import { fetchMemberById } from "../util.js"
 import { saveApplicant } from "./applicant-db.js"
 import { getCommonDetails, sendWarcraftlogsMessage } from "./applicant-service.js"
 
+/**
+ * @param interaction The interaction that triggered the command
+ */
 async function linkApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 
@@ -19,6 +25,12 @@ async function linkApplicant(interaction: ChatInputCommandInteraction<"cached">)
   await interaction.editReply(`${member.user.tag} has been linked to ${applicantChannel.name}.`)
 }
 
+/**
+ * @param guild The guild
+ * @param applicantRoleId The ID of the applicant role
+ * @param member The member to link to the applicant
+ * @param applicant The applicant
+ */
 async function linkMemberToApp(guild: Guild, applicantRoleId: string, member: GuildMember, applicant: Applicant) {
   await member.roles.add(applicantRoleId)
 

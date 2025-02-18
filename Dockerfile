@@ -1,32 +1,26 @@
-FROM node:slim AS builder
+FROM oven/bun:latest AS build
 
 WORKDIR /app
 
 COPY package.json .
-COPY pnpm-lock.yaml .
-COPY prisma ./prisma
+COPY bun.lock .
+RUN bun i
+COPY . .
+RUN bun run build
 
-RUN npm install -g pnpm
-RUN pnpm install
+FROM oven/bun:latest
 
-COPY tsconfig.json .
-COPY src ./src
-RUN pnpm build
-
-FROM node:slim
-
-LABEL org.opencontainers.image.source https://github.com/adamlh8/discord-app-bot
+LABEL org.opencontainers.image.source=https://github.com/adamlh8/discord-app-bot
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=builder /app/package.json .
-COPY --from=builder /app/pnpm-lock.yaml .
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/package.json .
+COPY --from=build /app/bun.lock .
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/dist ./dist
 
 RUN apt update && apt install openssl -y
 
-RUN npm install -g pnpm
-RUN pnpm install
+RUN bun i
 
-ENTRYPOINT [ "pnpm", "start:prod" ]
+ENTRYPOINT [ "bun", "start:prod" ]

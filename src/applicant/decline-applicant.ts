@@ -1,8 +1,13 @@
+import type { ChatInputCommandInteraction } from "discord.js"
+
 import { throwUserError } from "discord-bot-shared"
-import { ChatInputCommandInteraction } from "discord.js"
+
 import { saveApplicant } from "./applicant-db.js"
 import { getCommonDetails, reactToApplication } from "./applicant-service.js"
 
+/**
+ * @param interaction The interaction that triggered the command
+ */
 async function declineApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 

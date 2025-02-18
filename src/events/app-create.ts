@@ -1,7 +1,10 @@
-import { Applicant } from "@prisma/client"
+import type { Applicant } from "@prisma/client"
+import type { Event } from "discord-bot-shared"
+
 import slugify from "@sindresorhus/slugify"
-import { Event, getChannel, throwError } from "discord-bot-shared"
+import { getChannel, throwError } from "discord-bot-shared"
 import { ChannelType, Events } from "discord.js"
+
 import { saveApplicant } from "../applicant/applicant-db.js"
 import { getSettingsOrThrow } from "../settings/settings-db.js"
 

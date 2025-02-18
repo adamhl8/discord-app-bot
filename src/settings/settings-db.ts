@@ -1,6 +1,11 @@
-import { GuildSettings } from "@prisma/client"
+import type { GuildSettings } from "@prisma/client"
+
 import prisma from "../db.js"
 
+/**
+ * @param guildId The ID of the guild
+ * @returns The settings
+ */
 async function getSettingsOrThrow(guildId: string) {
   return await prisma.guildSettings.findUniqueOrThrow({
     where: {
@@ -9,6 +14,10 @@ async function getSettingsOrThrow(guildId: string) {
   })
 }
 
+/**
+ * @param guildId The ID of the guild
+ * @returns The settings
+ */
 async function getSettings(guildId: string) {
   return await prisma.guildSettings.findUnique({
     where: {
@@ -17,6 +26,9 @@ async function getSettings(guildId: string) {
   })
 }
 
+/**
+ * @param settings The settings to save
+ */
 async function saveSettings(settings: GuildSettings) {
   await prisma.guildSettings.upsert({
     where: {

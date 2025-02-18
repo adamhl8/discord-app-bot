@@ -1,5 +1,7 @@
-import { Command } from "discord-bot-shared"
+import type { Command } from "discord-bot-shared"
+
 import { SlashCommandBuilder } from "discord.js"
+
 import { listSettings, setSettings } from "../settings/settings-service.js"
 
 const settings: Command = {

@@ -1,6 +1,8 @@
+import type { Event } from "discord-bot-shared"
+
 import slugify from "@sindresorhus/slugify"
-import { Event } from "discord-bot-shared"
 import { Events } from "discord.js"
+
 import { getApplicant } from "../applicant/applicant-db.js"
 import { sendWarcraftlogsMessage } from "../applicant/applicant-service.js"
 import { linkMemberToApp } from "../applicant/link-applicant.js"

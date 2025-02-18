@@ -1,7 +1,11 @@
-import { ChatInputCommandInteraction } from "discord.js"
+import type { ChatInputCommandInteraction } from "discord.js"
+
 import { removeApplicant } from "./applicant-db.js"
 import { getCommonDetails, reactToApplication } from "./applicant-service.js"
 
+/**
+ * @param interaction The interaction that triggered the command
+ */
 async function deleteApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 

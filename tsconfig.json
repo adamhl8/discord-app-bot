@@ -1,15 +1,14 @@
 {
-  "include": ["./src/"],
+  "extends": "./node_modules/eslint-config-builder/dist/tsconfig.json",
+  "exclude": ["dist"],
   "compilerOptions": {
-    "outDir": "./dist/",
-    "target": "ESNext",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "isolatedModules": true,
-    "inlineSourceMap": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true
+    "moduleResolution": "nodenext",
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist/types"
   }
 }

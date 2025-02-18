@@ -1,6 +1,5 @@
-/** @type {import("prettier").Options} */
+import { prettierConfig } from "eslint-config-builder"
+
 export default {
-  printWidth: 120,
-  semi: false,
-  plugins: ["prettier-plugin-organize-imports", "prettier-plugin-pkg", "prettier-plugin-sh"],
+  ...prettierConfig,
 }
