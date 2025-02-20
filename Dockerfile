@@ -21,6 +21,6 @@ COPY --from=build /app/dist ./dist
 
 RUN apt update && apt install openssl -y
 
-RUN bun i
+RUN bun install -p -f
 
 ENTRYPOINT [ "bun", "start:prod" ]
