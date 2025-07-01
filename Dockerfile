@@ -1,26 +1,25 @@
-FROM oven/bun:latest AS build
-
-WORKDIR /app
-
-COPY package.json .
-COPY bun.lock .
-RUN bun i
-COPY . .
-RUN bun bundle
-
-FROM oven/bun:latest
-
+FROM oven/bun:latest AS base
 LABEL org.opencontainers.image.source=https://github.com/adamlh8/discord-app-bot
 WORKDIR /app
-ENV NODE_ENV=production
-
-COPY --from=build /app/package.json .
-COPY --from=build /app/bun.lock .
-COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/dist ./dist
+ENV NODE_ENV="production"
+ENV BUN_OPTIONS="--bun"
 
 RUN apt update && apt install openssl -y
 
-RUN bun install -p -f
+FROM base AS install
 
-ENTRYPOINT [ "bun", "start:prod" ]
+RUN mkdir -p /temp/prod
+COPY package.json bun.lock /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
+
+FROM base
+
+COPY --from=install /temp/prod/node_modules ./node_modules
+COPY prisma ./prisma
+COPY src ./src
+COPY package.json ./
+COPY tsconfig.json ./
+
+RUN bun db:generate
+
+CMD ["bun", "start:prod"]

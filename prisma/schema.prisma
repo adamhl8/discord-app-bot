@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  runtime  = "bun"
 }
 
 datasource db {
@@ -8,25 +9,25 @@ datasource db {
 }
 
 model GuildSettings {
-  id String @id
-  officerRoleId String
-  applicantRoleId String
-  appsChannelId String
-  appsCategoryId String
-  declineMessage String
-  postLogs Boolean
+  id                String      @id
+  officerRoleId     String
+  applicantRoleId   String
+  appsChannelId     String
+  appsCategoryId    String
+  declineMessage    String
+  postLogs          Boolean
   postLogsChannelId String?
-  applicants Applicant[]
+  applicants        Applicant[]
 }
 
 model Applicant {
-  username String @id
-  appMessageId String
-  channelId String
-  memberId String?
+  username         String        @id
+  appMessageId     String
+  channelId        String
+  memberId         String?
   declineMessageId String?
-  kick Boolean?
-  warcraftlogs String?
-  guildId String
-  guildSettings GuildSettings @relation(fields: [guildId], references: [id])
+  kick             Boolean?
+  warcraftlogs     String?
+  guildId          String
+  guildSettings    GuildSettings @relation(fields: [guildId], references: [id])
 }

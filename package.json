@@ -14,12 +14,13 @@
   },
   "license": "MIT",
   "scripts": {
-    "bundle": "rm -rf ./dist && bun lint && bun build --production --target=bun --sourcemap=linked --minify --outdir=./dist ./src/index.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "lint": "tsc --noEmit && biome check --write",
-    "migrate:dev": "prisma migrate dev",
     "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
-    "start:prod": "prisma migrate deploy && bun ./dist/index.js"
+    "start:prod": "prisma migrate deploy && bun ./src/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.11.0",
