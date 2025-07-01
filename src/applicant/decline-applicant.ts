@@ -1,14 +1,13 @@
 import type { ChatInputCommandInteraction } from "discord.js"
-
 import { throwUserError } from "discord-bot-shared"
 
-import { saveApplicant } from "./applicant-db.js"
-import { getCommonDetails, reactToApplication } from "./applicant-service.js"
+import { saveApplicant } from "./applicant-db.ts"
+import { getCommonDetails, reactToApplication } from "./applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command
  */
-async function declineApplicant(interaction: ChatInputCommandInteraction<"cached">) {
+export async function declineApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
@@ -32,5 +31,3 @@ async function declineApplicant(interaction: ChatInputCommandInteraction<"cached
 
   await interaction.editReply(`${applicantChannel.name} has been declined.\n${declineMessageText}`)
 }
-
-export default declineApplicant

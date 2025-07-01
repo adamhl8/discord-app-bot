@@ -1,17 +1,16 @@
 import type { Applicant } from "@prisma/client"
 import type { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js"
-
-import { getChannel } from "discord-bot-shared"
 import { ChannelType } from "discord.js"
+import { getChannel } from "discord-bot-shared"
 
-import { fetchMemberById } from "../util.js"
-import { saveApplicant } from "./applicant-db.js"
-import { getCommonDetails, sendWarcraftlogsMessage } from "./applicant-service.js"
+import { fetchMemberById } from "../util.ts"
+import { saveApplicant } from "./applicant-db.ts"
+import { getCommonDetails, sendWarcraftlogsMessage } from "./applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command
  */
-async function linkApplicant(interaction: ChatInputCommandInteraction<"cached">) {
+export async function linkApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
@@ -31,7 +30,12 @@ async function linkApplicant(interaction: ChatInputCommandInteraction<"cached">)
  * @param member The member to link to the applicant
  * @param applicant The applicant
  */
-async function linkMemberToApp(guild: Guild, applicantRoleId: string, member: GuildMember, applicant: Applicant) {
+export async function linkMemberToApp(
+  guild: Guild,
+  applicantRoleId: string,
+  member: GuildMember,
+  applicant: Applicant,
+) {
   await member.roles.add(applicantRoleId)
 
   applicant.memberId = member.id
@@ -44,6 +48,3 @@ async function linkMemberToApp(guild: Guild, applicantRoleId: string, member: Gu
       "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
   )
 }
-
-export default linkApplicant
-export { linkMemberToApp }

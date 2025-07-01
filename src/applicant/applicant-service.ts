@@ -1,12 +1,11 @@
 import type { Applicant } from "@prisma/client"
 import type { ChatInputCommandInteraction, Guild } from "discord.js"
-
-import { getChannel, throwUserError } from "discord-bot-shared"
 import { ChannelType } from "discord.js"
+import { getChannel, throwUserError } from "discord-bot-shared"
 import getUrls from "get-urls"
 
-import { getSettingsOrThrow } from "../settings/settings-db.js"
-import { getApplicantOrThrow } from "./applicant-db.js"
+import { getSettingsOrThrow } from "../settings/settings-db.ts"
+import { getApplicantOrThrow } from "./applicant-db.ts"
 
 /**
  * @param interaction The interaction that triggered the command
@@ -51,7 +50,7 @@ async function sendWarcraftlogsMessage(
   if (!(postLogs && postLogsChannelId && applicant.warcraftlogs)) return
 
   const warcraftlogsUrls = getUrls(applicant.warcraftlogs)
-  let warcraftlogsText = `\n\n`
+  let warcraftlogsText = "\n\n"
   for (const url of warcraftlogsUrls) {
     warcraftlogsText += `${url}\n`
   }

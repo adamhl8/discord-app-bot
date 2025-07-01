@@ -1,10 +1,9 @@
+import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { SlashCommandBuilder } from "discord.js"
+import { deleteApplicant } from "../applicant/delete-applicant.ts"
 
-import deleteApplicant from "../applicant/delete-applicant.js"
-
-const deleteApplication: Command = {
+export const deleteApplication: Command = {
   command: new SlashCommandBuilder()
     .setName("delete")
     .setDescription("Delete an application.")
@@ -18,5 +17,3 @@ const deleteApplication: Command = {
     .toJSON(),
   run: deleteApplicant,
 }
-
-export default deleteApplication

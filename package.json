@@ -14,7 +14,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf ./dist && bun lint && tsc -p ./tsconfig.build.json",
+    "bundle": "rm -rf ./dist && bun lint && bun build --production --target=bun --sourcemap=linked --minify --outdir=./dist ./src/index.ts",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "lint": "tsc --noEmit && biome check --write",
     "migrate:dev": "prisma migrate dev",
@@ -22,7 +22,7 @@
     "start:prod": "prisma migrate deploy && bun ./dist/index.js"
   },
   "dependencies": {
-    "@prisma/client": "6.4.0",
+    "@prisma/client": "^6.11.0",
     "@sindresorhus/slugify": "^2.2.1",
     "discord-bot-shared": "^0.14.2",
     "discord.js": "^14.21.0",
@@ -30,7 +30,7 @@
     "prisma": "^6.11.0"
   },
   "devDependencies": {
-    "@adamhl8/configs": "^0.3.0",
+    "@adamhl8/configs": "^0.4.1",
     "@biomejs/biome": "^2.0.6",
     "@types/bun": "^1.2.17",
     "typescript": "^5.8.3"

@@ -1,10 +1,9 @@
+import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { SlashCommandBuilder } from "discord.js"
+import { listSettings, setSettings } from "../settings/settings-service.ts"
 
-import { listSettings, setSettings } from "../settings/settings-service.js"
-
-const settings: Command = {
+export const settings: Command = {
   command: new SlashCommandBuilder()
     .setName("settings")
     .setDescription("Configure app-bot.")
@@ -56,5 +55,3 @@ const settings: Command = {
     if (subcommand === "set") await setSettings(interaction)
   },
 }
-
-export default settings

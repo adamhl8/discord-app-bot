@@ -1,14 +1,13 @@
-import type { Event } from "discord-bot-shared"
-
 import slugify from "@sindresorhus/slugify"
 import { Events } from "discord.js"
+import type { Event } from "discord-bot-shared"
 
-import { getApplicant } from "../applicant/applicant-db.js"
-import { sendWarcraftlogsMessage } from "../applicant/applicant-service.js"
-import { linkMemberToApp } from "../applicant/link-applicant.js"
-import { getSettingsOrThrow } from "../settings/settings-db.js"
+import { getApplicant } from "../applicant/applicant-db.ts"
+import { sendWarcraftlogsMessage } from "../applicant/applicant-service.ts"
+import { linkMemberToApp } from "../applicant/link-applicant.ts"
+import { getSettingsOrThrow } from "../settings/settings-db.ts"
 
-const applicantJoin: Event = {
+export const applicantJoin: Event = {
   event: Events.GuildMemberAdd,
   async handler(client, member) {
     const guild = await client.guilds.fetch(member.guild.id)
@@ -22,5 +21,3 @@ const applicantJoin: Event = {
     await sendWarcraftlogsMessage(guild, settings.postLogs, settings.postLogsChannelId, applicant)
   },
 }
-
-export default applicantJoin

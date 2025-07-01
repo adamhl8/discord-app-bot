@@ -1,20 +1,18 @@
-import type Bot from "discord-bot-shared"
+import type { Bot } from "discord-bot-shared"
 
-import accept from "./accept.js"
-import decline from "./decline.js"
-import deleteApplication from "./delete.js"
-import link from "./link.js"
-import settings from "./settings.js"
+import { accept } from "./accept.ts"
+import { decline } from "./decline.ts"
+import { deleteApplication } from "./delete.ts"
+import { link } from "./link.ts"
+import { settings } from "./settings.ts"
 
 /**
  * @param bot The bot
  */
-function addCommands(bot: Bot) {
+export function addCommands(bot: Bot) {
   bot.commands.add(accept)
   bot.commands.add(decline)
   bot.commands.add(deleteApplication)
   bot.commands.add(link)
   bot.commands.add(settings)
 }
-
-export default addCommands

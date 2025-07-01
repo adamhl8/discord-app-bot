@@ -1,15 +1,14 @@
 import type { ChatInputCommandInteraction } from "discord.js"
-
 import { throwUserError } from "discord-bot-shared"
 
-import { fetchMemberById } from "../util.js"
-import { removeApplicant } from "./applicant-db.js"
-import { getCommonDetails, reactToApplication } from "./applicant-service.js"
+import { fetchMemberById } from "../util.ts"
+import { removeApplicant } from "./applicant-db.ts"
+import { getCommonDetails, reactToApplication } from "./applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command.
  */
-async function acceptApplicant(interaction: ChatInputCommandInteraction<"cached">) {
+export async function acceptApplicant(interaction: ChatInputCommandInteraction<"cached">) {
   await interaction.deferReply()
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
@@ -25,5 +24,3 @@ async function acceptApplicant(interaction: ChatInputCommandInteraction<"cached"
 
   await interaction.editReply(`\`${applicantChannel.name}\` has been accepted.`)
 }
-
-export default acceptApplicant

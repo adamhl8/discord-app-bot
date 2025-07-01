@@ -1,10 +1,9 @@
+import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { SlashCommandBuilder } from "discord.js"
+import { linkApplicant } from "../applicant/link-applicant.ts"
 
-import linkApplicant from "../applicant/link-applicant.js"
-
-const link: Command = {
+export const link: Command = {
   command: new SlashCommandBuilder()
     .setName("link")
     .setDescription("Link an applicant.")
@@ -23,5 +22,3 @@ const link: Command = {
     .toJSON(),
   run: linkApplicant,
 }
-
-export default link

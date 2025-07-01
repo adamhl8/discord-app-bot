@@ -1,10 +1,9 @@
+import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { SlashCommandBuilder } from "discord.js"
+import { acceptApplicant } from "../applicant/accept-applicant.ts"
 
-import acceptApplicant from "../applicant/accept-applicant.js"
-
-const accept: Command = {
+export const accept: Command = {
   command: new SlashCommandBuilder()
     .setName("accept")
     .setDescription("Accept an applicant.")
@@ -17,5 +16,3 @@ const accept: Command = {
     .toJSON(),
   run: acceptApplicant,
 }
-
-export default accept

@@ -1,8 +1,7 @@
 import type { Guild, GuildMember } from "discord.js"
-
 import { throwError } from "discord-bot-shared"
 
-import { getSettings } from "./settings/settings-db.js"
+import { getSettings } from "./settings/settings-db.ts"
 
 /**
  * @param member The member to check

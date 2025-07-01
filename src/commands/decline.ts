@@ -1,10 +1,9 @@
+import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { SlashCommandBuilder } from "discord.js"
+import { declineApplicant } from "../applicant/decline-applicant.ts"
 
-import declineApplicant from "../applicant/decline-applicant.js"
-
-const decline: Command = {
+export const decline: Command = {
   command: new SlashCommandBuilder()
     .setName("decline")
     .setDescription("Decline an applicant.")
@@ -23,5 +22,3 @@ const decline: Command = {
     .toJSON(),
   run: declineApplicant,
 }
-
-export default decline

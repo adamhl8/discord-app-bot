@@ -1,7 +1,7 @@
 import type { GuildSettings } from "@prisma/client"
 import type { ChatInputCommandInteraction } from "discord.js"
 
-import { getSettingsOrThrow, saveSettings } from "./settings-db.js"
+import { getSettingsOrThrow, saveSettings } from "./settings-db.ts"
 
 /**
  * @param interaction The interaction that triggered the command

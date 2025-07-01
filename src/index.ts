@@ -1,11 +1,11 @@
+import process from "node:process"
 import type { ClientOptions } from "discord.js"
-
-import Bot from "discord-bot-shared"
 import { GatewayIntentBits as Intents, Partials } from "discord.js"
+import { Bot } from "discord-bot-shared"
 
-import addCommands from "./commands/_commands.js"
-import commandHook from "./commands/command-hook.js"
-import addEvents from "./events/_events.js"
+import { addCommands } from "./commands/_commands.ts"
+import { commandHook } from "./commands/command-hook.ts"
+import { addEvents } from "./events/_events.ts"
 
 const applicationId = process.env["APPLICATION_ID"] ?? ""
 const token = process.env["BOT_TOKEN"] ?? ""

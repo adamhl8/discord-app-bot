@@ -1,6 +1,6 @@
 import type { GuildSettings } from "@prisma/client"
 
-import prisma from "../db.js"
+import { prisma } from "../db.ts"
 
 /**
  * @param guildId The ID of the guild

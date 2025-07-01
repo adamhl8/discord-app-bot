@@ -1,14 +1,13 @@
 import type { Applicant } from "@prisma/client"
-import type { Event } from "discord-bot-shared"
-
 import slugify from "@sindresorhus/slugify"
-import { getChannel, throwError } from "discord-bot-shared"
 import { ChannelType, Events } from "discord.js"
+import type { Event } from "discord-bot-shared"
+import { getChannel, throwError } from "discord-bot-shared"
 
-import { saveApplicant } from "../applicant/applicant-db.js"
-import { getSettingsOrThrow } from "../settings/settings-db.js"
+import { saveApplicant } from "../applicant/applicant-db.ts"
+import { getSettingsOrThrow } from "../settings/settings-db.ts"
 
-const appCreate: Event = {
+export const appCreate: Event = {
   event: Events.MessageCreate,
   async handler(client, message) {
     if (!message.guildId) return
@@ -44,5 +43,3 @@ const appCreate: Event = {
     await saveApplicant(applicant)
   },
 }
-
-export default appCreate
