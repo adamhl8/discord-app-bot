@@ -16,7 +16,7 @@
   "scripts": {
     "build": "rm -rf ./dist && bun lint && tsc -p ./tsconfig.build.json",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
-    "lint": "tsc --noEmit && prettier --write . && eslint .",
+    "lint": "tsc --noEmit && biome check --write",
     "migrate:dev": "prisma migrate dev",
     "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
     "start:prod": "prisma migrate deploy && bun ./dist/index.js"
