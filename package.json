@@ -30,11 +30,9 @@
     "prisma": "^6.4.0"
   },
   "devDependencies": {
+    "@adamhl8/configs": "^0.3.0",
+    "@biomejs/biome": "^2.0.6",
     "@types/bun": "^1.2.2",
-    "eslint": "^9.20.1",
-    "eslint-config-builder": "^0.17.0",
-    "prettier": "^3.5.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript": "^5.7.3"
   }
 }
