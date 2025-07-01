@@ -24,15 +24,15 @@
   "dependencies": {
     "@prisma/client": "6.4.0",
     "@sindresorhus/slugify": "^2.2.1",
-    "discord-bot-shared": "^0.14.0",
-    "discord.js": "^14.18.0",
+    "discord-bot-shared": "^0.14.2",
+    "discord.js": "^14.21.0",
     "get-urls": "^12.1.0",
-    "prisma": "^6.4.0"
+    "prisma": "^6.11.0"
   },
   "devDependencies": {
     "@adamhl8/configs": "^0.3.0",
     "@biomejs/biome": "^2.0.6",
-    "@types/bun": "^1.2.2",
-    "typescript": "^5.7.3"
+    "@types/bun": "^1.2.17",
+    "typescript": "^5.8.3"
   }
 }
