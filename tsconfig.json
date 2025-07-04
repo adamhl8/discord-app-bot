@@ -1,6 +1,7 @@
 {
   "extends": "@adamhl8/configs/tsconfig",
   "compilerOptions": {
+    "rewriteRelativeImportExtensions": false,
     "noEmit": true
   }
 }
