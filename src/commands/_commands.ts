@@ -1,10 +1,10 @@
 import type { Bot } from "discord-bot-shared"
 
-import { accept } from "./accept.ts"
-import { decline } from "./decline.ts"
-import { deleteApplication } from "./delete.ts"
-import { link } from "./link.ts"
-import { settings } from "./settings.ts"
+import { accept } from "@/commands/accept.ts"
+import { decline } from "@/commands/decline.ts"
+import { deleteApplication } from "@/commands/delete.ts"
+import { link } from "@/commands/link.ts"
+import { settings } from "@/commands/settings.ts"
 
 /**
  * @param bot The bot

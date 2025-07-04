@@ -2,7 +2,7 @@ import type { Applicant } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { throwError } from "discord-bot-shared"
 
-import { prisma } from "../db.ts"
+import { prisma } from "@/db.ts"
 
 /**
  * @param username The username of the applicant

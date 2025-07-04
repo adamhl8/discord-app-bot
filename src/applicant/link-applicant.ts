@@ -3,9 +3,9 @@ import type { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js
 import { ChannelType } from "discord.js"
 import { getChannel } from "discord-bot-shared"
 
-import { fetchMemberById } from "../util.ts"
-import { saveApplicant } from "./applicant-db.ts"
-import { getCommonDetails, sendWarcraftlogsMessage } from "./applicant-service.ts"
+import { fetchMemberById } from "@/util.ts"
+import { saveApplicant } from "@/applicant/applicant-db.ts"
+import { getCommonDetails, sendWarcraftlogsMessage } from "@/applicant/applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command

@@ -1,8 +1,8 @@
 import type { ChatInputCommandInteraction } from "discord.js"
 import { throwUserError } from "discord-bot-shared"
 
-import { saveApplicant } from "./applicant-db.ts"
-import { getCommonDetails, reactToApplication } from "./applicant-service.ts"
+import { saveApplicant } from "@/applicant/applicant-db.ts"
+import { getCommonDetails, reactToApplication } from "@/applicant/applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command
