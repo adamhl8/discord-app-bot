@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 
-import { declineApplicant } from "../applicant/decline-applicant.ts"
+import { declineApplicant } from "@/applicant/decline-applicant.ts"
 
 export const decline: Command = {
   command: new SlashCommandBuilder()
