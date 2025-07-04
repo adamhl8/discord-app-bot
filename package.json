@@ -31,7 +31,7 @@
     "prisma": "^6.11.1"
   },
   "devDependencies": {
-    "@adamhl8/configs": "^0.8.1",
+    "@adamhl8/configs": "^0.8.2",
     "@biomejs/biome": "^2.0.6",
     "@types/bun": "^1.2.18",
     "typescript": "^5.8.3"
