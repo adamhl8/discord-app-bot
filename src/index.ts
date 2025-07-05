@@ -1,4 +1,4 @@
-import process from "node:process"
+import * as process from "node:process"
 import type { ClientOptions } from "discord.js"
 import { GatewayIntentBits as Intents, Partials } from "discord.js"
 import { Bot } from "discord-bot-shared"
