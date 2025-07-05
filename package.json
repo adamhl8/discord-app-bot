@@ -19,7 +19,7 @@
     "db:studio": "prisma studio",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "lint": "tsc --noEmit && biome check --write",
-    "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
+    "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\;",
     "start:prod": "prisma migrate deploy && bun ./src/index.ts"
   },
   "dependencies": {
