@@ -23,12 +23,12 @@
     "start:prod": "prisma migrate deploy && bun ./src/index.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.11.1",
+    "@prisma/client": "^6.12.0",
     "@sindresorhus/slugify": "^2.2.1",
     "discord-bot-shared": "^0.14.3",
     "discord.js": "^14.21.0",
     "get-urls": "^12.1.0",
-    "prisma": "^6.11.1"
+    "prisma": "^6.12.0"
   },
   "devDependencies": {
     "@adamhl8/configs": "^0.9.1",
