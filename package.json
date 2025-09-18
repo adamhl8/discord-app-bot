@@ -18,7 +18,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
-    "lint": "tsc --noEmit && biome check --write",
+    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && tsc --noEmit && biome check --write && adamhl8-knip",
     "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
     "start:prod": "prisma migrate deploy && bun ./src/index.ts"
   },
