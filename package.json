@@ -1,41 +1,41 @@
 {
-	"name": "discord-app-bot",
-	"version": "0.5.4",
-	"type": "module",
-	"description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/adamhl8/discord-app-bot"
-	},
-	"author": {
-		"email": "adamhl@pm.me",
-		"name": "Adam Langbert",
-		"url": "https://github.com/adamhl8"
-	},
-	"license": "MIT",
-	"scripts": {
-		"db:generate": "prisma generate",
-		"db:migrate": "prisma migrate dev",
-		"db:studio": "prisma studio",
-		"docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
-		"lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && tsc --noEmit && biome check --write && adamhl8-knip",
-		"prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
-		"start:prod": "prisma migrate deploy && bun ./src/index.ts"
-	},
-	"dependencies": {
-		"@prisma/client": "^6.16.2",
-		"@sindresorhus/slugify": "^3.0.0",
-		"discord-bot-shared": "^0.14.3",
-		"discord.js": "^14.22.1",
-		"get-urls": "^12.1.0",
-		"prisma": "^6.16.2"
-	},
-	"devDependencies": {
-		"@adamhl8/configs": "^0.15.20",
-		"@biomejs/biome": "^2.2.4",
-		"@types/bun": "^1.2.22",
-		"knip": "^5.63.1",
-		"markdown-toc": "^1.2.0",
-		"typescript": "^5.9.2"
-	}
+  "name": "discord-app-bot",
+  "version": "0.5.4",
+  "type": "module",
+  "description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamhl8/discord-app-bot"
+  },
+  "author": {
+    "email": "adamhl@pm.me",
+    "name": "Adam Langbert",
+    "url": "https://github.com/adamhl8"
+  },
+  "license": "MIT",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
+    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && tsc --noEmit && biome check --write && adamhl8-knip",
+    "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
+    "start:prod": "prisma migrate deploy && bun ./src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@sindresorhus/slugify": "^3.0.0",
+    "discord-bot-shared": "^0.14.4",
+    "discord.js": "^14.22.1",
+    "get-urls": "^12.1.0",
+    "prisma": "^6.16.2"
+  },
+  "devDependencies": {
+    "@adamhl8/configs": "^0.15.24",
+    "@biomejs/biome": "^2.2.4",
+    "@types/bun": "^1.2.22",
+    "knip": "^5.63.1",
+    "markdown-toc": "^1.2.0",
+    "typescript": "^5.9.2"
+  }
 }
