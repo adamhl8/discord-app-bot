@@ -4,8 +4,8 @@ import { ChannelType } from "discord.js"
 import { getChannel, throwUserError } from "discord-bot-shared"
 import getUrls from "get-urls"
 
-import { getApplicantOrThrow } from "@/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "@/settings/settings-db.ts"
+import { getApplicantOrThrow } from "~/applicant/applicant-db.ts"
+import { getSettingsOrThrow } from "~/settings/settings-db.ts"
 
 /**
  * @param interaction The interaction that triggered the command

@@ -1,9 +1,9 @@
 import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
 
-import { getApplicant, removeApplicant } from "@/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "@/settings/settings-db.ts"
-import { fetchMemberById } from "@/util.ts"
+import { getApplicant, removeApplicant } from "~/applicant/applicant-db.ts"
+import { getSettingsOrThrow } from "~/settings/settings-db.ts"
+import { fetchMemberById } from "~/util.ts"
 
 export const appReactionAdd: Event = {
   event: Events.MessageReactionAdd,

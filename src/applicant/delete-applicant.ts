@@ -1,7 +1,7 @@
 import type { ChatInputCommandInteraction } from "discord.js"
 
-import { removeApplicant } from "@/applicant/applicant-db.ts"
-import { getCommonDetails, reactToApplication } from "@/applicant/applicant-service.ts"
+import { removeApplicant } from "~/applicant/applicant-db.ts"
+import { getCommonDetails, reactToApplication } from "~/applicant/applicant-service.ts"
 
 /**
  * @param interaction The interaction that triggered the command

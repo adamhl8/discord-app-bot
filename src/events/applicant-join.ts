@@ -2,10 +2,10 @@ import slugify from "@sindresorhus/slugify"
 import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
 
-import { getApplicant } from "@/applicant/applicant-db.ts"
-import { sendWarcraftlogsMessage } from "@/applicant/applicant-service.ts"
-import { linkMemberToApp } from "@/applicant/link-applicant.ts"
-import { getSettingsOrThrow } from "@/settings/settings-db.ts"
+import { getApplicant } from "~/applicant/applicant-db.ts"
+import { sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
+import { linkMemberToApp } from "~/applicant/link-applicant.ts"
+import { getSettingsOrThrow } from "~/settings/settings-db.ts"
 
 export const applicantJoin: Event = {
   event: Events.GuildMemberAdd,

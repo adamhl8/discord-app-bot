@@ -4,8 +4,8 @@ import { ChannelType, Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
 import { getChannel, throwError } from "discord-bot-shared"
 
-import { saveApplicant } from "@/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "@/settings/settings-db.ts"
+import { saveApplicant } from "~/applicant/applicant-db.ts"
+import { getSettingsOrThrow } from "~/settings/settings-db.ts"
 
 export const appCreate: Event = {
   event: Events.MessageCreate,

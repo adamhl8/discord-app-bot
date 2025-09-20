@@ -1,8 +1,8 @@
 import type { ChatInputCommandInteraction } from "discord.js"
 import { throwUserError } from "discord-bot-shared"
 
-import { getSettings } from "@/settings/settings-db.ts"
-import { fetchMemberById, isModerator } from "@/util.ts"
+import { getSettings } from "~/settings/settings-db.ts"
+import { fetchMemberById, isModerator } from "~/util.ts"
 
 /**
  * @param interaction The interaction that triggered the command

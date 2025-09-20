@@ -1,8 +1,8 @@
 import type { Bot } from "discord-bot-shared"
 
-import { appCreate } from "@/events/app-create.ts"
-import { appReactionAdd } from "@/events/app-reaction-add.ts"
-import { applicantJoin } from "@/events/applicant-join.ts"
+import { appCreate } from "~/events/app-create.ts"
+import { appReactionAdd } from "~/events/app-reaction-add.ts"
+import { applicantJoin } from "~/events/applicant-join.ts"
 
 /**
  * @param bot The bot
