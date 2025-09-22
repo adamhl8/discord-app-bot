@@ -6,7 +6,7 @@ import { prisma } from "~/db.ts"
  * @param guildId The ID of the guild
  * @returns The settings
  */
-async function getSettingsOrThrow(guildId: string) {
+export async function getSettingsOrThrow(guildId: string) {
   return await prisma.guildSettings.findUniqueOrThrow({
     where: {
       id: guildId,
@@ -18,7 +18,7 @@ async function getSettingsOrThrow(guildId: string) {
  * @param guildId The ID of the guild
  * @returns The settings
  */
-async function getSettings(guildId: string) {
+export async function getSettings(guildId: string) {
   return await prisma.guildSettings.findUnique({
     where: {
       id: guildId,
@@ -29,7 +29,7 @@ async function getSettings(guildId: string) {
 /**
  * @param settings The settings to save
  */
-async function saveSettings(settings: GuildSettings) {
+export async function saveSettings(settings: GuildSettings) {
   await prisma.guildSettings.upsert({
     where: {
       id: settings.id,
@@ -38,5 +38,3 @@ async function saveSettings(settings: GuildSettings) {
     create: settings,
   })
 }
-
-export { getSettings, getSettingsOrThrow, saveSettings }

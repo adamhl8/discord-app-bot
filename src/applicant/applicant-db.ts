@@ -9,7 +9,7 @@ import { prisma } from "~/db.ts"
  * @param guildId The ID of the guild
  * @returns The applicant
  */
-async function getApplicantOrThrow(username: string, guildId: string) {
+export async function getApplicantOrThrow(username: string, guildId: string) {
   try {
     return await prisma.applicant.findUniqueOrThrow({
       where: {
@@ -29,7 +29,7 @@ async function getApplicantOrThrow(username: string, guildId: string) {
  * @param guildId The ID of the guild
  * @returns The applicant
  */
-async function getApplicant(username: string, guildId: string) {
+export async function getApplicant(username: string, guildId: string) {
   return await prisma.applicant.findUnique({
     where: {
       username,
@@ -41,7 +41,7 @@ async function getApplicant(username: string, guildId: string) {
 /**
  * @param applicant The applicant to save
  */
-async function saveApplicant(applicant: Applicant) {
+export async function saveApplicant(applicant: Applicant) {
   await prisma.applicant.upsert({
     where: { username: applicant.username, guildId: applicant.guildId },
     update: applicant,
@@ -52,7 +52,7 @@ async function saveApplicant(applicant: Applicant) {
 /**
  * @param applicant The applicant to remove
  */
-async function removeApplicant(applicant: Applicant) {
+export async function removeApplicant(applicant: Applicant) {
   await prisma.applicant.delete({
     where: {
       username: applicant.username,
@@ -60,5 +60,3 @@ async function removeApplicant(applicant: Applicant) {
     },
   })
 }
-
-export { getApplicant, getApplicantOrThrow, removeApplicant, saveApplicant }

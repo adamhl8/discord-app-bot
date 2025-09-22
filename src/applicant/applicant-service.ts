@@ -11,7 +11,7 @@ import { getSettingsOrThrow } from "~/settings/settings-db.ts"
  * @param interaction The interaction that triggered the command
  * @returns The guild, applicant channel, applicant, and settings
  */
-async function getCommonDetails(interaction: ChatInputCommandInteraction<"cached">) {
+export async function getCommonDetails(interaction: ChatInputCommandInteraction<"cached">) {
   const guild = interaction.guild
   const applicantChannel = interaction.options.getChannel("channel", true, [ChannelType.GuildText])
   const applicant = await getApplicantOrThrow(applicantChannel.name, guild.id)
@@ -26,7 +26,7 @@ async function getCommonDetails(interaction: ChatInputCommandInteraction<"cached
  * @param applicant The applicant
  * @param emojiName The name of the emoji to react with
  */
-async function reactToApplication(guild: Guild, appsChannelId: string, applicant: Applicant, emojiName: string) {
+export async function reactToApplication(guild: Guild, appsChannelId: string, applicant: Applicant, emojiName: string) {
   const appsChannel = await getChannel(guild, appsChannelId, ChannelType.GuildText)
   const emojis = await guild.emojis.fetch()
   const emoji =
@@ -41,7 +41,7 @@ async function reactToApplication(guild: Guild, appsChannelId: string, applicant
  * @param postLogsChannelId The ID of the channel where the post logs are posted
  * @param applicant The applicant
  */
-async function sendWarcraftlogsMessage(
+export async function sendWarcraftlogsMessage(
   guild: Guild,
   postLogs: boolean,
   postLogsChannelId: string | null,
@@ -59,5 +59,3 @@ async function sendWarcraftlogsMessage(
 
   await postLogsChannel.send(`New Applicant: <@${applicant.memberId ?? "UNKNOWN"}>${warcraftlogsText}`)
 }
-
-export { getCommonDetails, reactToApplication, sendWarcraftlogsMessage }

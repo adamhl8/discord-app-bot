@@ -7,7 +7,7 @@ import { getSettings } from "~/settings/settings-db.ts"
  * @param member The member to check
  * @returns Whether the member is a moderator
  */
-async function isModerator(member: GuildMember) {
+export async function isModerator(member: GuildMember) {
   const isAdmin = member.permissions.has("Administrator")
   const settings = await getSettings(member.guild.id)
   if (!settings) return isAdmin
@@ -21,9 +21,7 @@ async function isModerator(member: GuildMember) {
  * @param id The ID of the member
  * @returns The member
  */
-async function fetchMemberById(guild: Guild, id: string) {
+export async function fetchMemberById(guild: Guild, id: string) {
   const members = await guild.members.fetch()
   return members.get(id) ?? throwError(`Failed to get member with ID: ${id}`)
 }
-
-export { fetchMemberById, isModerator }
