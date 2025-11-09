@@ -1,5 +1,4 @@
 import type { Guild, GuildMember } from "discord.js"
-import { throwError } from "discord-bot-shared"
 
 import { getSettings } from "~/settings/settings-db.ts"
 
@@ -22,6 +21,6 @@ export async function isModerator(member: GuildMember) {
  * @returns The member
  */
 export async function fetchMemberById(guild: Guild, id: string) {
-  const members = await guild.members.fetch()
-  return members.get(id) ?? throwError(`Failed to get member with ID: ${id}`)
+  const member = await guild.members.fetch({ user: id })
+  return member
 }
