@@ -1,18 +1,22 @@
-import type { Applicant } from "@prisma/client"
 import slugify from "@sindresorhus/slugify"
 import { ChannelType, Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
 import { getChannel, throwError } from "discord-bot-shared"
 
 import { saveApplicant } from "~/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "~/settings/settings-db.ts"
+import type { Applicant } from "~/generated/prisma/client.ts"
+import { getSettings } from "~/settings/settings-db.ts"
 
 export const appCreate: Event = {
   event: Events.MessageCreate,
   async handler(client, message) {
     if (!message.guildId) return
     const guild = await client.guilds.fetch(message.guildId)
-    const settings = await getSettingsOrThrow(guild.id)
+
+    const settings = await getSettings(guild.id)
+    if (!settings) return
+    const { appsCategoryId } = settings
+    if (!appsCategoryId) return
 
     if (message.channelId !== settings.appsChannelId) return
 
@@ -25,7 +29,7 @@ export const appCreate: Event = {
 
     const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
-    const appsCategory = await getChannel(guild, settings.appsCategoryId, ChannelType.GuildCategory)
+    const appsCategory = await getChannel(guild, appsCategoryId, ChannelType.GuildCategory)
     const applicantChannel = await appsCategory.children.create({ name: username })
     await applicantChannel.send({ embeds: message.embeds })
 

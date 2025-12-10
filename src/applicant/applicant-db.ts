@@ -1,8 +1,8 @@
-import type { Applicant } from "@prisma/client"
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { throwError } from "discord-bot-shared"
 
 import { prisma } from "~/db.ts"
+import type { Applicant } from "~/generated/prisma/client.ts"
+import { Prisma } from "~/generated/prisma/client.ts"
 
 /**
  * @param username The username of the applicant
@@ -18,7 +18,7 @@ export async function getApplicantOrThrow(username: string, guildId: string) {
       },
     })
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError && error.code === "P2025")
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025")
       throwError(`Failed to find applicant in database with username: ${username}`)
     else throw error
   }

@@ -1,21 +1,22 @@
 generator client {
-  provider = "prisma-client-js"
-  runtime  = "bun"
+  provider        = "prisma-client"
+  previewFeatures = ["strictUndefinedChecks"]
+  output          = "../src/generated/prisma"
+  runtime         = "bun"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 model GuildSettings {
   id                String      @id
-  officerRoleId     String
-  applicantRoleId   String
-  appsChannelId     String
-  appsCategoryId    String
-  declineMessage    String
-  postLogs          Boolean
+  officerRoleIds    String?
+  applicantRoleId   String?
+  appsChannelId     String?
+  appsCategoryId    String?
+  declineMessage    String?
+  postLogs          Boolean?
   postLogsChannelId String?
   applicants        Applicant[]
 }

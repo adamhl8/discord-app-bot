@@ -1,11 +1,11 @@
-import type { Applicant } from "@prisma/client"
 import type { ChatInputCommandInteraction, Guild } from "discord.js"
 import { ChannelType } from "discord.js"
 import { getChannel, throwUserError } from "discord-bot-shared"
 import getUrls from "get-urls"
 
 import { getApplicantOrThrow } from "~/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "~/settings/settings-db.ts"
+import type { Applicant, GuildSettings } from "~/generated/prisma/client.ts"
+import { getSettings } from "~/settings/settings-db.ts"
 
 /**
  * @param interaction The interaction that triggered the command
@@ -15,7 +15,9 @@ export async function getCommonDetails(interaction: ChatInputCommandInteraction<
   const guild = interaction.guild
   const applicantChannel = interaction.options.getChannel("channel", true, [ChannelType.GuildText])
   const applicant = await getApplicantOrThrow(applicantChannel.name, guild.id)
-  const settings = await getSettingsOrThrow(guild.id)
+  const settings = await getSettings(guild.id)
+
+  if (!settings) throwUserError("Settings not found. Please run the /settings command.")
 
   return { guild, applicantChannel, applicant, settings }
 }
@@ -41,12 +43,9 @@ export async function reactToApplication(guild: Guild, appsChannelId: string, ap
  * @param postLogsChannelId The ID of the channel where the post logs are posted
  * @param applicant The applicant
  */
-export async function sendWarcraftlogsMessage(
-  guild: Guild,
-  postLogs: boolean,
-  postLogsChannelId: string | null,
-  applicant: Applicant,
-) {
+export async function sendWarcraftlogsMessage(guild: Guild, settings: GuildSettings, applicant: Applicant) {
+  const { postLogs, postLogsChannelId } = settings
+
   if (!(postLogs && postLogsChannelId && applicant.warcraftlogs)) return
 
   const warcraftlogsUrls = getUrls(applicant.warcraftlogs)

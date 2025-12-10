@@ -2,8 +2,8 @@ import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
 
 import { getApplicant, removeApplicant } from "~/applicant/applicant-db.ts"
-import { getSettingsOrThrow } from "~/settings/settings-db.ts"
-import { fetchMemberById } from "~/util.ts"
+import { getSettings } from "~/settings/settings-db.ts"
+import { fetchMemberById, isModerator } from "~/util.ts"
 
 export const appReactionAdd: Event = {
   event: Events.MessageReactionAdd,
@@ -13,7 +13,11 @@ export const appReactionAdd: Event = {
     if (!reaction.message.guildId) return
 
     const guild = await client.guilds.fetch(reaction.message.guildId)
-    const settings = await getSettingsOrThrow(guild.id)
+
+    const settings = await getSettings(guild.id)
+    if (!settings) return
+    const { applicantRoleId } = settings
+    if (!applicantRoleId) return
 
     const channel = reaction.message.channel
     if (!("name" in channel && channel.name)) return
@@ -24,12 +28,12 @@ export const appReactionAdd: Event = {
     if (reaction.message.id !== applicant.declineMessageId) return
 
     const reactionMember = await fetchMemberById(guild, user.id)
-    if (!(reactionMember.id === applicant.memberId || reactionMember.roles.cache.has(settings.officerRoleId))) return
+    if (!(reactionMember.id === applicant.memberId || (await isModerator(reactionMember)))) return
 
     await channel.delete()
 
     const member = await fetchMemberById(guild, applicant.memberId)
-    await (applicant.kick ? member.kick() : member.roles.remove(settings.applicantRoleId))
+    await (applicant.kick ? member.kick() : member.roles.remove(applicantRoleId))
 
     await removeApplicant(applicant)
   },

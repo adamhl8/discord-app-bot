@@ -1,4 +1,5 @@
 import type { ChatInputCommandInteraction } from "discord.js"
+import { throwUserError } from "discord-bot-shared"
 
 import { removeApplicant } from "~/applicant/applicant-db.ts"
 import { getCommonDetails, reactToApplication } from "~/applicant/applicant-service.ts"
@@ -11,7 +12,10 @@ export async function deleteApplicant(interaction: ChatInputCommandInteraction<"
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
 
-  await reactToApplication(guild, settings.appsChannelId, applicant, "declined")
+  const { appsChannelId } = settings
+  if (!appsChannelId) throwUserError("Missing required setting 'applicantRoleId'. Run the /settings command.")
+
+  await reactToApplication(guild, appsChannelId, applicant, "declined")
   await applicantChannel.delete()
   await removeApplicant(applicant)
 

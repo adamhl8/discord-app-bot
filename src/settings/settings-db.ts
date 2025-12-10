@@ -1,18 +1,5 @@
-import type { GuildSettings } from "@prisma/client"
-
 import { prisma } from "~/db.ts"
-
-/**
- * @param guildId The ID of the guild
- * @returns The settings
- */
-export async function getSettingsOrThrow(guildId: string) {
-  return await prisma.guildSettings.findUniqueOrThrow({
-    where: {
-      id: guildId,
-    },
-  })
-}
+import type { GuildSettings } from "~/generated/prisma/client.ts"
 
 /**
  * @param guildId The ID of the guild
@@ -29,12 +16,12 @@ export async function getSettings(guildId: string) {
 /**
  * @param settings The settings to save
  */
-export async function saveSettings(settings: GuildSettings) {
+export async function saveSettings(guildId: string, settings: Partial<GuildSettings>) {
   await prisma.guildSettings.upsert({
     where: {
-      id: settings.id,
+      id: guildId,
     },
     update: settings,
-    create: settings,
+    create: { ...settings, id: guildId },
   })
 }

@@ -1,6 +1,6 @@
 {
   "name": "discord-app-bot",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "type": "module",
   "description": "A Discord bot for automating the handling of Google Forms pushed to a server.",
   "repository": {
@@ -18,23 +18,24 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
-    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && ts-import-fix -w && tsc --noEmit && biome check --write && adamhl8-knip",
+    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && ts-import-fix -f 'src/generated/**/*' -w && tsc --noEmit && biome check --write && adamhl8-knip",
     "prepare": "find .githooks -type f -exec ln -srf {} .git/hooks/ \\; || true",
     "start:prod": "prisma migrate deploy && bun ./src/index.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/adapter-libsql": "^7.1.0",
+    "@prisma/client": "^7.1.0",
     "@sindresorhus/slugify": "^3.0.0",
-    "discord-bot-shared": "^0.14.5",
-    "discord.js": "^14.24.2",
+    "discord-bot-shared": "^0.15.0",
+    "discord.js": "^14.25.1",
     "get-urls": "^12.1.0",
-    "prisma": "^6.19.0"
+    "prisma": "^7.1.0"
   },
   "devDependencies": {
-    "@adamhl8/configs": "^0.17.9",
-    "@biomejs/biome": "^2.3.4",
-    "@types/bun": "^1.3.2",
-    "knip": "^5.68.0",
+    "@adamhl8/configs": "^0.18.0",
+    "@biomejs/biome": "^2.3.8",
+    "@types/bun": "^1.3.4",
+    "knip": "^5.73.1",
     "markdown-toc": "^1.2.0",
     "typescript": "^5.9.3"
   }

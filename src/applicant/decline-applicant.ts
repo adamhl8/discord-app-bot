@@ -11,6 +11,10 @@ export async function declineApplicant(interaction: ChatInputCommandInteraction<
   await interaction.deferReply()
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
+
+  const { appsChannelId } = settings
+  if (!appsChannelId) throwUserError("Missing required setting 'applicantRoleId'. Run the /settings command.")
+
   if (!applicant.memberId)
     throwUserError(`Applicant "${applicantChannel.name}" is not in the server or hasn't been linked.`)
 
@@ -27,7 +31,7 @@ export async function declineApplicant(interaction: ChatInputCommandInteraction<
   applicant.declineMessageId = declineMessage.id
   await saveApplicant(applicant)
 
-  await reactToApplication(guild, settings.appsChannelId, applicant, "declined")
+  await reactToApplication(guild, appsChannelId, applicant, "declined")
 
   await interaction.editReply(`${applicantChannel.name} has been declined.\n${declineMessageText}`)
 }

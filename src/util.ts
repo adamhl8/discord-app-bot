@@ -9,10 +9,10 @@ import { getSettings } from "~/settings/settings-db.ts"
 export async function isModerator(member: GuildMember) {
   const isAdmin = member.permissions.has("Administrator")
   const settings = await getSettings(member.guild.id)
-  if (!settings) return isAdmin
-  const officerRoleId = settings.officerRoleId
+  if (!settings?.officerRoleIds) return isAdmin
+  const officerRoleIds = settings.officerRoleIds.split(",") ?? []
 
-  return member.roles.cache.has(officerRoleId) || isAdmin
+  return officerRoleIds.some((roleId) => member.roles.cache.has(roleId)) || isAdmin
 }
 
 /**

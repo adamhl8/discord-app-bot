@@ -12,14 +12,19 @@ export async function acceptApplicant(interaction: ChatInputCommandInteraction<"
   await interaction.deferReply()
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
+
+  const { applicantRoleId, appsChannelId } = settings
+  if (!(applicantRoleId && appsChannelId))
+    throwUserError("Missing required settings 'applicantRoleId', 'appsChannelId'. Run the /settings command.")
+
   if (!applicant.memberId)
     throwUserError(`Applicant "${applicantChannel.name}" is not in the server or hasn't been linked.`)
 
   const member = await fetchMemberById(guild, applicant.memberId)
-  await member.roles.remove(settings.applicantRoleId)
+  await member.roles.remove(applicantRoleId)
 
   await applicantChannel.delete()
-  await reactToApplication(guild, settings.appsChannelId, applicant, "approved")
+  await reactToApplication(guild, appsChannelId, applicant, "approved")
   await removeApplicant(applicant)
 
   await interaction.editReply(`\`${applicantChannel.name}\` has been accepted.`)

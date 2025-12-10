@@ -1,3 +1,7 @@
-import { PrismaClient } from "@prisma/client"
+import process from "node:process"
+import { PrismaLibSql } from "@prisma/adapter-libsql"
 
-export const prisma = new PrismaClient()
+import { PrismaClient } from "~/generated/prisma/client.ts"
+
+const adapter = new PrismaLibSql({ url: process.env["DATABASE_URL"] ?? "" })
+export const prisma = new PrismaClient({ adapter })

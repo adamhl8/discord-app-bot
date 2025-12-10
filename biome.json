@@ -1,4 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/latest/schema.json",
-  "extends": ["@adamhl8/configs/biome"]
+  "extends": ["@adamhl8/configs/biome"],
+  "files": { "includes": ["**", "!src/generated"] }
 }

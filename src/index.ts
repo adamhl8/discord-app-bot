@@ -28,7 +28,7 @@ bot.commands.setGlobalCommandHook(commandHook)
 addCommands(bot)
 addEvents(bot)
 
-await bot.commands.unregisterGuildCommands()
-await bot.commands.unregisterApplicationCommands()
-await bot.commands.register()
+if (process.env.NODE_ENV === "production") await bot.commands.register()
+else if (process.env["REGISTER_GUILD_COMMANDS"] === "true") await bot.commands.registerGuildCommands()
+
 await bot.login()

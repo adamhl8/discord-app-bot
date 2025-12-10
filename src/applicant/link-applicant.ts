@@ -1,10 +1,10 @@
-import type { Applicant } from "@prisma/client"
 import type { ChatInputCommandInteraction, Guild, GuildMember } from "discord.js"
 import { ChannelType } from "discord.js"
-import { getChannel } from "discord-bot-shared"
+import { getChannel, throwUserError } from "discord-bot-shared"
 
 import { saveApplicant } from "~/applicant/applicant-db.ts"
 import { getCommonDetails, sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
+import type { Applicant } from "~/generated/prisma/client.ts"
 import { fetchMemberById } from "~/util.ts"
 
 /**
@@ -15,11 +15,14 @@ export async function linkApplicant(interaction: ChatInputCommandInteraction<"ca
 
   const { guild, applicantChannel, applicant, settings } = await getCommonDetails(interaction)
 
+  const { applicantRoleId } = settings
+  if (!applicantRoleId) throwUserError("Missing required setting 'applicantRoleId'. Run the /settings command.")
+
   const user = interaction.options.getUser("applicant", true)
   const member = await fetchMemberById(guild, user.id)
 
-  await linkMemberToApp(guild, settings.applicantRoleId, member, applicant)
-  await sendWarcraftlogsMessage(guild, settings.postLogs, settings.postLogsChannelId, applicant)
+  await linkMemberToApp(guild, applicantRoleId, member, applicant)
+  await sendWarcraftlogsMessage(guild, settings, applicant)
 
   await interaction.editReply(`${member.user.tag} has been linked to ${applicantChannel.name}.`)
 }
