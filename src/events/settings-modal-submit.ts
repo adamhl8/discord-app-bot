@@ -1,45 +1,51 @@
 import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
+import { isErr } from "ts-explicit-errors"
 
+import { getSettingsContainer } from "~/commands/settings.ts"
 import type { GuildSettings } from "~/generated/prisma/client.ts"
 import { saveSettings } from "~/settings/settings-db.ts"
-import { getSettingsContainer } from "~/settings/settings-service.ts"
 
 export const settingsModalSubmit: Event = {
   event: Events.InteractionCreate,
-  async handler(_, interaction) {
+  handler: async (_, interaction) => {
     if (!(interaction.isModalSubmit() && interaction.isFromMessage())) return
-    if (!interaction.guild) return
+
+    const { guild, customId, fields } = interaction
+    if (!guild) throw new Error("guild is null")
 
     const updatedSettings: Partial<GuildSettings> = {}
 
-    if (interaction.customId === "roleSettingsModal") {
+    if (customId === "roleSettingsModal") {
       updatedSettings.officerRoleIds =
-        interaction.fields
+        fields
           .getSelectedRoles("officerRoles", false)
           ?.map((role) => role?.id)
           .join(",") ?? null
 
-      updatedSettings.applicantRoleId = interaction.fields.getSelectedRoles("applicantRole")?.at(0)?.id ?? null
+      updatedSettings.applicantRoleId = fields.getSelectedRoles("applicantRole")?.at(0)?.id ?? null
     }
 
-    if (interaction.customId === "channelSettingsModal") {
-      updatedSettings.appsChannelId = interaction.fields.getSelectedChannels("appsChannel")?.at(0)?.id ?? null
-      updatedSettings.appsCategoryId = interaction.fields.getSelectedChannels("appsCategory")?.at(0)?.id ?? null
+    if (customId === "channelSettingsModal") {
+      updatedSettings.appsChannelId = fields.getSelectedChannels("appsChannel")?.at(0)?.id ?? null
+      updatedSettings.appsCategoryId = fields.getSelectedChannels("appsCategory")?.at(0)?.id ?? null
     }
 
-    if (interaction.customId === "messageSettingsModal") {
-      updatedSettings.declineMessage = interaction.fields.getTextInputValue("declineMessage")
+    if (customId === "messageSettingsModal") {
+      updatedSettings.declineMessage = fields.getTextInputValue("declineMessage")
     }
 
-    if (interaction.customId === "postLogsSettingsModal") {
-      updatedSettings.postLogs = interaction.fields.getStringSelectValues("postLogs").at(0) === "true"
-      updatedSettings.postLogsChannelId = interaction.fields.getSelectedChannels("postLogsChannel")?.at(0)?.id ?? null
+    if (customId === "postLogsSettingsModal") {
+      updatedSettings.postLogs = fields.getStringSelectValues("postLogs").at(0) === "true"
+      updatedSettings.postLogsChannelId = fields.getSelectedChannels("postLogsChannel")?.at(0)?.id ?? null
     }
 
-    if (Object.keys(updatedSettings).length === 0) return
+    const saveSettingsResult = await saveSettings(guild, updatedSettings)
+    if (isErr(saveSettingsResult)) throw new Error(saveSettingsResult.messageChain)
 
-    await saveSettings(interaction.guild.id, updatedSettings)
-    await interaction.update({ components: [await getSettingsContainer(interaction.guild)] })
+    const settingsContainer = await getSettingsContainer(guild)
+    if (isErr(settingsContainer)) throw new Error(settingsContainer.messageChain)
+
+    await interaction.update({ components: [settingsContainer] })
   },
 }

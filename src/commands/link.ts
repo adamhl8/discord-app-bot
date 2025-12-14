@@ -1,7 +1,8 @@
-import { SlashCommandBuilder } from "discord.js"
+import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
+import { isErr } from "ts-explicit-errors"
 
-import { linkApplicant } from "~/applicant/link-applicant.ts"
+import { linkMemberToApp, sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
 
 export const link: Command = {
   command: new SlashCommandBuilder()
@@ -18,7 +19,20 @@ export const link: Command = {
         .setName("channel")
         .setDescription("Select the channel that the applicant will be linked to.")
         .setRequired(true),
-    )
-    .toJSON(),
-  run: linkApplicant,
+    ),
+  run: async (interaction) => {
+    await interaction.deferReply()
+
+    const applicantChannel = interaction.options.getChannel("channel", true, [ChannelType.GuildText])
+
+    const user = interaction.options.getUser("applicant", true)
+    const member = await interaction.guild.members.fetch({ user: user.id })
+
+    const linkMemberToAppResult = await linkMemberToApp(member, applicantChannel)
+    if (isErr(linkMemberToAppResult)) throw new Error(linkMemberToAppResult.messageChain)
+    const sendWarcraftlogsMessageResult = await sendWarcraftlogsMessage(applicantChannel)
+    if (isErr(sendWarcraftlogsMessageResult)) throw new Error(sendWarcraftlogsMessageResult.messageChain)
+
+    await interaction.editReply(`${member.toString()} has been linked to ${applicantChannel.toString()}.`)
+  },
 }

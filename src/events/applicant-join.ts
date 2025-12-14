@@ -1,28 +1,27 @@
 import slugify from "@sindresorhus/slugify"
 import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
+import { isErr } from "ts-explicit-errors"
 
 import { getApplicant } from "~/applicant/applicant-db.ts"
-import { sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
-import { linkMemberToApp } from "~/applicant/link-applicant.ts"
-import { getSettings } from "~/settings/settings-db.ts"
+import { linkMemberToApp, sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
+import { getGuildTextChannel } from "~/guild-utils.ts"
 
 export const applicantJoin: Event = {
   event: Events.GuildMemberAdd,
-  async handler(client, member) {
-    const guild = await client.guilds.fetch(member.guild.id)
-
-    const settings = await getSettings(guild.id)
-    if (!settings) return
-
-    const { applicantRoleId } = settings
-    if (!applicantRoleId) return
+  handler: async (_, member) => {
+    const { guild } = member
 
     const username = slugify(member.user.tag)
-    const applicant = await getApplicant(username, guild.id)
-    if (!applicant) return
+    const applicant = await getApplicant(username, guild)
+    if (isErr(applicant)) return
 
-    await linkMemberToApp(guild, applicantRoleId, member, applicant)
-    await sendWarcraftlogsMessage(guild, settings, applicant)
+    const applicantChannel = await getGuildTextChannel(guild, applicant.channelId)
+    if (isErr(applicantChannel)) return
+
+    const linkMemberToAppResult = await linkMemberToApp(member, applicantChannel)
+    if (isErr(linkMemberToAppResult)) throw new Error(linkMemberToAppResult.messageChain)
+    const sendWarcraftlogsMessageResult = await sendWarcraftlogsMessage(applicantChannel)
+    if (isErr(sendWarcraftlogsMessageResult)) throw new Error(sendWarcraftlogsMessageResult.messageChain)
   },
 }

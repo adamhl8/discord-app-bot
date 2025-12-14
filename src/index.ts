@@ -29,6 +29,6 @@ addCommands(bot)
 addEvents(bot)
 
 if (process.env.NODE_ENV === "production") await bot.commands.register()
-else if (process.env["REGISTER_GUILD_COMMANDS"] === "true") await bot.commands.registerGuildCommands()
+else if (process.env["REGISTER_GUILD_COMMANDS"] === "true") await bot.commands.guildRegister()
 
 await bot.login()
