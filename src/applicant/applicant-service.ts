@@ -25,16 +25,12 @@ export async function getApplicantChannelDetails({ guild, name }: TextChannel): 
   return { settings, applicant }
 }
 
-export async function closeApplication(
-  applicantChannel: TextChannel,
-  emoji: string,
-  removeApplicantRole = true,
-): Promise<Result> {
+export async function closeApplication(applicantChannel: TextChannel, emoji: string): Promise<Result> {
   const applicantChannelDetails = await getApplicantChannelDetails(applicantChannel)
   if (isErr(applicantChannelDetails)) return applicantChannelDetails
   const { settings, applicant } = applicantChannelDetails
 
-  const { guild, name } = applicantChannel
+  const { guild } = applicantChannel
   const { appsChannel, applicantRole } = settings
   const { memberId, appMessageId } = applicant
 
@@ -44,14 +40,12 @@ export async function closeApplication(
   const guildEmoji = await getGuildEmoji(guild, emoji)
   if (isErr(guildEmoji)) return guildEmoji
 
+  const member = memberId ? guild.members.resolve(memberId) : null
+
   // do the things
 
-  if (removeApplicantRole) {
-    if (!memberId) return err(`memberId is null for applicant \`${name}\``, undefined)
-
-    const member = await attempt(() => guild.members.fetch({ user: memberId }))
-    if (isErr(member)) return err("failed to fetch member", member)
-
+  // if the member is still in the server, remove the applicant role
+  if (member) {
     const removeRoleResult = await attempt(() => member.roles.remove(applicantRole))
     if (isErr(removeRoleResult)) return err("failed to remove applicant role", removeRoleResult)
   }
@@ -74,16 +68,27 @@ export async function linkMemberToApp(member: GuildMember, applicantChannel: Tex
 
   const { applicantRole } = settings
 
-  await member.roles.add(applicantRole)
+  const addRoleResult = await attempt(() => member.roles.add(applicantRole))
+  if (isErr(addRoleResult)) return err("failed to add applicant role", addRoleResult)
 
   applicant.memberId = member.id
-  await saveApplicant(applicant)
+  const saveApplicantResult = await saveApplicant(applicant)
+  if (isErr(saveApplicantResult)) return saveApplicantResult
 
-  await applicantChannel.permissionOverwrites.create(member.user, { ViewChannel: true })
-  await applicantChannel.send(
-    `${member.toString()}\n\n` +
-      "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
+  const addPermissionOverwriteResult = await attempt(() =>
+    applicantChannel.permissionOverwrites.create(member.user, { ViewChannel: true }),
   )
+  if (isErr(addPermissionOverwriteResult))
+    return err("failed to add permission overwrite", addPermissionOverwriteResult)
+
+  const sendApplicantJoinMessageResult = await attempt(() =>
+    applicantChannel.send(
+      `${member.toString()}\n\n` +
+        "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
+    ),
+  )
+  if (isErr(sendApplicantJoinMessageResult))
+    return err("failed to send applicant join message", sendApplicantJoinMessageResult)
 }
 
 export async function sendWarcraftlogsMessage(applicantChannel: TextChannel): Promise<Result> {
@@ -98,22 +103,26 @@ export async function sendWarcraftlogsMessage(applicantChannel: TextChannel): Pr
   if (!(postLogs && postLogsChannelId && warcraftlogs)) return
 
   const warcraftlogsUrls = getUrls(warcraftlogs)
-  let warcraftlogsText = "\n\n"
+  let warcraftlogsText = ""
   for (const url of warcraftlogsUrls) {
     warcraftlogsText += `${url}\n`
   }
 
+  if (!warcraftlogsText) return
+
   const postLogsChannel = await getGuildTextChannel(guild, postLogsChannelId)
   if (isErr(postLogsChannel)) return err("failed to get post logs channel", postLogsChannel)
 
-  const sendResult = await postLogsChannel.send({
-    components: [
-      new ContainerBuilder()
-        .addTextDisplayComponents((t) => t.setContent(`**New Applicant: <@${memberId ?? "UNKNOWN"}>**`))
-        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-        .addTextDisplayComponents((t) => t.setContent(warcraftlogsText)),
-    ],
-    flags: [MessageFlags.IsComponentsV2],
-  })
-  if (isErr(sendResult)) return err("failed to send Warcraft Logs message", sendResult)
+  const sendResult = await attempt(() =>
+    postLogsChannel.send({
+      components: [
+        new ContainerBuilder()
+          .addTextDisplayComponents((t) => t.setContent(`**New Applicant: <@${memberId ?? "UNKNOWN"}>**`))
+          .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+          .addTextDisplayComponents((t) => t.setContent(warcraftlogsText)),
+      ],
+      flags: [MessageFlags.IsComponentsV2],
+    }),
+  )
+  if (isErr(sendResult)) return err("failed to send message to postLogsChannel", sendResult)
 }

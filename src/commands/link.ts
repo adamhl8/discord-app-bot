@@ -1,6 +1,6 @@
 import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
-import { isErr } from "ts-explicit-errors"
+import { err, isErr } from "ts-explicit-errors"
 
 import { linkMemberToApp, sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
 
@@ -29,9 +29,11 @@ export const link: Command = {
     const member = await interaction.guild.members.fetch({ user: user.id })
 
     const linkMemberToAppResult = await linkMemberToApp(member, applicantChannel)
-    if (isErr(linkMemberToAppResult)) throw new Error(linkMemberToAppResult.messageChain)
+    if (isErr(linkMemberToAppResult))
+      throw new Error(err("failed to link member to app", linkMemberToAppResult).messageChain)
     const sendWarcraftlogsMessageResult = await sendWarcraftlogsMessage(applicantChannel)
-    if (isErr(sendWarcraftlogsMessageResult)) throw new Error(sendWarcraftlogsMessageResult.messageChain)
+    if (isErr(sendWarcraftlogsMessageResult))
+      throw new Error(err("failed to send Warcraft Logs message", sendWarcraftlogsMessageResult).messageChain)
 
     await interaction.editReply(`${member.toString()} has been linked to ${applicantChannel.toString()}.`)
   },

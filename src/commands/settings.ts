@@ -15,7 +15,7 @@ import {
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
 import type { Result } from "ts-explicit-errors"
-import { isErr } from "ts-explicit-errors"
+import { attempt, err, filterMap, isErr } from "ts-explicit-errors"
 
 import type { GuildSettings } from "~/generated/prisma/client.ts"
 import { getSettings } from "~/settings/settings-db.ts"
@@ -28,7 +28,8 @@ export const settingsCommand: Command = {
     const { guild } = interaction
 
     const settingsContainer = await getSettingsContainer(guild)
-    if (isErr(settingsContainer)) throw new Error(settingsContainer.messageChain)
+    if (isErr(settingsContainer))
+      throw new Error(err("failed to get settings container", settingsContainer).messageChain)
 
     await interaction.editReply({
       components: [settingsContainer],
@@ -179,27 +180,49 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
 
   if (settings) {
     const officerRoleIds = settings?.officerRoleIds?.split(",") ?? []
-    const officerRoles = await Promise.all(officerRoleIds.flatMap(async (id) => (await guild.roles.fetch(id)) ?? []))
+
+    const { values: officerRoles, errors: officerRoleErrors } = await filterMap(officerRoleIds, async (id) => {
+      const officerRole = await attempt(() => guild.roles.fetch(id))
+      if (isErr(officerRole)) return err(`failed to fetch officer role with ID '${id}'`, officerRole)
+      if (!officerRole) return
+      return officerRole
+    })
+    if (officerRoleErrors)
+      return err(
+        `failed to fetch all officer roles:\n${officerRoleErrors.map((error) => error.messageChain).join("\n")}`,
+        undefined,
+      )
+
     const officerRoleMentions =
       officerRoles.length > 0 ? officerRoles.map((role) => role.toString()).join(", ") : "_Not set_"
 
-    const applicantRole = settings.applicantRoleId
-      ? (await guild.roles.fetch(settings.applicantRoleId))?.toString()
-      : "_Not set_"
+    const applicantRoleResult = await attempt(
+      async () => settings.applicantRoleId && (await guild.roles.fetch(settings.applicantRoleId))?.toString(),
+    )
+    if (isErr(applicantRoleResult)) return err("failed to fetch applicant role", applicantRoleResult)
+    const applicantRole = applicantRoleResult || "_Not set_"
 
-    const appsChannel = settings.appsChannelId
-      ? (await guild.channels.fetch(settings.appsChannelId))?.toString()
-      : "_Not set_"
-    const appsCategory = settings.appsCategoryId
-      ? (await guild.channels.fetch(settings.appsCategoryId))?.toString()
-      : "_Not set_"
+    const appsChannelResult = await attempt(
+      async () => settings.appsChannelId && (await guild.channels.fetch(settings.appsChannelId))?.toString(),
+    )
+    if (isErr(appsChannelResult)) return err("failed to fetch apps channel", appsChannelResult)
+    const appsChannel = appsChannelResult || "_Not set_"
+
+    const appsCategoryResult = await attempt(
+      async () => settings.appsCategoryId && (await guild.channels.fetch(settings.appsCategoryId))?.toString(),
+    )
+    if (isErr(appsCategoryResult)) return err("failed to fetch apps category", appsCategoryResult)
+    const appsCategory = appsCategoryResult || "_Not set_"
 
     const declineMessage = settings.declineMessage ? `\`${settings.declineMessage}\`` : "_Not set_"
 
     const postLogs = settings.postLogs ? "True" : "False"
-    const postLogsChannel = settings.postLogsChannelId
-      ? (await guild.channels.fetch(settings.postLogsChannelId))?.toString()
-      : "_Not set_"
+
+    const postLogsChannelResult = await attempt(
+      async () => settings.postLogsChannelId && (await guild.channels.fetch(settings.postLogsChannelId))?.toString(),
+    )
+    if (isErr(postLogsChannelResult)) return err("failed to fetch post logs channel", postLogsChannelResult)
+    const postLogsChannel = postLogsChannelResult || "_Not set_"
 
     currentSettings =
       `**Officer Roles:** ${officerRoleMentions}\n` +

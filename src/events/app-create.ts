@@ -1,7 +1,7 @@
 import slugify from "@sindresorhus/slugify"
 import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
-import { isErr } from "ts-explicit-errors"
+import { attempt, err, isErr } from "ts-explicit-errors"
 
 import { saveApplicant } from "~/applicant/applicant-db.ts"
 import type { Applicant } from "~/generated/prisma/client.ts"
@@ -31,8 +31,12 @@ export const appCreate: Event = {
 
     const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
-    const applicantChannel = await appsCategory.children.create({ name: username })
-    await applicantChannel.send({ embeds: message.embeds })
+    const applicantChannel = await attempt(() => appsCategory.children.create({ name: username }))
+    if (isErr(applicantChannel))
+      throw new Error(err("failed to create applicant channel", applicantChannel).messageChain)
+
+    const appMessageSend = await attempt(() => applicantChannel.send({ embeds: message.embeds }))
+    if (isErr(appMessageSend)) throw new Error(err("failed to send app message", appMessageSend).messageChain)
 
     const applicant: Applicant = {
       username,

@@ -1,7 +1,7 @@
 import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
-import { isErr } from "ts-explicit-errors"
+import { err, isErr } from "ts-explicit-errors"
 
 import { closeApplication, getApplicantChannelDetails } from "~/applicant/applicant-service.ts"
 
@@ -34,7 +34,8 @@ export const accept: Command = {
     }
 
     const closeApplicationResult = await closeApplication(applicantChannel, "approved")
-    if (isErr(closeApplicationResult)) throw new Error(closeApplicationResult.messageChain)
+    if (isErr(closeApplicationResult))
+      throw new Error(err("failed to close application", closeApplicationResult).messageChain)
 
     await interaction.editReply(`\`${applicantChannel.name}\` has been accepted.`)
   },
