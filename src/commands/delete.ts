@@ -1,8 +1,8 @@
-import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
+import { ChannelType, SlashCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
-import { closeApplication } from "~/applicant/applicant-service.ts"
+import { closeApplication } from "#/applicant/applicant-service.ts"
 
 export const deleteApplication: Command = {
   command: new SlashCommandBuilder()

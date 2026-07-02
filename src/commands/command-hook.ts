@@ -1,7 +1,7 @@
 import type { CommandHook } from "discord-bot-shared"
 import { isErr } from "ts-explicit-errors"
 
-import { isModerator } from "~/utils.ts"
+import { isModerator } from "#/utils.ts"
 
 export const commandHook: CommandHook = async (interaction) => {
   const member = await interaction.guild.members.fetch({ user: interaction.user.id })

@@ -1,11 +1,11 @@
 import slugify from "@sindresorhus/slugify"
-import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
+import { Events } from "discord.js"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { saveApplicant } from "~/applicant/applicant-db.ts"
-import type { Applicant } from "~/generated/prisma/client.ts"
-import { getResolvedSettings } from "~/settings/settings-db.ts"
+import { saveApplicant } from "#/applicant/applicant-db.ts"
+import type { Applicant } from "#/generated/prisma/client.ts"
+import { getResolvedSettings } from "#/settings/settings-db.ts"
 
 export const appCreate: Event = {
   event: Events.MessageCreate,
@@ -20,7 +20,7 @@ export const appCreate: Event = {
 
     if (message.channelId !== appsChannel.id) return
 
-    const embed = message.embeds[0]
+    const [embed] = message.embeds
     if (!embed) throw new Error("failed to get embed from message")
     const { fields } = embed
 
@@ -31,11 +31,11 @@ export const appCreate: Event = {
 
     const warcraftlogs = fields.find((element) => element.name.toLowerCase().includes("warcraftlogs"))?.value
 
-    const applicantChannel = await attempt(() => appsCategory.children.create({ name: username }))
+    const applicantChannel = await attempt(async () => appsCategory.children.create({ name: username }))
     if (isErr(applicantChannel))
       throw new Error(err("failed to create applicant channel", applicantChannel).messageChain)
 
-    const appMessageSend = await attempt(() => applicantChannel.send({ embeds: message.embeds }))
+    const appMessageSend = await attempt(async () => applicantChannel.send({ embeds: message.embeds }))
     if (isErr(appMessageSend)) throw new Error(err("failed to send app message", appMessageSend).messageChain)
 
     const applicant: Applicant = {

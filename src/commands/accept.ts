@@ -1,9 +1,9 @@
-import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
+import { ChannelType, SlashCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
-import { closeApplication, getApplicantChannelDetails } from "~/applicant/applicant-service.ts"
+import { closeApplication, getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
 
 export const accept: Command = {
   command: new SlashCommandBuilder()
@@ -25,7 +25,7 @@ export const accept: Command = {
     const { applicant } = commonDetails
 
     if (!applicant.memberId) {
-      interaction.editReply(
+      void interaction.editReply(
         components.warn(
           "Applicant has not joined the server or has not been linked (`/link`). To delete the channel, use the `/delete` command.",
         ),

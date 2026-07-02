@@ -4,18 +4,18 @@ import getUrls from "get-urls"
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { getApplicant, removeApplicant, saveApplicant } from "~/applicant/applicant-db.ts"
-import type { Applicant } from "~/generated/prisma/client.ts"
-import { getGuildEmoji, getGuildTextChannel } from "~/guild-utils.ts"
-import type { ResolvedGuildSettings } from "~/settings/settings-db.ts"
-import { getResolvedSettings } from "~/settings/settings-db.ts"
+import { getApplicant, removeApplicant, saveApplicant } from "#/applicant/applicant-db.ts"
+import type { Applicant } from "#/generated/prisma/client.ts"
+import { getGuildEmoji, getGuildTextChannel } from "#/guild-utils.ts"
+import type { ResolvedGuildSettings } from "#/settings/settings-db.ts"
+import { getResolvedSettings } from "#/settings/settings-db.ts"
 
 interface CommonDetails {
   settings: ResolvedGuildSettings
   applicant: Applicant
 }
 
-export async function getApplicantChannelDetails({ guild, name }: TextChannel): Promise<Result<CommonDetails>> {
+export const getApplicantChannelDetails = async ({ guild, name }: TextChannel): Promise<Result<CommonDetails>> => {
   const settings = await getResolvedSettings(guild)
   if (isErr(settings)) return settings
 
@@ -25,7 +25,7 @@ export async function getApplicantChannelDetails({ guild, name }: TextChannel): 
   return { settings, applicant }
 }
 
-export async function closeApplication(applicantChannel: TextChannel, emoji: string): Promise<Result> {
+export const closeApplication = async (applicantChannel: TextChannel, emoji: string): Promise<Result> => {
   const applicantChannelDetails = await getApplicantChannelDetails(applicantChannel)
   if (isErr(applicantChannelDetails)) return applicantChannelDetails
   const { settings, applicant } = applicantChannelDetails
@@ -34,26 +34,26 @@ export async function closeApplication(applicantChannel: TextChannel, emoji: str
   const { appsChannel, applicantRole } = settings
   const { memberId, appMessageId } = applicant
 
-  const appMessage = await attempt(() => appsChannel.messages.fetch(appMessageId))
+  const appMessage = await attempt(async () => appsChannel.messages.fetch(appMessageId))
   if (isErr(appMessage)) return err("failed to fetch application message", appMessage)
 
   const guildEmoji = await getGuildEmoji(guild, emoji)
   if (isErr(guildEmoji)) return guildEmoji
 
-  const member = memberId ? guild.members.resolve(memberId) : null
+  const member = memberId ? guild.members.resolve(memberId) : undefined
 
   // do the things
 
   // if the member is still in the server, remove the applicant role
   if (member) {
-    const removeRoleResult = await attempt(() => member.roles.remove(applicantRole))
+    const removeRoleResult = await attempt(async () => member.roles.remove(applicantRole))
     if (isErr(removeRoleResult)) return err("failed to remove applicant role", removeRoleResult)
   }
 
-  const reactResult = await attempt(() => appMessage.react(guildEmoji))
+  const reactResult = await attempt(async () => appMessage.react(guildEmoji))
   if (isErr(reactResult)) return err("failed to react to application", reactResult)
 
-  const deleteApplicantChannelResult = await attempt(() => applicantChannel.delete())
+  const deleteApplicantChannelResult = await attempt(async () => applicantChannel.delete())
   if (isErr(deleteApplicantChannelResult))
     return err("failed to delete applicant channel", deleteApplicantChannelResult)
 
@@ -61,27 +61,27 @@ export async function closeApplication(applicantChannel: TextChannel, emoji: str
   if (isErr(removeApplicantResult)) return removeApplicantResult
 }
 
-export async function linkMemberToApp(member: GuildMember, applicantChannel: TextChannel): Promise<Result> {
+export const linkMemberToApp = async (member: GuildMember, applicantChannel: TextChannel): Promise<Result> => {
   const applicantChannelDetails = await getApplicantChannelDetails(applicantChannel)
   if (isErr(applicantChannelDetails)) return applicantChannelDetails
   const { settings, applicant } = applicantChannelDetails
 
   const { applicantRole } = settings
 
-  const addRoleResult = await attempt(() => member.roles.add(applicantRole))
+  const addRoleResult = await attempt(async () => member.roles.add(applicantRole))
   if (isErr(addRoleResult)) return err("failed to add applicant role", addRoleResult)
 
   applicant.memberId = member.id
   const saveApplicantResult = await saveApplicant(applicant)
   if (isErr(saveApplicantResult)) return saveApplicantResult
 
-  const addPermissionOverwriteResult = await attempt(() =>
+  const addPermissionOverwriteResult = await attempt(async () =>
     applicantChannel.permissionOverwrites.create(member.user, { ViewChannel: true }),
   )
   if (isErr(addPermissionOverwriteResult))
     return err("failed to add permission overwrite", addPermissionOverwriteResult)
 
-  const sendApplicantJoinMessageResult = await attempt(() =>
+  const sendApplicantJoinMessageResult = await attempt(async () =>
     applicantChannel.send(
       `${member.toString()}\n\n` +
         "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
@@ -91,7 +91,7 @@ export async function linkMemberToApp(member: GuildMember, applicantChannel: Tex
     return err("failed to send applicant join message", sendApplicantJoinMessageResult)
 }
 
-export async function sendWarcraftlogsMessage(applicantChannel: TextChannel): Promise<Result> {
+export const sendWarcraftlogsMessage = async (applicantChannel: TextChannel): Promise<Result> => {
   const applicantChannelDetails = await getApplicantChannelDetails(applicantChannel)
   if (isErr(applicantChannelDetails)) return applicantChannelDetails
   const { settings, applicant } = applicantChannelDetails
@@ -104,16 +104,14 @@ export async function sendWarcraftlogsMessage(applicantChannel: TextChannel): Pr
 
   const warcraftlogsUrls = getUrls(warcraftlogs)
   let warcraftlogsText = ""
-  for (const url of warcraftlogsUrls) {
-    warcraftlogsText += `${url}\n`
-  }
+  for (const url of warcraftlogsUrls) warcraftlogsText += `${url}\n`
 
   if (!warcraftlogsText) return
 
   const postLogsChannel = await getGuildTextChannel(guild, postLogsChannelId)
   if (isErr(postLogsChannel)) return err("failed to get post logs channel", postLogsChannel)
 
-  const sendResult = await attempt(() =>
+  const sendResult = await attempt(async () =>
     postLogsChannel.send({
       components: [
         new ContainerBuilder()

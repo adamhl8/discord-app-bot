@@ -2,7 +2,6 @@ generator client {
   provider        = "prisma-client"
   previewFeatures = ["strictUndefinedChecks"]
   output          = "../src/generated/prisma"
-  runtime         = "bun"
 }
 
 datasource db {

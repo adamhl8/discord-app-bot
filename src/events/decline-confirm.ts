@@ -1,11 +1,11 @@
-import { ChannelType, Events, MessageFlags } from "discord.js"
 import type { Event } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
+import { ChannelType, Events, MessageFlags } from "discord.js"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { getApplicant } from "~/applicant/applicant-db.ts"
-import { closeApplication } from "~/applicant/applicant-service.ts"
-import { isModerator } from "~/utils.ts"
+import { getApplicant } from "#/applicant/applicant-db.ts"
+import { closeApplication } from "#/applicant/applicant-service.ts"
+import { isModerator } from "#/utils.ts"
 
 export const declineConfirm: Event = {
   event: Events.InteractionCreate,
@@ -22,7 +22,7 @@ export const declineConfirm: Event = {
     if (isErr(applicant)) throw new Error(applicant.messageChain)
     if (!applicant.memberId) throw new Error("applicant memberId is null")
 
-    const buttonInteractionMember = await attempt(() => guild.members.fetch({ user }))
+    const buttonInteractionMember = await attempt(async () => guild.members.fetch({ user }))
     if (isErr(buttonInteractionMember))
       throw new Error(err("failed to fetch button interaction member", buttonInteractionMember).messageChain)
 

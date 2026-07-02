@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, SlashCommandBuilder } from "discord.js"
 import { isErr } from "ts-explicit-errors"
 
-import { saveApplicant } from "~/applicant/applicant-db.ts"
-import { getApplicantChannelDetails } from "~/applicant/applicant-service.ts"
+import { saveApplicant } from "#/applicant/applicant-db.ts"
+import { getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
 
 export const decline: Command = {
   command: new SlashCommandBuilder()
@@ -33,7 +33,7 @@ export const decline: Command = {
     const { settings, applicant } = commonDetails
 
     if (!applicant.memberId) {
-      interaction.editReply(
+      void interaction.editReply(
         components.warn(
           "Applicant has not joined the server or has not been linked (`/link`). To delete the channel, use `/delete`",
         ),

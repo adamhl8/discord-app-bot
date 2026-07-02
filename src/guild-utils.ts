@@ -3,8 +3,8 @@ import { ChannelType } from "discord.js"
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-export async function getGuildTextChannel(guild: Guild, channelId: string): Promise<Result<TextChannel>> {
-  const channel = await attempt(() => guild.channels.fetch(channelId))
+export const getGuildTextChannel = async (guild: Guild, channelId: string): Promise<Result<TextChannel>> => {
+  const channel = await attempt(async () => guild.channels.fetch(channelId))
   if (isErr(channel)) return err("failed to fetch channel", channel)
 
   if (!channel) return err("channel not found", undefined)
@@ -14,8 +14,8 @@ export async function getGuildTextChannel(guild: Guild, channelId: string): Prom
   return channel
 }
 
-export async function getGuildCategory(guild: Guild, categoryId: string): Promise<Result<CategoryChannel>> {
-  const category = await attempt(() => guild.channels.fetch(categoryId))
+export const getGuildCategory = async (guild: Guild, categoryId: string): Promise<Result<CategoryChannel>> => {
+  const category = await attempt(async () => guild.channels.fetch(categoryId))
   if (isErr(category)) return err("failed to fetch category", category)
 
   if (!category) return err("category not found", undefined)
@@ -25,8 +25,8 @@ export async function getGuildCategory(guild: Guild, categoryId: string): Promis
   return category
 }
 
-export async function getGuildEmoji(guild: Guild, emojiName: string): Promise<Result<GuildEmoji>> {
-  const emojis = await attempt(() => guild.emojis.fetch())
+export const getGuildEmoji = async (guild: Guild, emojiName: string): Promise<Result<GuildEmoji>> => {
+  const emojis = await attempt(async () => guild.emojis.fetch())
   if (isErr(emojis)) return err("failed to fetch emojis", emojis)
 
   const emoji = emojis.find((e) => e.name === emojiName)

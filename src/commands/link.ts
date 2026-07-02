@@ -1,8 +1,8 @@
-import { ChannelType, SlashCommandBuilder } from "discord.js"
 import type { Command } from "discord-bot-shared"
+import { ChannelType, SlashCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
-import { linkMemberToApp, sendWarcraftlogsMessage } from "~/applicant/applicant-service.ts"
+import { linkMemberToApp, sendWarcraftlogsMessage } from "#/applicant/applicant-service.ts"
 
 export const link: Command = {
   command: new SlashCommandBuilder()

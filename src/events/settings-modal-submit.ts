@@ -1,10 +1,39 @@
-import { Events } from "discord.js"
 import type { Event } from "discord-bot-shared"
+import type { ModalSubmitFields } from "discord.js"
+import { Events } from "discord.js"
 import { isErr } from "ts-explicit-errors"
 
-import { getSettingsContainer } from "~/commands/settings.ts"
-import type { GuildSettings } from "~/generated/prisma/client.ts"
-import { saveSettings } from "~/settings/settings-db.ts"
+import { getSettingsContainer } from "#/commands/settings.ts"
+import type { GuildSettings } from "#/generated/prisma/client.ts"
+import { saveSettings } from "#/settings/settings-db.ts"
+
+const getUpdatedSettings = (customId: string, fields: ModalSubmitFields): Partial<GuildSettings> => {
+  const updatedSettings: Partial<GuildSettings> = {}
+
+  if (customId === "roleSettingsModal") {
+    updatedSettings.officerRoleIds =
+      fields
+        .getSelectedRoles("officerRoles", false)
+        ?.map((role) => role?.id)
+        .join(",") ?? null
+
+    updatedSettings.applicantRoleId = fields.getSelectedRoles("applicantRole")?.at(0)?.id ?? null
+  }
+
+  if (customId === "channelSettingsModal") {
+    updatedSettings.appsChannelId = fields.getSelectedChannels("appsChannel")?.at(0)?.id ?? null
+    updatedSettings.appsCategoryId = fields.getSelectedChannels("appsCategory")?.at(0)?.id ?? null
+  }
+
+  if (customId === "messageSettingsModal") updatedSettings.declineMessage = fields.getTextInputValue("declineMessage")
+
+  if (customId === "postLogsSettingsModal") {
+    updatedSettings.postLogs = fields.getStringSelectValues("postLogs").at(0) === "true"
+    updatedSettings.postLogsChannelId = fields.getSelectedChannels("postLogsChannel")?.at(0)?.id ?? null
+  }
+
+  return updatedSettings
+}
 
 export const settingsModalSubmit: Event = {
   event: Events.InteractionCreate,
@@ -14,31 +43,7 @@ export const settingsModalSubmit: Event = {
     const { guild, customId, fields } = interaction
     if (!guild) throw new Error("guild is null")
 
-    const updatedSettings: Partial<GuildSettings> = {}
-
-    if (customId === "roleSettingsModal") {
-      updatedSettings.officerRoleIds =
-        fields
-          .getSelectedRoles("officerRoles", false)
-          ?.map((role) => role?.id)
-          .join(",") ?? null
-
-      updatedSettings.applicantRoleId = fields.getSelectedRoles("applicantRole")?.at(0)?.id ?? null
-    }
-
-    if (customId === "channelSettingsModal") {
-      updatedSettings.appsChannelId = fields.getSelectedChannels("appsChannel")?.at(0)?.id ?? null
-      updatedSettings.appsCategoryId = fields.getSelectedChannels("appsCategory")?.at(0)?.id ?? null
-    }
-
-    if (customId === "messageSettingsModal") {
-      updatedSettings.declineMessage = fields.getTextInputValue("declineMessage")
-    }
-
-    if (customId === "postLogsSettingsModal") {
-      updatedSettings.postLogs = fields.getStringSelectValues("postLogs").at(0) === "true"
-      updatedSettings.postLogsChannelId = fields.getSelectedChannels("postLogsChannel")?.at(0)?.id ?? null
-    }
+    const updatedSettings = getUpdatedSettings(customId, fields)
 
     const saveSettingsResult = await saveSettings(guild, updatedSettings)
     if (isErr(saveSettingsResult)) throw new Error(saveSettingsResult.messageChain)
