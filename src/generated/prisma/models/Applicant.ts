@@ -179,7 +179,7 @@ export type ApplicantGroupByOutputType = {
   _max: ApplicantMaxAggregateOutputType | null
 }
 
-type GetApplicantGroupByPayload<T extends ApplicantGroupByArgs> = Prisma.PrismaPromise<
+export type GetApplicantGroupByPayload<T extends ApplicantGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ApplicantGroupByOutputType, T['by']> &
       {
@@ -1226,6 +1226,11 @@ export type ApplicantFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` Applicants.
    */
   skip?: number | runtime.Types.Skip
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Applicants.
+   */
   distinct?: Prisma.ApplicantScalarFieldEnum | Prisma.ApplicantScalarFieldEnum[] | runtime.Types.Skip
 }
 

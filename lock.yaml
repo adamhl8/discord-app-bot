@@ -36,8 +36,8 @@ importers:
         version: 5.7.0
     devDependencies:
       "@adamhl8/configs":
-        specifier: ^0.24.11
-        version: 0.24.11(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)
+        specifier: ^0.24.12
+        version: 0.24.12(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)
       "@commitlint/cli":
         specifier: ^21.2.0
         version: 21.2.0(@types/node@26.1.0)(typescript@6.0.3)
@@ -70,9 +70,9 @@ importers:
         version: 6.0.3
 
 packages:
-  "@adamhl8/configs@0.24.11":
+  "@adamhl8/configs@0.24.12":
     resolution:
-      { integrity: sha512-UzXTaw60VaY3xTyXlJYRcCaUNLuFZ62pulTGnvlxDVNAbmzeRswsn3kRT3QH73La/z0H5/iXNFZkrgxy7kN7lg== }
+      { integrity: sha512-U4kiEAeVBB1Io2BLQHr2I6H87hH0DVOagfbZVBMUocmu3Qt9K9MnQBTnmSowIi26Dr6CR+ijF3JItXiXjR5kUA== }
     hasBin: true
     peerDependencies:
       "@arethetypeswrong/core": ">=0.18"
@@ -3356,7 +3356,7 @@ packages:
       { integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ== }
 
 snapshots:
-  "@adamhl8/configs@0.24.11(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)":
+  "@adamhl8/configs@0.24.12(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)":
     dependencies:
       "@adamhl8/eslint-plugin-clean-modules": 0.1.3(eslint@10.6.0)(typescript@6.0.3)
       "@commitlint/cli": 21.2.0(@types/node@26.1.0)(typescript@6.0.3)

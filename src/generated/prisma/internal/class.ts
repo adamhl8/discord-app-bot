@@ -19,18 +19,26 @@ const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [
     "strictUndefinedChecks"
   ],
-  "clientVersion": "7.1.0",
-  "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
+  "clientVersion": "7.8.0",
+  "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   "activeProvider": "sqlite",
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  previewFeatures = [\"strictUndefinedChecks\"]\n  output          = \"../src/generated/prisma\"\n  runtime         = \"bun\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel GuildSettings {\n  id                String      @id\n  officerRoleIds    String?\n  applicantRoleId   String?\n  appsChannelId     String?\n  appsCategoryId    String?\n  declineMessage    String?\n  postLogs          Boolean?\n  postLogsChannelId String?\n  applicants        Applicant[]\n}\n\nmodel Applicant {\n  username         String        @id\n  appMessageId     String\n  channelId        String\n  memberId         String?\n  declineMessageId String?\n  kick             Boolean?\n  warcraftlogs     String?\n  guildId          String\n  guildSettings    GuildSettings @relation(fields: [guildId], references: [id])\n}\n",
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  previewFeatures = [\"strictUndefinedChecks\"]\n  output          = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel GuildSettings {\n  id                String      @id\n  officerRoleIds    String?\n  applicantRoleId   String?\n  appsChannelId     String?\n  appsCategoryId    String?\n  declineMessage    String?\n  postLogs          Boolean?\n  postLogsChannelId String?\n  applicants        Applicant[]\n}\n\nmodel Applicant {\n  username         String        @id\n  appMessageId     String\n  channelId        String\n  memberId         String?\n  declineMessageId String?\n  kick             Boolean?\n  warcraftlogs     String?\n  guildId          String\n  guildSettings    GuildSettings @relation(fields: [guildId], references: [id])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
     "types": {}
+  },
+  "parameterizationSchema": {
+    "strings": [],
+    "graph": ""
   }
 }
 
 config.runtimeDataModel = JSON.parse("{\"models\":{\"GuildSettings\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"officerRoleIds\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"applicantRoleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"appsChannelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"appsCategoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"declineMessage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postLogs\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"postLogsChannelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"applicants\",\"kind\":\"object\",\"type\":\"Applicant\",\"relationName\":\"ApplicantToGuildSettings\"}],\"dbName\":null},\"Applicant\":{\"fields\":[{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"appMessageId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"channelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"memberId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"declineMessageId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"kick\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"warcraftlogs\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guildId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guildSettings\",\"kind\":\"object\",\"type\":\"GuildSettings\",\"relationName\":\"ApplicantToGuildSettings\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.parameterizationSchema = {
+  strings: JSON.parse("[\"where\",\"orderBy\",\"cursor\",\"guildSettings\",\"applicants\",\"_count\",\"GuildSettings.findUnique\",\"GuildSettings.findUniqueOrThrow\",\"GuildSettings.findFirst\",\"GuildSettings.findFirstOrThrow\",\"GuildSettings.findMany\",\"data\",\"GuildSettings.createOne\",\"GuildSettings.createMany\",\"GuildSettings.createManyAndReturn\",\"GuildSettings.updateOne\",\"GuildSettings.updateMany\",\"GuildSettings.updateManyAndReturn\",\"create\",\"update\",\"GuildSettings.upsertOne\",\"GuildSettings.deleteOne\",\"GuildSettings.deleteMany\",\"having\",\"_min\",\"_max\",\"GuildSettings.groupBy\",\"GuildSettings.aggregate\",\"Applicant.findUnique\",\"Applicant.findUniqueOrThrow\",\"Applicant.findFirst\",\"Applicant.findFirstOrThrow\",\"Applicant.findMany\",\"Applicant.createOne\",\"Applicant.createMany\",\"Applicant.createManyAndReturn\",\"Applicant.updateOne\",\"Applicant.updateMany\",\"Applicant.updateManyAndReturn\",\"Applicant.upsertOne\",\"Applicant.deleteOne\",\"Applicant.deleteMany\",\"Applicant.groupBy\",\"Applicant.aggregate\",\"AND\",\"OR\",\"NOT\",\"username\",\"appMessageId\",\"channelId\",\"memberId\",\"declineMessageId\",\"kick\",\"warcraftlogs\",\"guildId\",\"equals\",\"not\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"contains\",\"startsWith\",\"endsWith\",\"id\",\"officerRoleIds\",\"applicantRoleId\",\"appsChannelId\",\"appsCategoryId\",\"declineMessage\",\"postLogs\",\"postLogsChannelId\",\"every\",\"some\",\"none\",\"is\",\"isNot\",\"connectOrCreate\",\"upsert\",\"createMany\",\"set\",\"disconnect\",\"delete\",\"connect\",\"updateMany\",\"deleteMany\"]"),
+  graph: "ahIgDAQAAEYAICwAAEIAMC0AAAkAEC4AAEIAMEIBAAAAAUMBAEQAIUQBAEQAIUUBAEQAIUYBAEQAIUcBAEQAIUggAEUAIUkBAEQAIQEAAAABACAMAwAASAAgLAAARwAwLQAAAwAQLgAARwAwLwEAQwAhMAEAQwAhMQEAQwAhMgEARAAhMwEARAAhNCAARQAhNQEARAAhNgEAQwAhBQMAAGQAIDIAAEkAIDMAAEkAIDQAAEkAIDUAAEkAIAwDAABIACAsAABHADAtAAADABAuAABHADAvAQAAAAEwAQBDACExAQBDACEyAQBEACEzAQBEACE0IABFACE1AQBEACE2AQBDACEDAAAAAwAgAQAABAAwAgAABQAgAQAAAAMAIAEAAAABACAMBAAARgAgLAAAQgAwLQAACQAQLgAAQgAwQgEAQwAhQwEARAAhRAEARAAhRQEARAAhRgEARAAhRwEARAAhSCAARQAhSQEARAAhCAQAAGMAIEMAAEkAIEQAAEkAIEUAAEkAIEYAAEkAIEcAAEkAIEgAAEkAIEkAAEkAIAMAAAAJACABAAAKADACAAABACADAAAACQAgAQAACgAwAgAAAQAgAwAAAAkAIAEAAAoAMAIAAAEAIAkEAABiACBCAQAAAAFDAQAAAAFEAQAAAAFFAQAAAAFGAQAAAAFHAQAAAAFIIAAAAAFJAQAAAAEBCwAADgAgCEIBAAAAAUMBAAAAAUQBAAAAAUUBAAAAAUYBAAAAAUcBAAAAAUggAAAAAUkBAAAAAQELAAAQADABCwAAEAAwCQQAAFUAIEIBAE0AIUMBAE4AIUQBAE4AIUUBAE4AIUYBAE4AIUcBAE4AIUggAE8AIUkBAE4AIQIAAAABACALAAATACAIQgEATQAhQwEATgAhRAEATgAhRQEATgAhRgEATgAhRwEATgAhSCAATwAhSQEATgAhAgAAAAkAIAsAABUAIAIAAAAJACALAAAVACADAAAAAQAgEgAADgAgEwAAEwAgAQAAAAEAIAEAAAAJACAKBQAAUgAgGAAAVAAgGQAAUwAgQwAASQAgRAAASQAgRQAASQAgRgAASQAgRwAASQAgSAAASQAgSQAASQAgCywAAEEAMC0AABwAEC4AAEEAMEIBADYAIUMBADcAIUQBADcAIUUBADcAIUYBADcAIUcBADcAIUggADgAIUkBADcAIQMAAAAJACABAAAbADAXAAAcACADAAAACQAgAQAACgAwAgAAAQAgAQAAAAUAIAEAAAAFACADAAAAAwAgAQAABAAwAgAABQAgAwAAAAMAIAEAAAQAMAIAAAUAIAMAAAADACABAAAEADACAAAFACAJAwAAUQAgLwEAAAABMAEAAAABMQEAAAABMgEAAAABMwEAAAABNCAAAAABNQEAAAABNgEAAAABAQsAACQAIAgvAQAAAAEwAQAAAAExAQAAAAEyAQAAAAEzAQAAAAE0IAAAAAE1AQAAAAE2AQAAAAEBCwAAJgAwAQsAACYAMAkDAABQACAvAQBNACEwAQBNACExAQBNACEyAQBOACEzAQBOACE0IABPACE1AQBOACE2AQBNACECAAAABQAgCwAAKQAgCC8BAE0AITABAE0AITEBAE0AITIBAE4AITMBAE4AITQgAE8AITUBAE4AITYBAE0AIQIAAAADACALAAArACACAAAAAwAgCwAAKwAgAwAAAAUAIBIAACQAIBMAACkAIAEAAAAFACABAAAAAwAgBwUAAEoAIBgAAEwAIBkAAEsAIDIAAEkAIDMAAEkAIDQAAEkAIDUAAEkAIAssAAA1ADAtAAAyABAuAAA1ADAvAQA2ACEwAQA2ACExAQA2ACEyAQA3ACEzAQA3ACE0IAA4ACE1AQA3ACE2AQA2ACEDAAAAAwAgAQAAMQAwFwAAMgAgAwAAAAMAIAEAAAQAMAIAAAUAIAssAAA1ADAtAAAyABAuAAA1ADAvAQA2ACEwAQA2ACExAQA2ACEyAQA3ACEzAQA3ACE0IAA4ACE1AQA3ACE2AQA2ACEOBQAAPwAgGAAAQAAgGQAAQAAgNwEAAAABOAEAPgAhOQEAAAAEOgEAAAAEOwEAAAABPAEAAAABPQEAAAABPgEAAAABPwEAAAABQAEAAAABQQEAAAABDgUAADoAIBgAAD0AIBkAAD0AIDcBAAAAATgBADwAITkBAAAABToBAAAABTsBAAAAATwBAAAAAT0BAAAAAT4BAAAAAT8BAAAAAUABAAAAAUEBAAAAAQUFAAA6ACAYAAA7ACAZAAA7ACA3IAAAAAE4IAA5ACEFBQAAOgAgGAAAOwAgGQAAOwAgNyAAAAABOCAAOQAhCDcCAAAAATgCADoAITkCAAAABToCAAAABTsCAAAAATwCAAAAAT0CAAAAAT4CAAAAAQI3IAAAAAE4IAA7ACEOBQAAOgAgGAAAPQAgGQAAPQAgNwEAAAABOAEAPAAhOQEAAAAFOgEAAAAFOwEAAAABPAEAAAABPQEAAAABPgEAAAABPwEAAAABQAEAAAABQQEAAAABCzcBAAAAATgBAD0AITkBAAAABToBAAAABTsBAAAAATwBAAAAAT0BAAAAAT4BAAAAAT8BAAAAAUABAAAAAUEBAAAAAQ4FAAA_ACAYAABAACAZAABAACA3AQAAAAE4AQA-ACE5AQAAAAQ6AQAAAAQ7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQAAAAFAAQAAAAFBAQAAAAEINwIAAAABOAIAPwAhOQIAAAAEOgIAAAAEOwIAAAABPAIAAAABPQIAAAABPgIAAAABCzcBAAAAATgBAEAAITkBAAAABDoBAAAABDsBAAAAATwBAAAAAT0BAAAAAT4BAAAAAT8BAAAAAUABAAAAAUEBAAAAAQssAABBADAtAAAcABAuAABBADBCAQA2ACFDAQA3ACFEAQA3ACFFAQA3ACFGAQA3ACFHAQA3ACFIIAA4ACFJAQA3ACEMBAAARgAgLAAAQgAwLQAACQAQLgAAQgAwQgEAQwAhQwEARAAhRAEARAAhRQEARAAhRgEARAAhRwEARAAhSCAARQAhSQEARAAhCzcBAAAAATgBAEAAITkBAAAABDoBAAAABDsBAAAAATwBAAAAAT0BAAAAAT4BAAAAAT8BAAAAAUABAAAAAUEBAAAAAQs3AQAAAAE4AQA9ACE5AQAAAAU6AQAAAAU7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQAAAAFAAQAAAAFBAQAAAAECNyAAAAABOCAAOwAhA0oAAAMAIEsAAAMAIEwAAAMAIAwDAABIACAsAABHADAtAAADABAuAABHADAvAQBDACEwAQBDACExAQBDACEyAQBEACEzAQBEACE0IABFACE1AQBEACE2AQBDACEOBAAARgAgLAAAQgAwLQAACQAQLgAAQgAwQgEAQwAhQwEARAAhRAEARAAhRQEARAAhRgEARAAhRwEARAAhSCAARQAhSQEARAAhTQAACQAgTgAACQAgAAAAAAFSAQAAAAEBUgEAAAABAVIgAAAAAQUSAABmACATAABpACBPAABnACBQAABoACBVAAABACADEgAAZgAgTwAAZwAgVQAAAQAgAAAACxIAAFYAMBMAAFsAME8AAFcAMFAAAFgAMFEAAFkAIFIAAFoAMFMAAFoAMFQAAFoAMFUAAFoAMFYAAFwAMFcAAF0AMAcvAQAAAAEwAQAAAAExAQAAAAEyAQAAAAEzAQAAAAE0IAAAAAE1AQAAAAECAAAABQAgEgAAYQAgAwAAAAUAIBIAAGEAIBMAAGAAIAELAABlADAMAwAASAAgLAAARwAwLQAAAwAQLgAARwAwLwEAAAABMAEAQwAhMQEAQwAhMgEARAAhMwEARAAhNCAARQAhNQEARAAhNgEAQwAhAgAAAAUAIAsAAGAAIAIAAABeACALAABfACALLAAAXQAwLQAAXgAQLgAAXQAwLwEAQwAhMAEAQwAhMQEAQwAhMgEARAAhMwEARAAhNCAARQAhNQEARAAhNgEAQwAhCywAAF0AMC0AAF4AEC4AAF0AMC8BAEMAITABAEMAITEBAEMAITIBAEQAITMBAEQAITQgAEUAITUBAEQAITYBAEMAIQcvAQBNACEwAQBNACExAQBNACEyAQBOACEzAQBOACE0IABPACE1AQBOACEHLwEATQAhMAEATQAhMQEATQAhMgEATgAhMwEATgAhNCAATwAhNQEATgAhBy8BAAAAATABAAAAATEBAAAAATIBAAAAATMBAAAAATQgAAAAATUBAAAAAQQSAABWADBPAABXADBRAABZACBVAABaADAACAQAAGMAIEMAAEkAIEQAAEkAIEUAAEkAIEYAAEkAIEcAAEkAIEgAAEkAIEkAAEkAIAcvAQAAAAEwAQAAAAExAQAAAAEyAQAAAAEzAQAAAAE0IAAAAAE1AQAAAAEIQgEAAAABQwEAAAABRAEAAAABRQEAAAABRgEAAAABRwEAAAABSCAAAAABSQEAAAABAgAAAAEAIBIAAGYAIAMAAAAJACASAABmACATAABqACAKAAAACQAgCwAAagAgQgEATQAhQwEATgAhRAEATgAhRQEATgAhRgEATgAhRwEATgAhSCAATwAhSQEATgAhCEIBAE0AIUMBAE4AIUQBAE4AIUUBAE4AIUYBAE4AIUcBAE4AIUggAE8AIUkBAE4AIQIEBgIFAAMBAwABAQQHAAAAAAMFAAgYAAkZAAoAAAADBQAIGAAJGQAKAQMAAQEDAAEDBQAPGAAQGQARAAAAAwUADxgAEBkAEQYCAQcIAQgLAQkMAQoNAQwPAQ0RBA4SBQ8UARAWBBEXBhQYARUZARYaBBodBxseCxwfAh0gAh4hAh8iAiAjAiElAiInBCMoDCQqAiUsBCYtDScuAigvAikwBCozDis0Eg"
+}
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -39,12 +47,14 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.sqlite.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.sqlite.mjs"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.sqlite.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.sqlite.wasm-base64.mjs")
     return await decodeBase64AsWasm(wasm)
-  }
+  },
+
+  importName: "./query_compiler_fast_bg.js"
 }
 
 
@@ -59,7 +69,9 @@ export interface PrismaClientConstructor {
    * Type-safe database client for TypeScript
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more GuildSettings
    * const guildSettings = await prisma.guildSettings.findMany()
    * ```
@@ -81,7 +93,9 @@ export interface PrismaClientConstructor {
  * Type-safe database client for TypeScript
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more GuildSettings
  * const guildSettings = await prisma.guildSettings.findMany()
  * ```
@@ -166,9 +180,9 @@ export interface PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => runtime.Types.Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<R>
 

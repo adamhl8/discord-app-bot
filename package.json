@@ -20,14 +20,13 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "docker:push": "docker build --platform linux/amd64 . -t ghcr.io/adamhl8/discord-app-bot && docker push ghcr.io/adamhl8/discord-app-bot:latest",
     "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && adamhl8-knip",
     "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml",
     "bundle": "nub run lint",
     "release": "gh workflow run release.yml",
     "release:run": "release-it --ci -i \"$(adamhl8-cliff --bumped-version)\"",
     "prepare": "lefthook install",
-    "start:prod": "prisma migrate deploy && bun ./src/index.ts"
+    "start:prod": "prisma migrate deploy && nub ./src/index.ts"
   },
   "dependencies": {
     "@prisma/adapter-libsql": "^7.8.0",
@@ -41,7 +40,7 @@
     "type-fest": "^5.7.0"
   },
   "devDependencies": {
-    "@adamhl8/configs": "^0.24.11",
+    "@adamhl8/configs": "^0.24.12",
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
     "@types/node": "^26.1.0",
