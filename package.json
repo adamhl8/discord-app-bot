@@ -21,7 +21,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && adamhl8-knip",
-    "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml",
+    "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml && nub run db:generate",
     "bundle": "nub run lint",
     "release": "gh workflow run release.yml",
     "release:run": "release-it --ci -i \"$(adamhl8-cliff --bumped-version)\"",
