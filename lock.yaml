@@ -8,8 +8,8 @@ importers:
   .:
     dependencies:
       "@adamhl8/configs":
-        specifier: ^0.27.2
-        version: 0.27.2(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(tsdown@0.22.3(typescript@6.0.3))(typescript@6.0.3)
+        specifier: ^0.27.3
+        version: 0.27.3(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(tsdown@0.22.3(typescript@6.0.3))(typescript@6.0.3)
       "@hono/node-server":
         specifier: ^2.0.8
         version: 2.0.8(hono@4.12.27)
@@ -91,9 +91,9 @@ importers:
         version: 6.0.3
 
 packages:
-  "@adamhl8/configs@0.27.2":
+  "@adamhl8/configs@0.27.3":
     resolution:
-      { integrity: sha512-jdczsiqcEk4Ml1OVdURSV12GAPrmp9H+ty8IKtnsJPWTKJlu0yQaS1PVDnMZYDSo67Aw5vl2MJowHJ6eKIZmLg== }
+      { integrity: sha512-Qp4encWTyl/2zSr04E4Bq7Cp7T37HCbF5iBx/MBbDhXdxP9AoxViDiD97E4tWK+PqqgDS6na0p9y7vUVPUJF1g== }
     hasBin: true
     peerDependencies:
       "@arethetypeswrong/core": ">=0.18"
@@ -3732,7 +3732,7 @@ packages:
       { integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ== }
 
 snapshots:
-  "@adamhl8/configs@0.27.2(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(tsdown@0.22.3(typescript@6.0.3))(typescript@6.0.3)":
+  "@adamhl8/configs@0.27.3(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(tsdown@0.22.3(typescript@6.0.3))(typescript@6.0.3)":
     dependencies:
       "@adamhl8/eslint-plugin-clean-modules": 0.1.3(eslint@10.6.0)(typescript@6.0.3)
       "@commitlint/cli": 21.2.0(@types/node@26.1.0)(typescript@6.0.3)

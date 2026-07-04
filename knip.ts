@@ -2,7 +2,6 @@ import { knipConfig } from "@adamhl8/configs"
 
 const config = knipConfig({
   project: ["!./src/generated/**/*", "!./apps-script/on-submit.js"],
-  entry: ["./apps-script/on-submit.ts"],
   ignoreDependencies: ["@prisma/client", "@types/google-apps-script"],
 })
 
