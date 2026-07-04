@@ -37,9 +37,12 @@ export const declineConfirm: Event = {
     // if the applicant left the server, this will be null
     const applicantMember = guild.members.resolve(applicant.memberId)
 
-    if (applicantMember && applicant.kick) await applicantMember.kick()
-    const closeApplicationResult = await closeApplication(applicantChannel, "declined")
+    if (applicantMember && applicant.kick) {
+      const kickResult = await attempt(async () => applicantMember.kick())
+      if (isErr(kickResult)) throw new Error(err("failed to kick applicant", kickResult).messageChain)
+    }
 
+    const closeApplicationResult = await closeApplication(applicantChannel, "declined")
     if (isErr(closeApplicationResult))
       throw new Error(err("failed to close application", closeApplicationResult).messageChain)
   },
