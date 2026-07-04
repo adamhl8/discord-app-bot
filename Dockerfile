@@ -1,23 +1,15 @@
-FROM node:latest AS base
+FROM ghcr.io/nubjs/nub:latest
 LABEL org.opencontainers.image.source=https://github.com/adamhl8/discord-app-bot
 WORKDIR /app
 ENV NODE_ENV="production"
 
-RUN npm install -g --ignore-scripts=false @nubjs/nub
+COPY package.json lock.yaml ./
 
-FROM base
-
-COPY package.json ./
-COPY lock.yaml ./
-
-RUN nub install --ignore-scripts --prod
+RUN nub install --frozen-lockfile --ignore-scripts --prod
 
 COPY prisma ./prisma
 COPY src ./src
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 
-ARG DATABASE_URL="file:db/prod.db"
-ENV DATABASE_URL=${DATABASE_URL}
-
-CMD ["nub", "run", "start:prod"]
+CMD ["sh", "-c", "nub run db:deploy && exec nub ./src/index.ts"]

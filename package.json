@@ -18,6 +18,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
+    "db:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
@@ -26,8 +27,7 @@
     "bundle": "nub run lint",
     "release": "gh workflow run release.yml",
     "release:run": "release-it --ci -i \"$(adamhl8-cliff --bumped-version)\"",
-    "prepare": "lefthook install",
-    "start:prod": "prisma migrate deploy && nub ./src/index.ts"
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@adamhl8/configs": "^0.25.0",
@@ -36,7 +36,7 @@
     "@sindresorhus/slugify": "^3.0.0",
     "arkenv": "^0.12.2",
     "arktype": "^2.2.2",
-    "discord-bot-shared": "^0.16.2",
+    "discord-bot-shared": "^0.17.0",
     "discord.js": "^14.26.4",
     "get-urls": "^12.1.0",
     "prisma": "^7.8.0",

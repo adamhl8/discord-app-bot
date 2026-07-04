@@ -26,14 +26,11 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       discord-bot-shared:
-        specifier: ^0.16.2
-        version: 0.16.2(discord.js@14.26.4)
+        specifier: ^0.17.0
+        version: 0.17.0(discord.js@14.26.4)
       discord.js:
         specifier: ^14.26.4
         version: 14.26.4
-      envalid:
-        specifier: ^8.2.0
-        version: 8.2.0
       get-urls:
         specifier: ^12.1.0
         version: 12.1.0
@@ -1933,9 +1930,9 @@ packages:
     resolution:
       { integrity: sha512-XnqcWmnFZFAE8ZM8SHAw9DIV8D3Or00rMQ8iQLotrEA2PmXhl+ykaf6L6q4l474hrSUH1JaYcv+iOMRWp2p6Tg== }
 
-  discord-bot-shared@0.16.2:
+  discord-bot-shared@0.17.0:
     resolution:
-      { integrity: sha512-LRofXsviUFFJRh49Z046rRiqRXOXnWN0YO9KczWQdjZ4+7kuWVI6PprXPIYviblJYFVvrEQ1enhO4cKLXFNp7Q== }
+      { integrity: sha512-e3kMzifwXPl7OwMrclkrSPg4TGzIX2bkadJnJFfEkTk+I5937EvKp7IT4YgHuqrjmrWEmV40/rsW4EISqP4v8g== }
     peerDependencies:
       discord.js: ^14.0.0
 
@@ -1971,11 +1968,6 @@ packages:
     resolution:
       { integrity: sha512-dtJUTepzMW3Lm/NPxRf3wP4642UWhjL2sQxc+ym2YMj1m/H2zDNQOlezafzkHwn6sMstjHTwG6iQQsctDW/b1A== }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
-
-  envalid@8.2.0:
-    resolution:
-      { integrity: sha512-CkPvea95dwMYE1wnKX5mQXkOpiMs9O+ncv8NqZy+gW7FuzpUp06KTdUHb18xFG8CqQHmfmRqGLF5DuGaBWNrSw== }
-    engines: { node: ">=18" }
 
   error-ex@1.3.4:
     resolution:
@@ -4698,7 +4690,7 @@ snapshots:
 
   discord-api-types@0.38.49: {}
 
-  discord-bot-shared@0.16.2(discord.js@14.26.4):
+  discord-bot-shared@0.17.0(discord.js@14.26.4):
     dependencies:
       discord.js: 14.26.4
       ts-explicit-errors: 4.1.2
@@ -4736,10 +4728,6 @@ snapshots:
   env-paths@2.2.1: {}
 
   env-paths@3.0.0: {}
-
-  envalid@8.2.0:
-    dependencies:
-      tslib: 2.8.1
 
   error-ex@1.3.4:
     dependencies:
