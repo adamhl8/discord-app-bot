@@ -12,4 +12,4 @@ COPY src ./src
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 
-CMD ["sh", "-c", "nub run db:deploy && exec nub ./src/index.ts"]
+CMD ["sh", "-c", "nub exec prisma migrate deploy && exec nub ./src/index.ts"]

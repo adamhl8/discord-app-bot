@@ -18,19 +18,10 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "db:deploy": "prisma migrate deploy",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && knip",
-    "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml && nub run db:generate",
-    "bundle": "tsdown && nub run lint",
-    "release": "gh workflow run release.yml",
-    "release:run": "release-it --ci -i \"$(adamhl8-cliff --bumped-version)\"",
-    "prepare": "lefthook install"
+    "prepare": "just prepare"
   },
   "dependencies": {
-    "@adamhl8/configs": "^0.27.3",
+    "@adamhl8/configs": "^0.29.0",
     "@hono/node-server": "^2.0.8",
     "@hono/standard-validator": "^0.2.3",
     "@prisma/adapter-libsql": "^7.8.0",
@@ -44,7 +35,7 @@
     "hono": "^4.12.27",
     "prisma": "^7.8.0",
     "ts-explicit-errors": "^4.1.2",
-    "type-fest": "^5.7.0"
+    "type-fest": "^5.8.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.0",
