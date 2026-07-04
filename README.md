@@ -66,7 +66,7 @@ docker run -d \
   -e APP_BOT_SECRET=<YOUR_SECRET> \
   -e DATABASE_URL=file:db/prod.db \
   -p 8080:8080 \
-  -v ./data/:/app/prisma/db/ \
+  -v ./data/:/app/db/ \
   --restart unless-stopped \
   ghcr.io/adamhl8/discord-app-bot:latest
 ```

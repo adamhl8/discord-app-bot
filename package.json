@@ -22,7 +22,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && adamhl8-knip",
+    "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && knip",
     "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml && nub run db:generate",
     "bundle": "tsdown && nub run lint",
     "release": "gh workflow run release.yml",
@@ -30,7 +30,7 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "@adamhl8/configs": "^0.25.0",
+    "@adamhl8/configs": "^0.27.2",
     "@hono/node-server": "^2.0.8",
     "@hono/standard-validator": "^0.2.3",
     "@prisma/adapter-libsql": "^7.8.0",
