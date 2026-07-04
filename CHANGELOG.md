@@ -1,3 +1,13 @@
+## [1.0.0](https://github.com/adamhl8/discord-app-bot/compare/v0.7.3..v1.0.0) - 2026-07-04
+
+### 🚀 Features
+
+- [**breaking**] post new applications straight to the bot by @adamhl8 ([e025fd8](https://github.com/adamhl8/discord-app-bot/commit/e025fd8d018c782f53a306640203d9a685f33c7d))
+
+### ⚙️ Miscellaneous Tasks
+
+- add apps-script to repo by @adamhl8 ([fc7af97](https://github.com/adamhl8/discord-app-bot/commit/fc7af972af31736468bf730be6021f1bf193e1b9))
+
 ## [0.7.3](https://github.com/adamhl8/discord-app-bot/compare/v0.7.2..v0.7.3) - 2026-07-04
 
 ### ⚙️ Miscellaneous Tasks
