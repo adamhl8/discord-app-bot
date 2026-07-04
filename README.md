@@ -2,13 +2,13 @@
 
 A Discord bot for automating the handling of Google Forms pushed to a server. Its primary function is to handle forms that are used for applications where the applicant is either accepted or declined.
 
-Use [Google-Forms-to-Discord-Extended](https://github.com/Kelo/Google-Forms-to-Discord-Extended) to set up sending form responses to your Discord server.
+Form responses are sent directly to the bot by a small Google Apps Script that comes with this repo. See [Google Form Setup](#google-form-setup).
 
 The basic workflow looks like this:
 
 - Someone submits a form response.
-- Form is pushed to your Discord server.
-- Bot picks this up and a channel for the applicant is automatically created. This channel is where the applicant can see the status of their application.
+- The form's Apps Script sends the response to the bot.
+- The bot posts the application to your Applications channel, and a channel for the applicant is automatically created. This channel is where the applicant can see the status of their application.
 - Once the applicant joins the server, they are tied to their application.
 - The applicant is automatically given an Applicant role. Use this to limit what the applicant can do during while waiting for a response.
 - The applicant can either be accepted or declined.
@@ -20,9 +20,22 @@ See the [Commands](#commands) section for more details.
 
 ### Google Form Setup
 
-The only requirement for your Google From is that it has a short answer question with the name/title `Discord Username`. This is used to match applicants who join the server to their application.
+The only requirement for your Google Form is that it has a short answer question with the name/title `Discord Username`. This is used to match applicants who join the server to their application.
 
 It's recommended that you provide an invite link to your server at the end of the form. The applicant should join the server _after_ submitting their application for this bot to work as intended. If the applicant joins early or is not matched to their application correct, you can use the `/link` command to fix this.
+
+To send form responses to the bot, add the Apps Script that comes with this repo to your form:
+
+1. In your form, open the more menu (three dots) and select **Apps Script**.
+2. Paste the contents of [`apps-script/on-submit.js`](./apps-script/on-submit.js) into the editor, replacing the default contents.
+3. Fill in the constants at the top of the script:
+   - `BOT_URL` - The URL the bot is reachable at, ending with `/apps`. For example: `https://bot.example.com/apps`
+   - `GUILD_ID` - Your Discord server's ID.
+   - `EMBED_TITLE` - The title shown at the top of each application posted to Discord.
+4. Go to **Project Settings -> Script Properties** and add a property named `APP_BOT_SECRET`. This must match the `APP_BOT_SECRET` environment variable the bot is running with.
+5. Go to **Triggers** and add a trigger for the `onSubmit` function with event source `From form` and event type `On form submit`.
+
+The script sends the form's questions and answers to the bot as-is. Long answers are automatically split across multiple messages, and unanswered questions are shown as _no response_.
 
 ### Discord Server Setup
 
@@ -32,7 +45,7 @@ The bot needs the following:
 
 - An Officer/Moderator role. Anyone with this role can manage applications through the bot.
 - An Applicant role. This is the role automatically given to the applicant when they join the server.
-- An Applications channel. This is the channel where you have your webhook set up for your form responses. The bot monitors for applications in this channel.
+- An Applications channel. This is the channel where the bot posts new applications.
 - An Applicants channel category. Applicant channels are created under this category.
 
 It's intended that you add the Applicant role to the Applicants category's permissions and decline the `View Channels` permission. That way the applicant can only see their own channel (applicants are automatically given permission to view their own channel when they join). You can also decline the `Send Messages` permission if you don't want applicants to be able to send messages in their own channel.
@@ -50,13 +63,18 @@ docker run -d \
   --name=discord-app-bot \
   -e BOT_TOKEN=<YOUR_BOT_TOKEN> \
   -e APPLICATION_ID=<YOUR_BOT_APPLICATION_ID> \
+  -e APP_BOT_SECRET=<YOUR_SECRET> \
   -e DATABASE_URL=file:db/prod.db \
+  -p 8080:8080 \
   -v ./data/:/app/prisma/db/ \
   --restart unless-stopped \
   ghcr.io/adamhl8/discord-app-bot:latest
 ```
 
-- You need to enable the `Server Members` and `Message Content` intents in your bot's settings.
+- `APP_BOT_SECRET` is the shared secret used to authenticate requests from your form's Apps Script. Generate one with:
+  - `openssl rand -hex 24`
+- The bot listens for form submissions on port `8080` (configurable via the `PORT` environment variable). It needs to be reachable from the internet, e.g. behind a reverse proxy with HTTPS, so that Google's servers can reach it.
+- You need to enable the `Server Members` intent in your bot's settings.
 
 ## Commands
 

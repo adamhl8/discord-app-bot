@@ -2,18 +2,18 @@ const BOT_URL = "https://<your-bot-host>/apps"
 const GUILD_ID = "<your discord server id>"
 const EMBED_TITLE = "<Potent> Application"
 
-interface AppField {
+interface ApplicationField {
   name: string
   value: string
 }
 
-interface AppPayload {
+interface ApplicationPayload {
   guildId: string
   title: string
-  fields: AppField[]
+  fields: ApplicationField[]
 }
 
-function sendToBot(payload: AppPayload): void {
+function sendToBot(payload: ApplicationPayload): void {
   const secret = PropertiesService.getScriptProperties().getProperty("APP_BOT_SECRET")
   if (!secret) throw new Error("APP_BOT_SECRET script property is not set")
 
@@ -54,7 +54,7 @@ function onSubmit(e?: GoogleAppsScript.Events.FormsOnFormSubmit): void {
   const formResponse = e ? e.response : FormApp.getActiveForm().getResponses().pop()
   if (!formResponse) throw new Error("form has no responses")
 
-  const fields = formResponse.getItemResponses().map((itemResponse): AppField => {
+  const fields = formResponse.getItemResponses().map((itemResponse): ApplicationField => {
     const answer = itemResponse.getResponse()
     return {
       name: itemResponse.getItem().getTitle(),

@@ -31,14 +31,17 @@
   },
   "dependencies": {
     "@adamhl8/configs": "^0.25.0",
+    "@hono/node-server": "^2.0.8",
+    "@hono/standard-validator": "^0.2.3",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@sindresorhus/slugify": "^3.0.0",
     "arkenv": "^0.12.2",
     "arktype": "^2.2.2",
-    "discord-bot-shared": "^0.17.0",
+    "discord-bot-shared": "^0.18.0",
     "discord.js": "^14.26.4",
     "get-urls": "^12.1.0",
+    "hono": "^4.12.27",
     "prisma": "^7.8.0",
     "ts-explicit-errors": "^4.1.2",
     "type-fest": "^5.7.0"

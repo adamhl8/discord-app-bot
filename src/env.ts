@@ -10,9 +10,11 @@ const isProd = baseEnv.NODE_ENV === "production"
 
 export const env = parseEnv(
   type({
+    APP_BOT_SECRET: requireWhen(isProd, "string > 0"),
     APPLICATION_ID: requireWhen(isProd, "string.digits > 0", ""),
     BOT_TOKEN: requireWhen(isProd, "string > 0", ""),
     DATABASE_URL: type("string").default(isProd ? "file:db/prod.db" : "file:./dev.db"),
     REGISTER_GUILD_COMMANDS: "boolean = false",
+    PORT: "number = 8080",
   }).merge(BaseEnv),
 )

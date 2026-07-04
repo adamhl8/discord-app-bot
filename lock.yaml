@@ -13,6 +13,9 @@ importers:
       "@hono/node-server":
         specifier: ^2.0.8
         version: 2.0.8(hono@4.12.27)
+      "@hono/standard-validator":
+        specifier: ^0.2.3
+        version: 0.2.3(@standard-schema/spec@1.1.0)(hono@4.12.27)
       "@prisma/adapter-libsql":
         specifier: ^7.8.0
         version: 7.8.0
@@ -29,8 +32,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       discord-bot-shared:
-        specifier: ^0.17.0
-        version: 0.17.0(discord.js@14.26.4)
+        specifier: ^0.18.0
+        version: 0.18.0(discord.js@14.26.4)
       discord.js:
         specifier: ^14.26.4
         version: 14.26.4
@@ -403,6 +406,13 @@ packages:
     engines: { node: ">=20" }
     peerDependencies:
       hono: ^4
+
+  "@hono/standard-validator@0.2.3":
+    resolution:
+      { integrity: sha512-bp9vHu6Va6SfMHC3D4ZLBbT/woi+AZ9CRdTXQu3kLJuLh2W/Gb9UO4hijS+BQAGFXi4EGpXdetxpzwTAawSVeg== }
+    peerDependencies:
+      "@standard-schema/spec": ^1.0.0
+      hono: ">=3.9.0"
 
   "@humanfs/core@0.19.2":
     resolution:
@@ -2141,9 +2151,9 @@ packages:
     resolution:
       { integrity: sha512-XnqcWmnFZFAE8ZM8SHAw9DIV8D3Or00rMQ8iQLotrEA2PmXhl+ykaf6L6q4l474hrSUH1JaYcv+iOMRWp2p6Tg== }
 
-  discord-bot-shared@0.17.0:
+  discord-bot-shared@0.18.0:
     resolution:
-      { integrity: sha512-e3kMzifwXPl7OwMrclkrSPg4TGzIX2bkadJnJFfEkTk+I5937EvKp7IT4YgHuqrjmrWEmV40/rsW4EISqP4v8g== }
+      { integrity: sha512-1iUaEnh+oJZOz3zmErI0+yF9ms0miwYl02MIdaSZ/ECrswCW1dZ3u4BC4j8huQL8w9VPjmp2excxyEpV/zCJRw== }
     peerDependencies:
       discord.js: ^14.0.0
 
@@ -4022,6 +4032,11 @@ snapshots:
     dependencies:
       hono: 4.12.27
 
+  "@hono/standard-validator@0.2.3(@standard-schema/spec@1.1.0)(hono@4.12.27)":
+    dependencies:
+      "@standard-schema/spec": 1.1.0
+      hono: 4.12.27
+
   "@humanfs/core@0.19.2":
     dependencies:
       "@humanfs/types": 0.15.0
@@ -5139,7 +5154,7 @@ snapshots:
 
   discord-api-types@0.38.49: {}
 
-  discord-bot-shared@0.17.0(discord.js@14.26.4):
+  discord-bot-shared@0.18.0(discord.js@14.26.4):
     dependencies:
       discord.js: 14.26.4
       ts-explicit-errors: 4.1.2
