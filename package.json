@@ -24,7 +24,7 @@
     "db:studio": "prisma studio",
     "lint": "markdown-toc -i --bullets '-' --maxdepth 3 ./README.md && oxfmt && oxlint --fix --fix-suggestions --fix-dangerously && adamhl8-knip",
     "bump-deps": "nub update -L && rm -f lock.yaml && nub i && oxfmt lock.yaml && nub run db:generate",
-    "bundle": "nub run lint",
+    "bundle": "tsdown && nub run lint",
     "release": "gh workflow run release.yml",
     "release:run": "release-it --ci -i \"$(adamhl8-cliff --bumped-version)\"",
     "prepare": "lefthook install"
@@ -46,6 +46,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
+    "@types/google-apps-script": "^2.0.11",
     "@types/node": "^26.1.0",
     "knip": "^6.24.0",
     "markdown-toc": "^1.2.0",
@@ -53,6 +54,7 @@
     "oxlint": "^1.72.0",
     "oxlint-tsgolint": "^0.24.0",
     "release-it": "^20.2.1",
+    "tsdown": "^0.22.3",
     "typescript": "^6.0.3"
   }
 }
