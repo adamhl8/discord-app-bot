@@ -30,9 +30,12 @@
     "start:prod": "prisma migrate deploy && nub ./src/index.ts"
   },
   "dependencies": {
+    "@adamhl8/configs": "^0.25.0",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@sindresorhus/slugify": "^3.0.0",
+    "arkenv": "^0.12.2",
+    "arktype": "^2.2.2",
     "discord-bot-shared": "^0.16.2",
     "discord.js": "^14.26.4",
     "get-urls": "^12.1.0",
@@ -41,7 +44,6 @@
     "type-fest": "^5.7.0"
   },
   "devDependencies": {
-    "@adamhl8/configs": "^0.24.12",
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
     "@types/node": "^26.1.0",

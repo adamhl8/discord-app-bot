@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      "@adamhl8/configs":
+        specifier: ^0.25.0
+        version: 0.25.0(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)
       "@prisma/adapter-libsql":
         specifier: ^7.8.0
         version: 7.8.0
@@ -16,12 +19,21 @@ importers:
       "@sindresorhus/slugify":
         specifier: ^3.0.0
         version: 3.0.0
+      arkenv:
+        specifier: ^0.12.2
+        version: 0.12.2(arktype@2.2.2)
+      arktype:
+        specifier: ^2.2.2
+        version: 2.2.2
       discord-bot-shared:
         specifier: ^0.16.2
         version: 0.16.2(discord.js@14.26.4)
       discord.js:
         specifier: ^14.26.4
         version: 14.26.4
+      envalid:
+        specifier: ^8.2.0
+        version: 8.2.0
       get-urls:
         specifier: ^12.1.0
         version: 12.1.0
@@ -35,9 +47,6 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
     devDependencies:
-      "@adamhl8/configs":
-        specifier: ^0.24.12
-        version: 0.24.12(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)
       "@commitlint/cli":
         specifier: ^21.2.0
         version: 21.2.0(@types/node@26.1.0)(typescript@6.0.3)
@@ -70,9 +79,9 @@ importers:
         version: 6.0.3
 
 packages:
-  "@adamhl8/configs@0.24.12":
+  "@adamhl8/configs@0.25.0":
     resolution:
-      { integrity: sha512-U4kiEAeVBB1Io2BLQHr2I6H87hH0DVOagfbZVBMUocmu3Qt9K9MnQBTnmSowIi26Dr6CR+ijF3JItXiXjR5kUA== }
+      { integrity: sha512-P4Ep4Z1YctIQ5ZWy0HRUSPKaqMRw4UFonK2QXa7FPqIdxXtNKmCDePr+umTDwMXZyfO5/L0DbbJ+pVT1Wo/3gw== }
     hasBin: true
     peerDependencies:
       "@arethetypeswrong/core": ">=0.18"
@@ -114,6 +123,14 @@ packages:
   "@adamhl8/eslint-plugin-clean-modules@0.1.3":
     resolution:
       { integrity: sha512-k5mFuU3ElM4p1ZvVGOnelOO6Qb4DN69iM5myZ6VxMTC2cnnOdJUeqssojdmgF3I6uUS70zbOmZ290CbZ7Fh1wg== }
+
+  "@ark/schema@0.56.1":
+    resolution:
+      { integrity: sha512-1Cf2g9nKD8K/3JGRu+gCCfYw5d4qR8YLLjDs5W5kpmaButCYWAPFUJqSXyBATPjglzCd4tIkp398iPYVs8MjRA== }
+
+  "@ark/util@0.56.1":
+    resolution:
+      { integrity: sha512-Tp1rTik3q5Z+jAeeDxr5JZpmVIw0miti1ykSEHyZv5Pw3TIJl2xbN6KTacOxITp0l3s9ytlrWd30Zvqcy5vzoQ== }
 
   "@babel/code-frame@7.29.7":
     resolution:
@@ -1610,6 +1627,23 @@ packages:
     resolution:
       { integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q== }
 
+  arkenv@0.12.2:
+    resolution:
+      { integrity: sha512-PdR+gPNc/YQKTD75qDjREhmJc9nBaY/+zR5JLYQY3uB2zIiN+kwAv+A+kpV9a4A+9ivvYJvZURNcLaoFa9FMhg== }
+    peerDependencies:
+      arktype: ^2.1.22
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+
+  arkregex@0.0.7:
+    resolution:
+      { integrity: sha512-O/Ltrn9EUSn3ui0KVzfyrWGDUsHlzKxDVBtpQxL/6JmLRMAZAebfSNf/A/J5Ny5S6QIwrXX+RfXsu888HMs35A== }
+
+  arktype@2.2.2:
+    resolution:
+      { integrity: sha512-YYf1xhL2dh5aPZFlsY0RAsxv5HZqfLGLptH2ZP3JidTmsGRW8VOymhPjjMTkerL12vR2YtX0SK4c1mATtae8SA== }
+
   ast-types@0.13.4:
     resolution:
       { integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w== }
@@ -1937,6 +1971,11 @@ packages:
     resolution:
       { integrity: sha512-dtJUTepzMW3Lm/NPxRf3wP4642UWhjL2sQxc+ym2YMj1m/H2zDNQOlezafzkHwn6sMstjHTwG6iQQsctDW/b1A== }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+
+  envalid@8.2.0:
+    resolution:
+      { integrity: sha512-CkPvea95dwMYE1wnKX5mQXkOpiMs9O+ncv8NqZy+gW7FuzpUp06KTdUHb18xFG8CqQHmfmRqGLF5DuGaBWNrSw== }
+    engines: { node: ">=18" }
 
   error-ex@1.3.4:
     resolution:
@@ -2814,9 +2853,9 @@ packages:
     resolution:
       { integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA== }
 
-  picomatch@4.0.4:
+  picomatch@4.0.5:
     resolution:
-      { integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A== }
+      { integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A== }
     engines: { node: ">=12" }
 
   pkg-types@2.3.1:
@@ -3356,18 +3395,21 @@ packages:
       { integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ== }
 
 snapshots:
-  "@adamhl8/configs@0.24.12(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)":
+  "@adamhl8/configs@0.25.0(@commitlint/cli@21.2.0)(@commitlint/config-conventional@21.2.0)(@types/node@26.1.0)(eslint@10.6.0)(knip@6.24.0)(oxfmt@0.57.0)(oxlint@1.72.0(oxlint-tsgolint@0.24.0))(oxlint-tsgolint@0.24.0)(release-it@20.2.1)(typescript@6.0.3)":
     dependencies:
       "@adamhl8/eslint-plugin-clean-modules": 0.1.3(eslint@10.6.0)(typescript@6.0.3)
       "@commitlint/cli": 21.2.0(@types/node@26.1.0)(typescript@6.0.3)
       "@commitlint/config-conventional": 21.2.0
       "@commitlint/types": 21.2.0
+      arkenv: 0.12.2(arktype@2.2.2)
+      arktype: 2.2.2
       es-toolkit: 1.49.0
       knip: 6.24.0
       oxfmt: 0.57.0
       oxlint: 1.72.0(oxlint-tsgolint@0.24.0)
       oxlint-tsgolint: 0.24.0
       release-it: 20.2.1(@types/node@26.1.0)
+      ts-explicit-errors: 4.1.2
       type-fest: 5.7.0
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -3379,6 +3421,12 @@ snapshots:
       "@typescript-eslint/utils": 8.62.1(eslint@10.6.0)(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
+
+  "@ark/schema@0.56.1":
+    dependencies:
+      "@ark/util": 0.56.1
+
+  "@ark/util@0.56.1": {}
 
   "@babel/code-frame@7.29.7":
     dependencies:
@@ -4433,6 +4481,20 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  arkenv@0.12.2(arktype@2.2.2):
+    dependencies:
+      arktype: 2.2.2
+
+  arkregex@0.0.7:
+    dependencies:
+      "@ark/util": 0.56.1
+
+  arktype@2.2.2:
+    dependencies:
+      "@ark/schema": 0.56.1
+      "@ark/util": 0.56.1
+      arkregex: 0.0.7
+
   ast-types@0.13.4:
     dependencies:
       tslib: 2.8.1
@@ -4675,6 +4737,10 @@ snapshots:
 
   env-paths@3.0.0: {}
 
+  envalid@8.2.0:
+    dependencies:
+      tslib: 2.8.1
+
   error-ex@1.3.4:
     dependencies:
       is-arrayish: 0.2.1
@@ -4799,9 +4865,9 @@ snapshots:
     dependencies:
       walk-up-path: 4.0.0
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.5):
     dependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.5
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -5076,13 +5142,13 @@ snapshots:
 
   knip@6.24.0:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
+      fdir: 6.5.0(picomatch@4.0.5)
       formatly: 0.3.0
       get-tsconfig: 4.14.0
       jiti: 2.7.0
       oxc-parser: 0.137.0
       oxc-resolver: 11.21.3
-      picomatch: 4.0.4
+      picomatch: 4.0.5
       smol-toml: 1.7.0
       strip-json-comments: 5.0.3
       tinyglobby: 0.2.17
@@ -5454,7 +5520,7 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@4.0.4: {}
+  picomatch@4.0.5: {}
 
   pkg-types@2.3.1:
     dependencies:
@@ -5705,13 +5771,13 @@ snapshots:
 
   tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinypool@2.1.0: {}
 
