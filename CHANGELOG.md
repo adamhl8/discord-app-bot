@@ -1,3 +1,15 @@
+## [1.0.1](https://github.com/adamhl8/discord-app-bot/compare/v1.0.0..v1.0.1) - 2026-07-04
+
+### 🐛 Bug Fixes
+
+- propagate error when kick fails by @adamhl8 ([7d49e22](https://github.com/adamhl8/discord-app-bot/commit/7d49e22c051522788a10cdc423d581c83efed40e))
+
+### ⚙️ Miscellaneous Tasks
+
+- fix build by @adamhl8 ([5286141](https://github.com/adamhl8/discord-app-bot/commit/5286141709a74bcc0abe3652639d29e9de741fea))
+
+- _(deps)_ update dependencies by @adamhl8 ([b73666c](https://github.com/adamhl8/discord-app-bot/commit/b73666c0615a3762bf6c69801ef57dfaedb5e22d))
+
 ## [1.0.0](https://github.com/adamhl8/discord-app-bot/compare/v0.7.3..v1.0.0) - 2026-07-04
 
 ### 🚀 Features
