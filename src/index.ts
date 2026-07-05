@@ -8,6 +8,9 @@ import { env } from "#/env.ts"
 import { addEvents } from "#/events/_events.ts"
 import { startServer } from "#/server/server.ts"
 import { registerShutdown } from "#/utils.ts"
+import packageJson from "#package.json" with { type: "json" }
+
+console.log(`discord-app-bot v${packageJson.version}`)
 
 const applicationId = env.APPLICATION_ID
 const token = env.BOT_TOKEN
