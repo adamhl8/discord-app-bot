@@ -1,20 +1,20 @@
 import type { Command } from "discord-bot-shared"
-import { ChannelType, SlashCommandBuilder } from "discord.js"
+import { ChannelType, ChatInputCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
 import { linkMemberToApp, sendWarcraftlogsMessage } from "#/applicant/applicant-service.ts"
 
 export const link: Command = {
-  command: new SlashCommandBuilder()
+  command: new ChatInputCommandBuilder()
     .setName("link")
     .setDescription("Link an applicant.")
-    .addUserOption((option) =>
+    .addUserOptions((option) =>
       option
         .setName("applicant")
         .setDescription("The applicant to be linked to the selected channel.")
         .setRequired(true),
     )
-    .addChannelOption((option) =>
+    .addChannelOptions((option) =>
       option
         .setName("channel")
         .setDescription("Select the channel that the applicant will be linked to.")

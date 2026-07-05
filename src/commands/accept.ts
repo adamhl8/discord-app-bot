@@ -1,15 +1,15 @@
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
-import { ChannelType, SlashCommandBuilder } from "discord.js"
+import { ChannelType, ChatInputCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
 import { closeApplication, getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
 
 export const accept: Command = {
-  command: new SlashCommandBuilder()
+  command: new ChatInputCommandBuilder()
     .setName("accept")
     .setDescription("Accept an applicant.")
-    .addChannelOption((option) =>
+    .addChannelOptions((option) =>
       option
         .setName("channel")
         .setDescription("Select the channel of the applicant you wish to accept.")

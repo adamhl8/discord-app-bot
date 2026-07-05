@@ -15,13 +15,14 @@
   },
   "type": "module",
   "imports": {
-    "#/*": "./src/*"
+    "#/*": "./src/*",
+    "#package.json": "./package.json"
   },
   "scripts": {
     "prepare": "just prepare"
   },
   "dependencies": {
-    "@adamhl8/configs": "^0.29.0",
+    "@adamhl8/configs": "^0.32.0",
     "@hono/node-server": "^2.0.8",
     "@hono/standard-validator": "^0.2.3",
     "@prisma/adapter-libsql": "^7.8.0",
@@ -29,8 +30,8 @@
     "@sindresorhus/slugify": "^3.0.0",
     "arkenv": "^0.12.2",
     "arktype": "^2.2.2",
-    "discord-bot-shared": "^0.18.0",
-    "discord.js": "^14.26.4",
+    "discord-bot-shared": "^1.0.0",
+    "discord.js": "^15.0.0-pr-11006.1765452229-e636950b2",
     "get-urls": "^12.1.0",
     "hono": "^4.12.27",
     "prisma": "^7.8.0",

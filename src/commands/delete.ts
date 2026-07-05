@@ -1,20 +1,20 @@
 import type { Command } from "discord-bot-shared"
-import { ChannelType, SlashCommandBuilder } from "discord.js"
+import { ChannelType, ChatInputCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
 import { closeApplication } from "#/applicant/applicant-service.ts"
 
 export const deleteApplication: Command = {
-  command: new SlashCommandBuilder()
+  command: new ChatInputCommandBuilder()
     .setName("delete")
     .setDescription("Delete an application.")
-    .addChannelOption((option) =>
+    .addChannelOptions((option) =>
       option
         .setName("channel")
         .setDescription("Select the channel of the application you wish to delete.")
         .setRequired(true),
     )
-    .addStringOption((option) => option.setName("reason").setDescription("Provide a reason for deletion.")),
+    .addStringOptions((option) => option.setName("reason").setDescription("Provide a reason for deletion.")),
   run: async (interaction) => {
     await interaction.deferReply()
 

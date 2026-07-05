@@ -2,16 +2,16 @@ import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
 import type { ButtonInteraction, Guild } from "discord.js"
 import {
-  ButtonBuilder,
-  ButtonStyle,
   ChannelType,
+  ChatInputCommandBuilder,
   ComponentType,
   ContainerBuilder,
   MessageFlags,
   ModalBuilder,
+  PrimaryButtonBuilder,
   SeparatorSpacingSize,
-  SlashCommandBuilder,
   StringSelectMenuOptionBuilder,
+  SuccessButtonBuilder,
   TextInputStyle,
 } from "discord.js"
 import type { Result } from "ts-explicit-errors"
@@ -139,7 +139,6 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
     const { values: officerRoles, errors: officerRoleErrors } = await filterMap(officerRoleIds, async (id) => {
       const officerRole = await attempt(async () => guild.roles.fetch(id))
       if (isErr(officerRole)) return err(`failed to fetch officer role with ID '${id}'`, officerRole)
-      if (!officerRole) return
       return officerRole
     })
     if (officerRoleErrors) {
@@ -155,7 +154,7 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
     const applicantRoleResult = await attempt(async () => {
       if (!settings.applicantRoleId) return
       const applicantRole = await guild.roles.fetch(settings.applicantRoleId)
-      return applicantRole?.toString()
+      return applicantRole.toString()
     })
     if (isErr(applicantRoleResult)) return err("failed to fetch applicant role", applicantRoleResult)
     const applicantRole = applicantRoleResult ?? "_Not set_"
@@ -203,13 +202,10 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
     .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Large))
     .addActionRowComponents((a) =>
       a.addComponents(
-        new ButtonBuilder().setCustomId("roleSettings").setLabel("Role Settings").setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId("channelSettings").setLabel("Channel Settings").setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId("messageSettings").setLabel("Message Settings").setStyle(ButtonStyle.Primary),
-        new ButtonBuilder()
-          .setCustomId("postLogsSettings")
-          .setLabel("Post Logs Settings")
-          .setStyle(ButtonStyle.Primary),
+        new PrimaryButtonBuilder().setCustomId("roleSettings").setLabel("Role Settings"),
+        new PrimaryButtonBuilder().setCustomId("channelSettings").setLabel("Channel Settings"),
+        new PrimaryButtonBuilder().setCustomId("messageSettings").setLabel("Message Settings"),
+        new PrimaryButtonBuilder().setCustomId("postLogsSettings").setLabel("Post Logs Settings"),
       ),
     )
     .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Large))
@@ -219,14 +215,14 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
       ),
     )
     .addActionRowComponents((a) =>
-      a.addComponents(new ButtonBuilder().setCustomId("doneButton").setLabel("Done").setStyle(ButtonStyle.Success)),
+      a.addComponents(new SuccessButtonBuilder().setCustomId("doneButton").setLabel("Done")),
     )
 
   return settingsContainer
 }
 
 export const settingsCommand: Command = {
-  command: new SlashCommandBuilder().setName("settings").setDescription("Configure app-bot."),
+  command: new ChatInputCommandBuilder().setName("settings").setDescription("Configure app-bot."),
   run: async (interaction) => {
     const response = await interaction.deferReply({ flags: [MessageFlags.Ephemeral], withResponse: true })
 

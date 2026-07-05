@@ -1,25 +1,25 @@
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, SlashCommandBuilder } from "discord.js"
+import { ActionRowBuilder, ChannelType, ChatInputCommandBuilder, PrimaryButtonBuilder } from "discord.js"
 import { isErr } from "ts-explicit-errors"
 
 import { saveApplicant } from "#/applicant/applicant-db.ts"
 import { getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
 
 export const decline: Command = {
-  command: new SlashCommandBuilder()
+  command: new ChatInputCommandBuilder()
     .setName("decline")
     .setDescription("Decline an applicant.")
-    .addChannelOption((option) =>
+    .addChannelOptions((option) =>
       option
         .setName("channel")
         .setDescription("Select the channel of the applicant you wish to decline.")
         .setRequired(true),
     )
-    .addStringOption((option) =>
+    .addStringOptions((option) =>
       option.setName("decline-message").setDescription("Leave blank to send the default decline message."),
     )
-    .addBooleanOption((option) =>
+    .addBooleanOptions((option) =>
       option.setName("kick").setDescription("Choose whether the applicant is kicked from the server. (Default: true)"),
     ),
   run: async (interaction) => {
@@ -46,11 +46,8 @@ export const decline: Command = {
     const kick = interaction.options.getBoolean("kick") !== false
     const kickText = kick ? " and you will be removed from the server." : "."
 
-    const declineConfirmButton = new ButtonBuilder()
-      .setCustomId("declineConfirm")
-      .setLabel("Confirm")
-      .setStyle(ButtonStyle.Primary)
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(declineConfirmButton)
+    const declineConfirmButton = new PrimaryButtonBuilder().setCustomId("declineConfirm").setLabel("Confirm")
+    const row = new ActionRowBuilder().addComponents(declineConfirmButton)
 
     const declineMessage = await applicantChannel.send({
       content: `<@${applicant.memberId}>\n\n${declineMessageText}\n\nUpon clicking Confirm, your application will be closed${kickText}`,

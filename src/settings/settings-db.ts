@@ -71,7 +71,6 @@ export const getResolvedSettings = async (guild: Guild): Promise<Result<Resolved
   const { values: officerRoles, errors: officerRoleErrors } = await filterMap(officerRoleIds, async (id) => {
     const role = await attempt(async () => guild.roles.fetch(id))
     if (isErr(role)) return err(`failed to fetch officer role with ID '${id}'`, role)
-    if (!role) return
     return role
   })
   if (officerRoleErrors) {
@@ -84,7 +83,6 @@ export const getResolvedSettings = async (guild: Guild): Promise<Result<Resolved
   const applicantRole = await attempt(async () => guild.roles.fetch(settings.applicantRoleId))
   if (isErr(applicantRole))
     return err(`failed to fetch applicant role with ID '${settings.applicantRoleId}'`, applicantRole)
-  if (!applicantRole) return err(`failed to find applicant role with ID '${settings.applicantRoleId}'`, undefined)
 
   const appsChannel = await getGuildTextChannel(guild, settings.appsChannelId)
   if (isErr(appsChannel)) return err(`failed to get apps channel with ID '${settings.appsChannelId}'`, appsChannel)
