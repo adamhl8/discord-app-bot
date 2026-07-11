@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/adamhl8/discord-app-bot/compare/v1.2.0..v1.2.1) - 2026-07-11
+
+### ⚙️ Miscellaneous Tasks
+
+- _(Dockerfile)_ use bun canary ([6798e58](https://github.com/adamhl8/discord-app-bot/commit/6798e58a643148f17c28773daba93f7cdc9344fb) by @adamhl8)
+
 ## [1.2.0](https://github.com/adamhl8/discord-app-bot/compare/v1.1.0..v1.2.0) - 2026-07-11
 
 ### ✨ Improvements
