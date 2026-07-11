@@ -1,4 +1,4 @@
-FROM oven/bun:latest
+FROM oven/bun:canary
 LABEL org.opencontainers.image.source=https://github.com/adamhl8/discord-app-bot
 WORKDIR /app
 ENV NODE_ENV="production"
