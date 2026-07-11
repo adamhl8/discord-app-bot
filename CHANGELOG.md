@@ -1,3 +1,17 @@
+## [1.2.0](https://github.com/adamhl8/discord-app-bot/compare/v1.1.0..v1.2.0) - 2026-07-11
+
+### ✨ Improvements
+
+- use Bun.serve instead hono node adapter ([b30f515](https://github.com/adamhl8/discord-app-bot/commit/b30f5157f629bafa26b90001440bd356f51b2578) by @adamhl8)
+
+### ⚙️ Miscellaneous Tasks
+
+- update tooling ([231ea4f](https://github.com/adamhl8/discord-app-bot/commit/231ea4f869352aad66316d0da49e0c657922dec1) by @adamhl8)
+
+- _(deps)_ update dependencies ([01fe5d0](https://github.com/adamhl8/discord-app-bot/commit/01fe5d03d3261a3f63e79d977b3bf40e0123a4c5) by @adamhl8)
+
+- add tofu config ([a34a7ff](https://github.com/adamhl8/discord-app-bot/commit/a34a7ffcce8dc31ee97389a9f0d29fd13f7d4428) by @adamhl8)
+
 ## [1.1.0](https://github.com/adamhl8/discord-app-bot/compare/v1.0.1..v1.1.0) - 2026-07-05
 
 ### 🚀 Features
