@@ -22,7 +22,7 @@
     "prepare": "just prepare"
   },
   "dependencies": {
-    "@adamhl8/configs": "^1.4.0",
+    "@adamhl8/configs": "^1.5.0",
     "@hono/standard-validator": "^0.2.3",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",
@@ -30,7 +30,7 @@
     "arkenv": "^0.12.2",
     "arktype": "^2.2.3",
     "discord-bot-shared": "^1.0.1",
-    "discord.js": "^15.0.0-pr-11006.1765452229-e636950b2",
+    "discord.js": "^15.0.0-dev.1783513686-6e81ea771",
     "get-urls": "^12.1.0",
     "hono": "^4.12.29",
     "prisma": "^7.8.0",

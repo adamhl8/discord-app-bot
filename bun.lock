@@ -5,7 +5,7 @@
     "": {
       "name": "discord-app-bot",
       "dependencies": {
-        "@adamhl8/configs": "^1.4.0",
+        "@adamhl8/configs": "^1.5.0",
         "@hono/standard-validator": "^0.2.3",
         "@prisma/adapter-libsql": "^7.8.0",
         "@prisma/client": "^7.8.0",
@@ -13,7 +13,7 @@
         "arkenv": "^0.12.2",
         "arktype": "^2.2.3",
         "discord-bot-shared": "^1.0.1",
-        "discord.js": "^15.0.0-pr-11006.1765452229-e636950b2",
+        "discord.js": "^15.0.0-dev.1783513686-6e81ea771",
         "get-urls": "^12.1.0",
         "hono": "^4.12.29",
         "prisma": "^7.8.0",
@@ -37,7 +37,7 @@
     },
   },
   "packages": {
-    "@adamhl8/configs": ["@adamhl8/configs@1.4.0", "", { "dependencies": { "@adamhl8/eslint-plugin-clean-modules": "^0.1.4", "@commitlint/config-conventional": "^21.2.0", "@commitlint/types": "^21.2.0", "arkenv": "^0.12.2", "arktype": "^2.2.3", "es-toolkit": "^1.49.0", "smol-toml": "^1.7.0", "ts-explicit-errors": "^4.1.2", "ts-extras": "^1.2.0", "type-fest": "^5.8.0" }, "peerDependencies": { "@arethetypeswrong/core": ">=0.18", "@commitlint/cli": ">=21", "knip": ">=6", "markdown-toc": ">=1", "oxfmt": ">=0.50", "oxlint": ">=1", "oxlint-tsgolint": ">=0.24", "publint": ">=0.3", "release-it": ">=19", "tsdown": ">=0.20", "typescript": "^7.0.0" }, "optionalPeers": ["@arethetypeswrong/core", "@commitlint/cli", "knip", "markdown-toc", "oxfmt", "oxlint", "oxlint-tsgolint", "publint", "release-it", "tsdown"], "bin": { "adamhl8-bunfig": "dist/adamhl8-bunfig/index", "adamhl8-cliff": "dist/adamhl8-cliff/index", "adamhl8-gitignore": "dist/adamhl8-gitignore/index" } }, "sha512-fvnzf6Lll8F8yqAf6KYGCOvHH7Qm3wKi2UGc9MA1CBQO9AVgij1FkGrATB1akVbCfXEy8M3e8z+rECWOWNuJMw=="],
+    "@adamhl8/configs": ["@adamhl8/configs@1.5.0", "", { "dependencies": { "@adamhl8/eslint-plugin-clean-modules": "^0.1.4", "@commitlint/config-conventional": "^21.2.0", "@commitlint/types": "^21.2.0", "arkenv": "^0.12.2", "arktype": "^2.2.3", "es-toolkit": "^1.49.0", "smol-toml": "^1.7.0", "ts-explicit-errors": "^4.1.2", "ts-extras": "^1.2.0", "type-fest": "^5.8.0" }, "peerDependencies": { "@arethetypeswrong/core": ">=0.18", "@commitlint/cli": ">=21", "knip": ">=6", "markdown-toc": ">=1", "oxfmt": ">=0.50", "oxlint": ">=1", "oxlint-tsgolint": ">=0.24", "publint": ">=0.3", "release-it": ">=19", "tsdown": ">=0.20", "typescript": "^7.0.0" }, "optionalPeers": ["@arethetypeswrong/core", "@commitlint/cli", "knip", "markdown-toc", "oxfmt", "oxlint", "oxlint-tsgolint", "publint", "release-it", "tsdown"], "bin": { "adamhl8-bunfig": "dist/adamhl8-bunfig/index", "adamhl8-cliff": "dist/adamhl8-cliff/index", "adamhl8-gitignore": "dist/adamhl8-gitignore/index" } }, "sha512-/G4O1U7FjYsoNIoYJo92PVuMaejbZwzZQrGS8QHt3xNJW5lERYw4+TcZLcezr+EPlQUGn26Fy79MPSTbVWu8nw=="],
 
     "@adamhl8/eslint-plugin-clean-modules": ["@adamhl8/eslint-plugin-clean-modules@0.1.4", "", { "dependencies": { "@typescript-eslint/types": "^8.63.0", "@typescript-eslint/utils": "^8.63.0" } }, "sha512-Vhw/WAyCAnWgkcOydiT+bB+dsZxWvOPMo5kmTX7ltzmh9aAfWBokvxZEpijxw8nNMnGjgLcAuuZi2Baa6QkZLQ=="],
 
