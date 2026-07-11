@@ -1,7 +1,3 @@
-import { once } from "node:events"
-
-import type { ServerType } from "@hono/node-server"
-import { serve } from "@hono/node-server"
 import type { Client } from "discord.js"
 import { Hono } from "hono"
 import { bearerAuth } from "hono/bearer-auth"
@@ -9,7 +5,7 @@ import { bearerAuth } from "hono/bearer-auth"
 import { env } from "#env.ts"
 import { apps } from "#server/apps.ts"
 
-let server: ServerType | undefined
+let server: Bun.Server<undefined> | undefined
 
 export const startServer = (client: Client) => {
   if (server) return
@@ -19,14 +15,12 @@ export const startServer = (client: Client) => {
 
   hono.route("/apps", apps(client))
 
-  server = serve({ fetch: hono.fetch, port: env.PORT }, (info) => {
-    console.log(`server listening on port ${info.port}`)
-  })
+  server = Bun.serve({ fetch: hono.fetch, port: env.PORT })
+  console.log(`server listening on port ${server.port}`)
 }
 
 export const stopServer = async () => {
   if (!server) return
-  const closed = once(server, "close")
-  server.close()
-  await closed
+  await server.stop()
+  server = undefined
 }

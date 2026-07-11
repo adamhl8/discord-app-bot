@@ -1,15 +1,15 @@
-FROM ghcr.io/nubjs/nub:latest
+FROM oven/bun:latest
 LABEL org.opencontainers.image.source=https://github.com/adamhl8/discord-app-bot
 WORKDIR /app
 ENV NODE_ENV="production"
 
-COPY package.json lock.yaml ./
+COPY package.json bun.lock bunfig.toml ./
 
-RUN nub install --frozen-lockfile --ignore-scripts --prod
+RUN bun install --ignore-scripts --production
 
 COPY prisma ./prisma
 COPY src ./src
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 
-CMD ["sh", "-c", "nub exec prisma migrate deploy && exec nub ./src/index.ts"]
+CMD ["sh", "-c", "bun prisma migrate deploy && exec bun ./src/index.ts"]
