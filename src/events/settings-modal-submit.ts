@@ -3,9 +3,9 @@ import type { ModalComponentResolver } from "discord.js"
 import { Events } from "discord.js"
 import { isErr } from "ts-explicit-errors"
 
-import { getSettingsContainer } from "#/commands/settings.ts"
-import type { GuildSettings } from "#/generated/prisma/client.ts"
-import { saveSettings } from "#/settings/settings-db.ts"
+import { getSettingsContainer } from "#commands/settings.ts"
+import type { GuildSettings } from "#generated/prisma/client.ts"
+import { saveSettings } from "#settings/settings-db.ts"
 
 const getUpdatedSettings = (customId: string, components: ModalComponentResolver): Partial<GuildSettings> => {
   const updatedSettings: Partial<GuildSettings> = {}

@@ -2,8 +2,8 @@ import type { Guild } from "discord.js"
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { prisma } from "#/db.ts"
-import type { Applicant } from "#/generated/prisma/client.ts"
+import { prisma } from "#db.ts"
+import type { Applicant } from "#generated/prisma/client.ts"
 
 export const getApplicant = async (username: string, guild: Guild): Promise<Result<Applicant>> => {
   const applicant = await prisma.applicant.findUnique({

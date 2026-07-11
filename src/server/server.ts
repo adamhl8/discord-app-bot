@@ -6,8 +6,8 @@ import type { Client } from "discord.js"
 import { Hono } from "hono"
 import { bearerAuth } from "hono/bearer-auth"
 
-import { env } from "#/env.ts"
-import { apps } from "#/server/apps.ts"
+import { env } from "#env.ts"
+import { apps } from "#server/apps.ts"
 
 let server: ServerType | undefined
 

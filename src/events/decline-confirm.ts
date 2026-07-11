@@ -3,9 +3,9 @@ import { components } from "discord-bot-shared"
 import { ChannelType, Events, MessageFlags } from "discord.js"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { getApplicant } from "#/applicant/applicant-db.ts"
-import { closeApplication } from "#/applicant/applicant-service.ts"
-import { isModerator } from "#/utils.ts"
+import { getApplicant } from "#applicant/applicant-db.ts"
+import { closeApplication } from "#applicant/applicant-service.ts"
+import { isModerator } from "#utils.ts"
 
 export const declineConfirm: Event = {
   event: Events.InteractionCreate,

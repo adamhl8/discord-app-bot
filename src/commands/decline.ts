@@ -3,8 +3,8 @@ import { components } from "discord-bot-shared"
 import { ActionRowBuilder, ChannelType, ChatInputCommandBuilder, PrimaryButtonBuilder } from "discord.js"
 import { isErr } from "ts-explicit-errors"
 
-import { saveApplicant } from "#/applicant/applicant-db.ts"
-import { getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
+import { saveApplicant } from "#applicant/applicant-db.ts"
+import { getApplicantChannelDetails } from "#applicant/applicant-service.ts"
 
 export const decline: Command = {
   command: new ChatInputCommandBuilder()

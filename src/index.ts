@@ -2,13 +2,13 @@ import { Bot } from "discord-bot-shared"
 import type { ClientOptions } from "discord.js"
 import { Events, GatewayIntentBits as Intents } from "discord.js"
 
-import { addCommands } from "#/commands/_commands.ts"
-import { commandHook } from "#/commands/command-hook.ts"
-import { env } from "#/env.ts"
-import { addEvents } from "#/events/_events.ts"
-import { startServer } from "#/server/server.ts"
-import { registerShutdown } from "#/utils.ts"
+import { addCommands } from "#commands/_commands.ts"
+import { commandHook } from "#commands/command-hook.ts"
+import { env } from "#env.ts"
+import { addEvents } from "#events/_events.ts"
 import packageJson from "#package.json" with { type: "json" }
+import { startServer } from "#server/server.ts"
+import { registerShutdown } from "#utils.ts"
 
 console.log(`discord-app-bot v${packageJson.version}`)
 

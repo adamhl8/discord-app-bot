@@ -4,11 +4,11 @@ import getUrls from "get-urls"
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { getApplicant, removeApplicant, saveApplicant } from "#/applicant/applicant-db.ts"
-import type { Applicant } from "#/generated/prisma/client.ts"
-import { getGuildEmoji, getGuildTextChannel } from "#/guild-utils.ts"
-import type { ResolvedGuildSettings } from "#/settings/settings-db.ts"
-import { getResolvedSettings } from "#/settings/settings-db.ts"
+import { getApplicant, removeApplicant, saveApplicant } from "#applicant/applicant-db.ts"
+import type { Applicant } from "#generated/prisma/client.ts"
+import { getGuildEmoji, getGuildTextChannel } from "#guild-utils.ts"
+import type { ResolvedGuildSettings } from "#settings/settings-db.ts"
+import { getResolvedSettings } from "#settings/settings-db.ts"
 
 interface CommonDetails {
   settings: ResolvedGuildSettings

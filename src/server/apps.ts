@@ -5,10 +5,10 @@ import type { Client, Message } from "discord.js"
 import { Hono } from "hono"
 import { attempt, err, isErr } from "ts-explicit-errors"
 
-import { saveApplicant } from "#/applicant/applicant-db.ts"
-import type { Applicant } from "#/generated/prisma/client.ts"
-import { buildAppMessages } from "#/server/app-messages.ts"
-import { getResolvedSettings } from "#/settings/settings-db.ts"
+import { saveApplicant } from "#applicant/applicant-db.ts"
+import type { Applicant } from "#generated/prisma/client.ts"
+import { buildAppMessages } from "#server/app-messages.ts"
+import { getResolvedSettings } from "#settings/settings-db.ts"
 
 const applicationPayloadSchema = type({
   guildId: "string.digits > 0",

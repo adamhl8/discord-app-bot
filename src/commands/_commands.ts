@@ -1,10 +1,10 @@
 import type { Bot } from "discord-bot-shared"
 
-import { accept } from "#/commands/accept.ts"
-import { decline } from "#/commands/decline.ts"
-import { deleteApplication } from "#/commands/delete.ts"
-import { link } from "#/commands/link.ts"
-import { settingsCommand } from "#/commands/settings.ts"
+import { accept } from "#commands/accept.ts"
+import { decline } from "#commands/decline.ts"
+import { deleteApplication } from "#commands/delete.ts"
+import { link } from "#commands/link.ts"
+import { settingsCommand } from "#commands/settings.ts"
 
 export const addCommands = (bot: Bot) => {
   bot.commands.add(accept)

@@ -3,7 +3,7 @@ import { components } from "discord-bot-shared"
 import { ChannelType, ChatInputCommandBuilder } from "discord.js"
 import { err, isErr } from "ts-explicit-errors"
 
-import { closeApplication, getApplicantChannelDetails } from "#/applicant/applicant-service.ts"
+import { closeApplication, getApplicantChannelDetails } from "#applicant/applicant-service.ts"
 
 export const accept: Command = {
   command: new ChatInputCommandBuilder()

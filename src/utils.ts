@@ -3,9 +3,9 @@ import type { GuildMember } from "discord.js"
 import type { Result } from "ts-explicit-errors"
 import { attempt, isErr } from "ts-explicit-errors"
 
-import { prisma } from "#/db.ts"
-import { stopServer } from "#/server/server.ts"
-import { getSettings } from "#/settings/settings-db.ts"
+import { prisma } from "#db.ts"
+import { stopServer } from "#server/server.ts"
+import { getSettings } from "#settings/settings-db.ts"
 
 /** Whether the member is an admin or has one of the configured officer roles */
 export const isModerator = async (member: GuildMember): Promise<Result<boolean>> => {

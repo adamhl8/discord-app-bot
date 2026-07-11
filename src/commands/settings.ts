@@ -17,8 +17,8 @@ import {
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, filterMap, isErr } from "ts-explicit-errors"
 
-import type { GuildSettings } from "#/generated/prisma/client.ts"
-import { getSettings, isUnsetSettings } from "#/settings/settings-db.ts"
+import type { GuildSettings } from "#generated/prisma/client.ts"
+import { getSettings, isUnsetSettings } from "#settings/settings-db.ts"
 
 const getRoleSettingsModal = (settings: Partial<GuildSettings> | null) =>
   new ModalBuilder()

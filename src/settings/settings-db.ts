@@ -3,9 +3,9 @@ import type { Result } from "ts-explicit-errors"
 import { attempt, err, filterMap, isErr } from "ts-explicit-errors"
 import type { SetNonNullable, Simplify } from "type-fest"
 
-import { prisma } from "#/db.ts"
-import type { GuildSettings } from "#/generated/prisma/client.ts"
-import { getGuildCategory, getGuildTextChannel } from "#/guild-utils.ts"
+import { prisma } from "#db.ts"
+import type { GuildSettings } from "#generated/prisma/client.ts"
+import { getGuildCategory, getGuildTextChannel } from "#guild-utils.ts"
 
 export interface ResolvedGuildSettings extends SetNonNullable<GuildSettings> {
   officerRoles: Role[]
