@@ -1,16 +1,16 @@
 import "node_modules/@adamhl8/configs/dist/configs/justfile.base.just"
 
 bump-deps: _bump-deps
-    prisma generate
+    bun prisma generate
 
 build: _build
-    oxfmt apps-script/on-submit.js
+    bun oxfmt apps-script/on-submit.js
 
 db-generate:
-    prisma generate
+    bun prisma generate
 
 db-migrate:
-    prisma migrate dev
+    bun prisma migrate dev
 
 db-studio:
-    prisma studio
+    bun prisma studio
