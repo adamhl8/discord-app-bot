@@ -19,8 +19,8 @@ const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [
     "strictUndefinedChecks"
   ],
-  "clientVersion": "7.8.0",
-  "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
+  "clientVersion": "7.9.0",
+  "engineVersion": "e922089b7d7502aff4249d5da3420f6fa55fc6ad",
   "activeProvider": "sqlite",
   "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  previewFeatures = [\"strictUndefinedChecks\"]\n  output          = \"../src/generated/prisma\"\n  runtime         = \"bun\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel GuildSettings {\n  id                String      @id\n  officerRoleIds    String?\n  applicantRoleId   String?\n  appsChannelId     String?\n  appsCategoryId    String?\n  declineMessage    String?\n  postLogs          Boolean?\n  postLogsChannelId String?\n  applicants        Applicant[]\n}\n\nmodel Applicant {\n  username         String        @id\n  appMessageId     String\n  channelId        String\n  memberId         String?\n  declineMessageId String?\n  kick             Boolean?\n  warcraftlogs     String?\n  guildId          String\n  guildSettings    GuildSettings @relation(fields: [guildId], references: [id])\n}\n",
   "runtimeDataModel": {
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
     LogOpts extends LogOptions<Options> = LogOptions<Options>,
     OmitOpts extends Prisma.PrismaClientOptions['omit'] = Options extends { omit: infer U } ? U : Prisma.PrismaClientOptions['omit'],
     ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs
-  >(options: Prisma.Subset<Options, Prisma.PrismaClientOptions> ): PrismaClient<LogOpts, OmitOpts, ExtArgs>
+  >(options: Prisma.PrismaClientConstructorArgs<Options>): PrismaClient<LogOpts, OmitOpts, ExtArgs>
 }
 
 /**
@@ -105,7 +105,7 @@ export interface PrismaClientConstructor {
 
 export interface PrismaClient<
   in LogOpts extends Prisma.LogLevel = never,
-  in out OmitOpts extends Prisma.PrismaClientOptions['omit'] = undefined,
+  in out OmitOpts extends Prisma.PrismaClientOptions['omit'] = Prisma.PrismaClientOptions['omit'],
   in out ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
