@@ -1,3 +1,9 @@
+## [1.2.4](https://github.com/adamhl8/discord-app-bot/compare/v1.2.3..v1.2.4) - 2026-10-26
+
+### ⚙️ Miscellaneous Tasks
+
+- _(deps)_ update dependencies ([afaa9bf](https://github.com/adamhl8/discord-app-bot/commit/afaa9bfba74d63046e7e0ca5040b9040501093be) by @adamhl8)
+
 ## [1.2.3](https://github.com/adamhl8/discord-app-bot/compare/v1.2.2..v1.2.3) - 2026-07-13
 
 ### ⚙️ Miscellaneous Tasks
