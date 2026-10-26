@@ -1,3 +1,5 @@
+// oxlint-disable func-style no-implicit-globals - Apps Script runs this as a classic script and calls its top-level functions by name
+
 const BOT_URL = "https://<your-bot-host>/apps"
 const GUILD_ID = "<your discord server id>"
 const EMBED_TITLE = "<Potent> Application"
@@ -49,7 +51,7 @@ function sendToBot(payload: ApplicationPayload): void {
 }
 
 // e is undefined when run manually from the editor, which re-sends the latest submission
-// oxlint-disable-next-line no-unused-vars
+// oxlint-disable-next-line no-unused-vars - the form trigger calls `onSubmit` by name
 function onSubmit(e?: GoogleAppsScript.Events.FormsOnFormSubmit): void {
   const formResponse = e ? e.response : FormApp.getActiveForm().getResponses().pop()
   if (!formResponse) throw new Error("form has no responses")

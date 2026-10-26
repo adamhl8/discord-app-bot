@@ -1,21 +1,17 @@
+import {
+  ChatInputCommandBuilder,
+  ContainerBuilder,
+  ModalBuilder,
+  PrimaryButtonBuilder,
+  StringSelectMenuOptionBuilder,
+  SuccessButtonBuilder,
+} from "@discordjs/builders"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
 import type { ButtonInteraction, Guild } from "discord.js"
-import {
-  ChannelType,
-  ChatInputCommandBuilder,
-  ComponentType,
-  ContainerBuilder,
-  MessageFlags,
-  ModalBuilder,
-  PrimaryButtonBuilder,
-  SeparatorSpacingSize,
-  StringSelectMenuOptionBuilder,
-  SuccessButtonBuilder,
-  TextInputStyle,
-} from "discord.js"
+import { ChannelType, ComponentType, MessageFlags, SeparatorSpacingSize, TextInputStyle } from "discord.js"
 import type { Result } from "ts-explicit-errors"
-import { attempt, err, filterMap, isErr } from "ts-explicit-errors"
+import { attempt, err, filterMap, isErr, messageChain } from "ts-explicit-errors"
 
 import type { GuildSettings } from "#generated/prisma/client.ts"
 import { getSettings, isUnsetSettings } from "#settings/settings-db.ts"
@@ -143,7 +139,7 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
     })
     if (officerRoleErrors) {
       return err(
-        `failed to fetch all officer roles:\n${officerRoleErrors.map((error) => error.messageChain).join("\n")}`,
+        `failed to fetch all officer roles:\n${officerRoleErrors.map((error) => messageChain(error)).join("\n")}`,
         undefined,
       )
     }
@@ -188,13 +184,13 @@ export const getSettingsContainer = async (guild: Guild): Promise<Result<Contain
     const postLogsChannel = postLogsChannelResult ?? "_Not set_"
 
     currentSettings =
-      `**Officer Roles:** ${officerRoleMentions}\n` +
-      `**Applicant Role:** ${applicantRole}\n` +
-      `**Apps Channel:** ${appsChannel}\n` +
-      `**Apps Category:** ${appsCategory}\n` +
-      `**Decline Message:** ${declineMessage}\n` +
-      `**Post Logs:** ${postLogs}\n` +
-      `**Post Logs Channel:** ${postLogsChannel}\n`
+      `**Officer Roles:** ${officerRoleMentions}\n`
+      + `**Applicant Role:** ${applicantRole}\n`
+      + `**Apps Channel:** ${appsChannel}\n`
+      + `**Apps Category:** ${appsCategory}\n`
+      + `**Decline Message:** ${declineMessage}\n`
+      + `**Post Logs:** ${postLogs}\n`
+      + `**Post Logs Channel:** ${postLogsChannel}\n`
   }
 
   const settingsContainer = new ContainerBuilder()
@@ -230,7 +226,7 @@ export const settingsCommand: Command = {
 
     const settingsContainer = await getSettingsContainer(guild)
     if (isErr(settingsContainer))
-      throw new Error(err("failed to get settings container", settingsContainer).messageChain)
+      throw new Error(messageChain(err("failed to get settings container", settingsContainer)))
 
     await interaction.editReply({
       components: [settingsContainer],
@@ -248,7 +244,7 @@ export const settingsCommand: Command = {
         // We need to fetch the updated settings after each modal submission so they can be displayed.
         const newSettings = await getSettings(guild)
         if (isErr(newSettings)) {
-          const component = components.error(newSettings.messageChain)
+          const component = components.error(messageChain(newSettings))
           await interaction.followUp({
             components: component.components,
             flags: [...component.flags, MessageFlags.Ephemeral],

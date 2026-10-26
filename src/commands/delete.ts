@@ -1,6 +1,7 @@
+import { ChatInputCommandBuilder } from "@discordjs/builders"
 import type { Command } from "discord-bot-shared"
-import { ChannelType, ChatInputCommandBuilder } from "discord.js"
-import { err, isErr } from "ts-explicit-errors"
+import { ChannelType } from "discord.js"
+import { err, isErr, messageChain } from "ts-explicit-errors"
 
 import { closeApplication } from "#applicant/applicant-service.ts"
 
@@ -22,7 +23,7 @@ export const deleteApplication: Command = {
 
     const closeApplicationResult = await closeApplication(applicantChannel, "declined")
     if (isErr(closeApplicationResult))
-      throw new Error(err("failed to close application", closeApplicationResult).messageChain)
+      throw new Error(messageChain(err("failed to close application", closeApplicationResult)))
 
     const reason = interaction.options.getString("reason") ?? ""
     await interaction.editReply(`\`${applicantChannel.name}\` has been deleted.\n${reason}`)

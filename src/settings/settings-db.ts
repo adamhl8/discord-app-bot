@@ -1,6 +1,6 @@
 import type { CategoryChannel, Guild, GuildTextBasedChannel, Role } from "discord.js"
 import type { Result } from "ts-explicit-errors"
-import { attempt, err, filterMap, isErr } from "ts-explicit-errors"
+import { attempt, err, filterMap, isErr, messageChain } from "ts-explicit-errors"
 import type { SetNonNullable, Simplify } from "type-fest"
 
 import { prisma } from "#db.ts"
@@ -75,7 +75,7 @@ export const getResolvedSettings = async (guild: Guild): Promise<Result<Resolved
   })
   if (officerRoleErrors) {
     return err(
-      `failed to fetch all officer roles:\n${officerRoleErrors.map((error) => error.messageChain).join("\n")}`,
+      `failed to fetch all officer roles:\n${officerRoleErrors.map((error) => messageChain(error)).join("\n")}`,
       undefined,
     )
   }

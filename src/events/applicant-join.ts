@@ -1,7 +1,7 @@
 import slugify from "@sindresorhus/slugify"
 import type { Event } from "discord-bot-shared"
 import { Events } from "discord.js"
-import { err, isErr } from "ts-explicit-errors"
+import { err, isErr, messageChain } from "ts-explicit-errors"
 
 import { getApplicant } from "#applicant/applicant-db.ts"
 import { linkMemberToApp, sendWarcraftlogsMessage } from "#applicant/applicant-service.ts"
@@ -21,10 +21,10 @@ export const applicantJoin: Event = {
 
     const linkMemberToAppResult = await linkMemberToApp(member, applicantChannel)
     if (isErr(linkMemberToAppResult))
-      throw new Error(err("failed to link member to app", linkMemberToAppResult).messageChain)
+      throw new Error(messageChain(err("failed to link member to app", linkMemberToAppResult)))
 
     const sendWarcraftlogsMessageResult = await sendWarcraftlogsMessage(applicantChannel)
     if (isErr(sendWarcraftlogsMessageResult))
-      throw new Error(err("failed to send Warcraft Logs message", sendWarcraftlogsMessageResult).messageChain)
+      throw new Error(messageChain(err("failed to send Warcraft Logs message", sendWarcraftlogsMessageResult)))
   },
 }

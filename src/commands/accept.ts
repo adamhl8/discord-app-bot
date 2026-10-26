@@ -1,7 +1,8 @@
+import { ChatInputCommandBuilder } from "@discordjs/builders"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
-import { ChannelType, ChatInputCommandBuilder } from "discord.js"
-import { err, isErr } from "ts-explicit-errors"
+import { ChannelType } from "discord.js"
+import { err, isErr, messageChain } from "ts-explicit-errors"
 
 import { closeApplication, getApplicantChannelDetails } from "#applicant/applicant-service.ts"
 
@@ -21,7 +22,7 @@ export const accept: Command = {
     const applicantChannel = interaction.options.getChannel("channel", true, [ChannelType.GuildText])
 
     const commonDetails = await getApplicantChannelDetails(applicantChannel)
-    if (isErr(commonDetails)) throw new Error(commonDetails.messageChain)
+    if (isErr(commonDetails)) throw new Error(messageChain(commonDetails))
     const { applicant } = commonDetails
 
     if (!applicant.memberId) {
@@ -35,7 +36,7 @@ export const accept: Command = {
 
     const closeApplicationResult = await closeApplication(applicantChannel, "approved")
     if (isErr(closeApplicationResult))
-      throw new Error(err("failed to close application", closeApplicationResult).messageChain)
+      throw new Error(messageChain(err("failed to close application", closeApplicationResult)))
 
     await interaction.editReply(`\`${applicantChannel.name}\` has been accepted.`)
   },

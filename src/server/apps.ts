@@ -1,9 +1,11 @@
+// oxlint-disable unicorn/no-null - the Prisma `Applicant` model uses `null` for unset columns
+
 import { sValidator } from "@hono/standard-validator"
 import slugify from "@sindresorhus/slugify"
 import { type } from "arktype"
 import type { Client, Message } from "discord.js"
 import { Hono } from "hono"
-import { attempt, err, isErr } from "ts-explicit-errors"
+import { attempt, err, isErr, messageChain } from "ts-explicit-errors"
 
 import { saveApplicant } from "#applicant/applicant-db.ts"
 import type { Applicant } from "#generated/prisma/client.ts"
@@ -32,7 +34,7 @@ export const apps = (client: Client) => {
     if (isErr(guild)) return c.json({ error: `failed to fetch guild '${guildId}'` }, 404)
 
     const settings = await getResolvedSettings(guild)
-    if (isErr(settings)) return c.json({ error: settings.messageChain }, 500)
+    if (isErr(settings)) return c.json({ error: messageChain(settings) }, 500)
     const { appsCategory, appsChannel } = settings
 
     const appMessages = buildAppMessages(title, fields)
@@ -44,14 +46,14 @@ export const apps = (client: Client) => {
       return sent
     })
     if (isErr(sentAppMessages))
-      return c.json({ error: err("failed to send app message", sentAppMessages).messageChain }, 500)
+      return c.json({ error: messageChain(err("failed to send app message", sentAppMessages)) }, 500)
 
     const appMessage = sentAppMessages.at(-1)
     if (!appMessage) return c.json({ error: "no app messages were sent" }, 500)
 
     const applicantChannel = await attempt(async () => appsCategory.children.create({ name: username }))
     if (isErr(applicantChannel))
-      return c.json({ error: err("failed to create applicant channel", applicantChannel).messageChain }, 500)
+      return c.json({ error: messageChain(err("failed to create applicant channel", applicantChannel)) }, 500)
 
     const applicantChannelSend = await attempt(async () => {
       // oxlint-disable-next-line no-await-in-loop - need to send the messages in order
@@ -59,7 +61,7 @@ export const apps = (client: Client) => {
     })
     if (isErr(applicantChannelSend)) {
       return c.json(
-        { error: err("failed to send app message to applicant channel", applicantChannelSend).messageChain },
+        { error: messageChain(err("failed to send app message to applicant channel", applicantChannelSend)) },
         500,
       )
     }
@@ -76,7 +78,7 @@ export const apps = (client: Client) => {
     }
 
     const saveApplicantResult = await saveApplicant(applicant)
-    if (isErr(saveApplicantResult)) return c.json({ error: saveApplicantResult.messageChain }, 500)
+    if (isErr(saveApplicantResult)) return c.json({ error: messageChain(saveApplicantResult) }, 500)
 
     return c.json({ success: true }, 201)
   })

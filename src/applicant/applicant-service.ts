@@ -1,5 +1,6 @@
+import { ContainerBuilder } from "@discordjs/builders"
 import type { GuildMember, TextChannel } from "discord.js"
-import { ContainerBuilder, MessageFlags, SeparatorSpacingSize } from "discord.js"
+import { MessageFlags, SeparatorSpacingSize } from "discord.js"
 import getUrls from "get-urls"
 import type { Result } from "ts-explicit-errors"
 import { attempt, err, isErr } from "ts-explicit-errors"
@@ -83,8 +84,8 @@ export const linkMemberToApp = async (member: GuildMember, applicantChannel: Tex
 
   const sendApplicantJoinMessageResult = await attempt(async () =>
     applicantChannel.send(
-      `${member.toString()}\n\n` +
-        "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
+      `${member.toString()}\n\n`
+        + "Thank you for your application. Once a decision has been made, you will be messaged/pinged with a response.",
     ),
   )
   if (isErr(sendApplicantJoinMessageResult))

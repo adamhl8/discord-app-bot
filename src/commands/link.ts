@@ -1,6 +1,7 @@
+import { ChatInputCommandBuilder } from "@discordjs/builders"
 import type { Command } from "discord-bot-shared"
-import { ChannelType, ChatInputCommandBuilder } from "discord.js"
-import { err, isErr } from "ts-explicit-errors"
+import { ChannelType } from "discord.js"
+import { err, isErr, messageChain } from "ts-explicit-errors"
 
 import { linkMemberToApp, sendWarcraftlogsMessage } from "#applicant/applicant-service.ts"
 
@@ -30,10 +31,10 @@ export const link: Command = {
 
     const linkMemberToAppResult = await linkMemberToApp(member, applicantChannel)
     if (isErr(linkMemberToAppResult))
-      throw new Error(err("failed to link member to app", linkMemberToAppResult).messageChain)
+      throw new Error(messageChain(err("failed to link member to app", linkMemberToAppResult)))
     const sendWarcraftlogsMessageResult = await sendWarcraftlogsMessage(applicantChannel)
     if (isErr(sendWarcraftlogsMessageResult))
-      throw new Error(err("failed to send Warcraft Logs message", sendWarcraftlogsMessageResult).messageChain)
+      throw new Error(messageChain(err("failed to send Warcraft Logs message", sendWarcraftlogsMessageResult)))
 
     await interaction.editReply(`${member.toString()} has been linked to ${applicantChannel.toString()}.`)
   },

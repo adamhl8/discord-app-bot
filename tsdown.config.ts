@@ -8,6 +8,7 @@ const config = tsdownBundleConfig({
   platform: "neutral",
   minify: false,
   treeshake: false,
+  onSuccess: "oxfmt apps-script/on-submit.js",
 })
 
 export default defineConfig(config)

@@ -1,7 +1,8 @@
+import { ActionRowBuilder, ChatInputCommandBuilder, PrimaryButtonBuilder } from "@discordjs/builders"
 import type { Command } from "discord-bot-shared"
 import { components } from "discord-bot-shared"
-import { ActionRowBuilder, ChannelType, ChatInputCommandBuilder, PrimaryButtonBuilder } from "discord.js"
-import { isErr } from "ts-explicit-errors"
+import { ChannelType } from "discord.js"
+import { isErr, messageChain } from "ts-explicit-errors"
 
 import { saveApplicant } from "#applicant/applicant-db.ts"
 import { getApplicantChannelDetails } from "#applicant/applicant-service.ts"
@@ -28,7 +29,7 @@ export const decline: Command = {
     const applicantChannel = interaction.options.getChannel("channel", true, [ChannelType.GuildText])
 
     const commonDetails = await getApplicantChannelDetails(applicantChannel)
-    if (isErr(commonDetails)) throw new Error(commonDetails.messageChain)
+    if (isErr(commonDetails)) throw new Error(messageChain(commonDetails))
 
     const { settings, applicant } = commonDetails
 
@@ -57,7 +58,7 @@ export const decline: Command = {
     applicant.kick = kick
     applicant.declineMessageId = declineMessage.id
     const saveApplicantResult = await saveApplicant(applicant)
-    if (isErr(saveApplicantResult)) throw new Error(saveApplicantResult.messageChain)
+    if (isErr(saveApplicantResult)) throw new Error(messageChain(saveApplicantResult))
 
     await interaction.editReply(`\`${applicantChannel.name}\` has been declined.\n${declineMessageText}`)
   },

@@ -1,7 +1,9 @@
+// oxlint-disable unicorn/no-null - Prisma uses `null` to clear a nullable column
+
 import type { Event } from "discord-bot-shared"
 import type { ModalComponentResolver } from "discord.js"
 import { Events } from "discord.js"
-import { isErr } from "ts-explicit-errors"
+import { isErr, messageChain } from "ts-explicit-errors"
 
 import { getSettingsContainer } from "#commands/settings.ts"
 import type { GuildSettings } from "#generated/prisma/client.ts"
@@ -47,10 +49,10 @@ export const settingsModalSubmit: Event = {
     const updatedSettings = getUpdatedSettings(customId, components)
 
     const saveSettingsResult = await saveSettings(guild, updatedSettings)
-    if (isErr(saveSettingsResult)) throw new Error(saveSettingsResult.messageChain)
+    if (isErr(saveSettingsResult)) throw new Error(messageChain(saveSettingsResult))
 
     const settingsContainer = await getSettingsContainer(guild)
-    if (isErr(settingsContainer)) throw new Error(settingsContainer.messageChain)
+    if (isErr(settingsContainer)) throw new Error(messageChain(settingsContainer))
 
     await interaction.update({ components: [settingsContainer] })
   },
